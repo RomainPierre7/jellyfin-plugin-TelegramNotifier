@@ -6,11 +6,9 @@ This project is a [Jellyfin](https://github.com/jellyfin) plugin that sends noti
 
 ## Table of contents
 
-- [Jellyfin Telegram Notifier](#jellyfin-telegram-notifier)
-  - [Table of contents](#table-of-contents)
-  - [Installation](#installation)
-    - [Install the plugin](#install-the-plugin)
-    - [Install the project (for developers)](#install-the-project-for-developers)
+- [Install the plugin](#install-the-plugin)
+- [Use the plugin](#use-the-plugin)
+- [Install the project (for developers)](#install-the-project-for-developers)
 
 ## Install the plugin
 
