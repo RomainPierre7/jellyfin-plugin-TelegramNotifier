@@ -11,8 +11,17 @@ public class SampleController : ControllerBase
     public async Task<ActionResult<string>> Get()
     {
         Sender sender = new Sender();
-        string message = "Hi ! This is a message from the TelegramNotifier plugin on your Jellyfin server. Your configuration seems correct";
-        await sender.SendMessage(message).ConfigureAwait(false);
-        return "Test message successfully executed.";
+        string message = "Hi ! This is a message from the TelegramNotifier plugin on your Jellyfin server.\nYour configuration seems correct !";
+
+        bool result = await sender.SendMessage(message).ConfigureAwait(false);
+
+        if (result)
+        {
+            return Ok("Message sent successfully");
+        }
+        else
+        {
+            return BadRequest("Message could not be sent, please check your configuration");
+        }
     }
 }

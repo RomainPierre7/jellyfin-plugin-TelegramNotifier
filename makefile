@@ -24,10 +24,9 @@ clean:
 
 # Target for only compiling the DLL plugin file (for users)
 plugin:
-	dotnet publish --configuration Release --output tmp
+	dotnet build --output tmp
 	mkdir -p $(OUTPUT_DLL_DIR)
 	cp tmp/Jellyfin.Plugin.TelegramNotifier.dll $(OUTPUT_DLL_DIR)
-	cp tmp/Telegram.Bot.dll $(OUTPUT_DLL_DIR)
 	rm -rf tmp
 
 # Define phony targets (which are not filenames)
