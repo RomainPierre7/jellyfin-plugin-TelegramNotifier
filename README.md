@@ -43,7 +43,6 @@ git clone https://github.com/RomainPierre7/jellyfin_telegram_notifier.git
 ```bash
 dotnet add package Jellyfin.Model
 dotnet add package Jellyfin.Controller
-dotnet add package Telegram.Bot
 ```
 
 ### 3. Compile the plugin
