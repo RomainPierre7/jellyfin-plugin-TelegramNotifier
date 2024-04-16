@@ -3,6 +3,7 @@
 # Define variables
 OUTPUT_DEV_DIR = bin
 OUTPUT_REL_DIR = publish
+OUTPUT_DLL_DIR = plugin
 
 # Default targets
 all: plugin
@@ -19,12 +20,14 @@ publish:
 clean:
 	rm -rf $(OUTPUT_REL_DIR)
 	rm -rf $(OUTPUT_DEV_DIR)
-	rm -f Jellyfin.Plugin.TelegramNotifier.dll
+	rm -rf $(OUTPUT_DLL_DIR)
 
-# Target for only building the DLL plugin file (for users)
+# Target for only compiling the DLL plugin file (for users)
 plugin:
-	dotnet build --configuration Release --output tmp
-	cp tmp/Jellyfin.Plugin.TelegramNotifier.dll .
+	dotnet publish --configuration Release --output tmp
+	mkdir -p $(OUTPUT_DLL_DIR)
+	cp tmp/Jellyfin.Plugin.TelegramNotifier.dll $(OUTPUT_DLL_DIR)
+	cp tmp/Telegram.Bot.dll $(OUTPUT_DLL_DIR)
 	rm -rf tmp
 
 # Define phony targets (which are not filenames)

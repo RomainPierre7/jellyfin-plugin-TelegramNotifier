@@ -1,6 +1,7 @@
 obj
 bin
 publish
+plugin
 *.dll
 
 .mono
