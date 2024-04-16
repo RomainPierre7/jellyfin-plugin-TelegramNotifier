@@ -9,12 +9,12 @@ public class PluginConfiguration : BasePluginConfiguration
         // set default options here
         EnablePlugin = true;
         BotToken = string.Empty;
-        ChatID = string.Empty;
+        ChatId = string.Empty;
     }
 
     public bool EnablePlugin { get; set; }
 
     public string BotToken { get; set; }
 
-    public string ChatID { get; set; }
+    public string ChatId { get; set; }
 }

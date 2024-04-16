@@ -3,15 +3,15 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Jellyfin.Plugin.TelegramNotifier.Telegram;
 
-[Route("api/[controller]")]
+[Route("TelegramNotifierApi/[controller]")]
 [ApiController]
-public class SampleController : ControllerBase
+public class TestController : ControllerBase
 {
     [HttpGet]
     public async Task<ActionResult<string>> Get()
     {
         Sender sender = new Sender();
-        string message = "Hi ! This is a message from the TelegramNotifier plugin on your Jellyfin server.\nYour configuration seems correct !";
+        string message = "[Jellyfin] Test message: \n 🎉 Your configuration is correct ! 🥳";
 
         bool result = await sender.SendMessage(message).ConfigureAwait(false);
 
