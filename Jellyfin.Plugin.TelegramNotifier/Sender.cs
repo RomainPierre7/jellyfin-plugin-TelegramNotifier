@@ -16,6 +16,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
         {
             _httpClient = new HttpClient();
             _logger = Plugin.Logger;
+
             botToken = Plugin.Config.BotToken;
             chatId = Plugin.Config.ChatId;
         }
@@ -34,19 +35,20 @@ namespace Jellyfin.Plugin.TelegramNotifier
             }
         }
 
-        public async Task<bool> SendMessage(string message)
+        public async Task<bool> SendMessage(string message, string logEvent = "")
         {
             try
             {
                 string url = $"https://api.telegram.org/bot{botToken}/sendMessage?chat_id={chatId}&text={message}";
                 HttpResponseMessage response = await _httpClient.GetAsync(url).ConfigureAwait(false);
                 response.EnsureSuccessStatusCode();
-                _logger.LogInformation("Message sent successfully");
+
+                _logger.LogInformation("Message sent successfully. ({LogEvent})", logEvent);
                 return true;
             }
             catch (HttpRequestException)
             {
-                _logger.LogError("Message could not be sent, please check your configuration");
+                _logger.LogError("Message could not be sent, please check your configuration. ({LogEvent})", logEvent);
                 return false;
             }
         }

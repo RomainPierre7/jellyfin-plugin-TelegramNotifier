@@ -7,13 +7,19 @@ namespace Jellyfin.Plugin.TelegramNotifier.Telegram;
 [ApiController]
 public class TestNotifier : ControllerBase
 {
+    private readonly Sender _sender;
+
+    public TestNotifier(Sender sender)
+    {
+        _sender = sender;
+    }
+
     [HttpGet]
     public async Task<ActionResult<string>> Get()
     {
-        Sender sender = new Sender();
         string message = "[Jellyfin] Test message: \n 🎉 Your configuration is correct ! 🥳";
 
-        bool result = await sender.SendMessage(message).ConfigureAwait(false);
+        bool result = await _sender.SendMessage(message, "Test").ConfigureAwait(false);
 
         if (result)
         {

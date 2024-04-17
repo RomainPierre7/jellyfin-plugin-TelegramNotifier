@@ -100,10 +100,12 @@
                             throw new Error('Error while sending the test message to the telegram bot');
                         }
                         button.style.backgroundColor = 'green';
+                        button.style.color = 'white';
                         button.textContent = 'Test passed';
                     })
                     .catch(function (error) {
                         button.style.backgroundColor = 'red';
+                        button.style.color = 'white';
                         button.textContent = 'Test failed';
                     })
                     .finally(function () {
