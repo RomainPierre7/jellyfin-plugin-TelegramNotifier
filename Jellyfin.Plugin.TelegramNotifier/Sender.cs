@@ -1,11 +1,9 @@
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Jellyfin.Plugin.TelegramNotifier;
-using Jellyfin.Plugin.TelegramNotifier.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace Jellyfin.Plugin.TelegramNotifier.Telegram
+namespace Jellyfin.Plugin.TelegramNotifier
 {
     public class Sender : IDisposable
     {

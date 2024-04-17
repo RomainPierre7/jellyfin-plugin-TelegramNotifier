@@ -92,7 +92,7 @@
                         return ApiClient.updatePluginConfiguration(TelegramNotifierConfig.pluginUniqueId, config);
                     })
                     .then(function () {
-                        return fetch('/TelegramNotifierApi/test');
+                        return fetch('/TelegramNotifierApi/TestNotifier');
                     })
                     .then(function (response) {
                         Dashboard.hideLoadingMsg();

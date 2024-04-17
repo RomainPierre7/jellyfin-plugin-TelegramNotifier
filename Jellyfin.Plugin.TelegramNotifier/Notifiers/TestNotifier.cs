@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Jellyfin.Plugin.TelegramNotifier.Telegram;
 
-[Route("TelegramNotifierApi/[controller]")]
+[Route("TelegramNotifierApi/TestNotifier")]
 [ApiController]
-public class TestController : ControllerBase
+public class TestNotifier : ControllerBase
 {
     [HttpGet]
     public async Task<ActionResult<string>> Get()
