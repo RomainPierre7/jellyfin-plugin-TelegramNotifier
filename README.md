@@ -26,7 +26,7 @@ To use the plugin, you need to follow these steps:
 
 To install the project, you need to follow these steps:
 
-> **Note:** You need to have the [.NET SDK](https://dotnet.microsoft.com/download) installed on your machine.
+> **Note:** You need to have the [.NET 6.0 SDK](https://dotnet.microsoft.com/download) installed on your machine.
 
 1. Clone the repository
 2. Install the dependencies
