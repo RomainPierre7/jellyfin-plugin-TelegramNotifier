@@ -2,6 +2,65 @@ namespace Jellyfin.Plugin.TelegramNotifier.Configuration;
 
 public class UserConfiguration
 {
+    public UserConfiguration()
+    {
+        UserId = string.Empty;
+
+        UserName = string.Empty;
+
+        BotToken = string.Empty;
+
+        ChatId = string.Empty;
+
+        EnableUser = false;
+
+        ItemAdded = false;
+
+        Generic = false;
+
+        PlaybackStart = false;
+
+        PlaybackProgress = false;
+
+        PlaybackStop = false;
+
+        SubtitleDownloadFailure = false;
+
+        AuthenticationFailure = false;
+
+        AuthenticationSuccess = false;
+
+        SessionStart = false;
+
+        PendingRestart = false;
+
+        TaskCompleted = false;
+
+        PluginInstallationCancelled = false;
+
+        PluginInstallationFailed = false;
+
+        PluginInstalled = false;
+
+        PluginInstalling = false;
+
+        PluginUninstalled = false;
+
+        PluginUpdated = false;
+
+        UserCreated = false;
+
+        UserDeleted = false;
+
+        UserLockedOut = false;
+
+        UserPasswordChanged = false;
+
+        UserUpdated = false;
+
+        UserDataSaved = false;
+    }
+
     public string? UserId { get; set; }
 
     public string? UserName { get; set; }
@@ -11,8 +70,6 @@ public class UserConfiguration
     public string? ChatId { get; set; }
 
     public bool? EnableUser { get; set; }
-
-    public bool? Test { get; set; }
 
     public bool? ItemAdded { get; set; }
 

@@ -30,10 +30,9 @@ export default function (view) {
                 "UserDataSaved": "User Data Saved"
             },
 
-            create: function () {
+            loadNotificationTypes: function (userConfig) {
                 const temp = document.querySelector("#template-notification-type");
                 const container = document.querySelector("[data-name=notificationTypeContainer]");
-                const selected = this.get();
                 const notificationTypeKeys = Object.keys(TelegramNotifierConfig.notificationType.values).sort();
                 for (const key of notificationTypeKeys) {
                     const template = temp.cloneNode(true).content;
@@ -42,9 +41,20 @@ export default function (view) {
 
                     name.innerText = TelegramNotifierConfig.notificationType.values[key];
                     value.dataset.value = key;
-                    value.checked = selected.includes(key);
+                    if (userConfig === null) {
+                        value.checked = false;
+                    } else {
+                        value.checked = userConfig[key] === true;
+                    }
 
                     container.appendChild(template);
+                }
+            },
+
+            saveNotificationTypes: function (userConfig) {
+                const notificationTypeKeys = Object.keys(TelegramNotifierConfig.notificationType.values).sort();
+                for (const key of notificationTypeKeys) {
+                    userConfig[key] = document.querySelector(`[data-name=notificationTypeValue][data-value=${key}]`).checked;
                 }
             }
         },
@@ -85,12 +95,13 @@ export default function (view) {
                     document.querySelector('#BotToken').value = userConfig.BotToken;
                     document.querySelector('#ChatId').value = userConfig.ChatId;
                     document.querySelector('#EnableUser').checked = userConfig.EnableUser;
+                    TelegramNotifierConfig.notificationType.loadNotificationTypes(userConfig);
                 } else {
                     document.querySelector('#BotToken').value = '';
                     document.querySelector('#ChatId').value = '';
                     document.querySelector('#EnableUser').checked = false;
+                    TelegramNotifierConfig.notificationType.loadNotificationTypes(null);
                 }
-                TelegramNotifierConfig.notificationType.create();
                 Dashboard.hideLoadingMsg();
             });
         },
@@ -108,6 +119,7 @@ export default function (view) {
                         userConfig.BotToken = document.querySelector('#BotToken').value;
                         userConfig.ChatId = document.querySelector('#ChatId').value;
                         userConfig.EnableUser = document.querySelector('#EnableUser').checked;
+                        TelegramNotifierConfig.notificationType.saveNotificationTypes(userConfig);
                     } else {
                         config.UserConfigurations.push({
                             UserId: TelegramNotifierConfig.user.getSelectedUserId(),
@@ -116,6 +128,7 @@ export default function (view) {
                             ChatId: document.querySelector('#ChatId').value,
                             EnableUser: document.querySelector('#EnableUser').checked
                         });
+                        TelegramNotifierConfig.notificationType.saveNotificationTypes(config.UserConfigurations.find(x => x.UserId === TelegramNotifierConfig.user.getSelectedUserId()));
                     }
                     ApiClient.updatePluginConfiguration(TelegramNotifierConfig.pluginUniqueId, config).then(function (result) {
                         Dashboard.processPluginConfigurationUpdateResult(result);
