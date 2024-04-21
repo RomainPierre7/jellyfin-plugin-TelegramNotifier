@@ -7,11 +7,11 @@ namespace Jellyfin.Plugin.TelegramNotifier.Notifiers;
 
 public class PlaybackStartNotifier : IEventConsumer<PlaybackStartEventArgs>
 {
-    private readonly Sender _sender;
+    private readonly NotificationFilter _notificationFilter;
 
-    public PlaybackStartNotifier(Sender sender)
+    public PlaybackStartNotifier(NotificationFilter notificationFilter)
     {
-        _sender = sender;
+        _notificationFilter = notificationFilter;
     }
 
     public async Task OnEvent(PlaybackStartEventArgs eventArgs)
@@ -32,6 +32,6 @@ public class PlaybackStartNotifier : IEventConsumer<PlaybackStartEventArgs>
                          $"🕒 {eventArgs.Item.RunTimeTicks / 600000000} minutes\n" +
                          $"📽 {eventArgs.Item.Overview}";
 
-        await _sender.SendMessage(message, logEvent: "Playback started").ConfigureAwait(false);
+        await _notificationFilter.Filter("PlaybackStart", message).ConfigureAwait(false);
     }
 }

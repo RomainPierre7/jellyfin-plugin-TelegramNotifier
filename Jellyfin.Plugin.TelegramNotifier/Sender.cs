@@ -9,16 +9,11 @@ namespace Jellyfin.Plugin.TelegramNotifier
     {
         private readonly HttpClient _httpClient;
         private readonly ILogger<Plugin> _logger;
-        private readonly string botToken;
-        private readonly string chatId;
 
         public Sender()
         {
             _httpClient = new HttpClient();
             _logger = Plugin.Logger;
-
-            botToken = Plugin.Config.BotToken;
-            chatId = Plugin.Config.ChatId;
         }
 
         public void Dispose()
@@ -35,7 +30,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
             }
         }
 
-        public async Task<bool> SendMessage(string message, string logEvent = "")
+        public async Task<bool> SendMessage(string notificationType, string message, string botToken, string chatId)
         {
             try
             {
@@ -43,12 +38,12 @@ namespace Jellyfin.Plugin.TelegramNotifier
                 HttpResponseMessage response = await _httpClient.GetAsync(url).ConfigureAwait(false);
                 response.EnsureSuccessStatusCode();
 
-                _logger.LogInformation("Message sent successfully. ({LogEvent})", logEvent);
+                _logger.LogInformation("({NotificationType}): Message sent successfully.", notificationType);
                 return true;
             }
             catch (HttpRequestException)
             {
-                _logger.LogError("Message could not be sent, please check your configuration. ({LogEvent})", logEvent);
+                _logger.LogError("({NotificationType}): Message could not be sent, please check your configuration.", notificationType);
                 return false;
             }
         }

@@ -23,6 +23,9 @@ public class PluginServiceRegistrator : IPluginServiceRegistrator
         // Register sender.
         serviceCollection.AddScoped<Sender>();
 
+        // Register notification filter.
+        serviceCollection.AddScoped<NotificationFilter>();
+
         // Library consumers.
         // serviceCollection.AddScoped<IEventConsumer<SubtitleDownloadFailureEventArgs>, SubtitleDownloadFailureNotifier>();
         // serviceCollection.AddSingleton<IItemAddedManager, ItemAddedManager>();
@@ -33,7 +36,7 @@ public class PluginServiceRegistrator : IPluginServiceRegistrator
 
         // Session consumers.
         serviceCollection.AddScoped<IEventConsumer<PlaybackStartEventArgs>, PlaybackStartNotifier>();
-        serviceCollection.AddScoped<IEventConsumer<PlaybackStopEventArgs>, PlaybackStopNotifier>();
+        // serviceCollection.AddScoped<IEventConsumer<PlaybackStopEventArgs>, PlaybackStopNotifier>();
         // serviceCollection.AddScoped<IEventConsumer<PlaybackProgressEventArgs>, PlaybackProgressNotifier>();
         // serviceCollection.AddScoped<IEventConsumer<SessionStartedEventArgs>, SessionStartNotifier>();
 
@@ -50,7 +53,7 @@ public class PluginServiceRegistrator : IPluginServiceRegistrator
         // serviceCollection.AddScoped<IEventConsumer<PluginUpdatedEventArgs>, PluginUpdatedNotifier>();
 
         // User consumers.
-        serviceCollection.AddScoped<IEventConsumer<UserCreatedEventArgs>, UserCreatedNotifier>();
+        // serviceCollection.AddScoped<IEventConsumer<UserCreatedEventArgs>, UserCreatedNotifier>();
         // serviceCollection.AddScoped<IEventConsumer<UserDeletedEventArgs>, UserDeletedNotifier>();
         // serviceCollection.AddScoped<IEventConsumer<UserLockedOutEventArgs>, UserLockedOutNotifier>();
         // serviceCollection.AddScoped<IEventConsumer<UserPasswordChangedEventArgs>, UserPasswordChangedNotifier>();
