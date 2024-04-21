@@ -33,7 +33,7 @@ export default function (view) {
             create: function () {
                 const temp = document.querySelector("#template-notification-type");
                 const container = document.querySelector("[data-name=notificationTypeContainer]");
-                const selected = [];
+                const selected = this.get();
                 const notificationTypeKeys = Object.keys(TelegramNotifierConfig.notificationType.values).sort();
                 for (const key of notificationTypeKeys) {
                     const template = temp.cloneNode(true).content;
