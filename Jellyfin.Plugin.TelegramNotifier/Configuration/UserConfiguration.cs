@@ -9,4 +9,6 @@ public class UserConfiguration
     public string? BotToken { get; set; }
 
     public string? ChatId { get; set; }
+
+    public bool? EnableUser { get; set; }
 }

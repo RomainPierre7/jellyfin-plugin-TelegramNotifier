@@ -4,30 +4,49 @@ export default function (view) {
         pluginUniqueId: 'fd76211d-17e0-4a72-a23f-c6eeb1e48b3a',
 
         notificationType: {
-            "Test": "Test",
-            "ItemAdded": "Item Added",
-            "Generic": "Generic",
-            "PlaybackStart": "Playback Start",
-            "PlaybackProgress": "Playback Progress",
-            "PlaybackStop": "Playback Stop",
-            "SubtitleDownloadFailure": "Subtitle Download Failure",
-            "AuthenticationFailure": "Authentication Failure",
-            "AuthenticationSuccess": "Authentication Success",
-            "SessionStart": "Session Start",
-            "PendingRestart": "Pending Restart",
-            "TaskCompleted": "Task Completed",
-            "PluginInstallationCancelled": "Plugin Installation Cancelled",
-            "PluginInstallationFailed": "Plugin Installation Failed",
-            "PluginInstalled": "Plugin Installed",
-            "PluginInstalling": "Plugin Installing",
-            "PluginUninstalled": "Plugin Uninstalled",
-            "PluginUpdated": "Plugin Updated",
-            "UserCreated": "User Created",
-            "UserDeleted": "User Deleted",
-            "UserLockedOut": "User Locked Out",
-            "UserPasswordChanged": "User Password Changed",
-            "UserUpdated": "User Updated",
-            "UserDataSaved": "User Data Saved"
+            values: {
+                "ItemAdded": "Item Added",
+                "Generic": "Generic",
+                "PlaybackStart": "Playback Start",
+                "PlaybackProgress": "Playback Progress",
+                "PlaybackStop": "Playback Stop",
+                "SubtitleDownloadFailure": "Subtitle Download Failure",
+                "AuthenticationFailure": "Authentication Failure",
+                "AuthenticationSuccess": "Authentication Success",
+                "SessionStart": "Session Start",
+                "PendingRestart": "Pending Restart",
+                "TaskCompleted": "Task Completed",
+                "PluginInstallationCancelled": "Plugin Installation Cancelled",
+                "PluginInstallationFailed": "Plugin Installation Failed",
+                "PluginInstalled": "Plugin Installed",
+                "PluginInstalling": "Plugin Installing",
+                "PluginUninstalled": "Plugin Uninstalled",
+                "PluginUpdated": "Plugin Updated",
+                "UserCreated": "User Created",
+                "UserDeleted": "User Deleted",
+                "UserLockedOut": "User Locked Out",
+                "UserPasswordChanged": "User Password Changed",
+                "UserUpdated": "User Updated",
+                "UserDataSaved": "User Data Saved"
+            },
+
+            create: function () {
+                const temp = document.querySelector("#template-notification-type");
+                const container = document.querySelector("[data-name=notificationTypeContainer]");
+                const selected = [];
+                const notificationTypeKeys = Object.keys(TelegramNotifierConfig.notificationType.values).sort();
+                for (const key of notificationTypeKeys) {
+                    const template = temp.cloneNode(true).content;
+                    const name = template.querySelector("[data-name=notificationTypeName]");
+                    const value = template.querySelector("[data-name=notificationTypeValue]");
+
+                    name.innerText = TelegramNotifierConfig.notificationType.values[key];
+                    value.dataset.value = key;
+                    value.checked = selected.includes(key);
+
+                    container.appendChild(template);
+                }
+            }
         },
 
         user: {
@@ -65,7 +84,13 @@ export default function (view) {
                 if (userConfig) {
                     document.querySelector('#BotToken').value = userConfig.BotToken;
                     document.querySelector('#ChatId').value = userConfig.ChatId;
+                    document.querySelector('#EnableUser').checked = userConfig.EnableUser;
+                } else {
+                    document.querySelector('#BotToken').value = '';
+                    document.querySelector('#ChatId').value = '';
+                    document.querySelector('#EnableUser').checked = false;
                 }
+                TelegramNotifierConfig.notificationType.create();
                 Dashboard.hideLoadingMsg();
             });
         },
@@ -82,12 +107,14 @@ export default function (view) {
                     if (userConfig) {
                         userConfig.BotToken = document.querySelector('#BotToken').value;
                         userConfig.ChatId = document.querySelector('#ChatId').value;
+                        userConfig.EnableUser = document.querySelector('#EnableUser').checked;
                     } else {
                         config.UserConfigurations.push({
                             UserId: TelegramNotifierConfig.user.getSelectedUserId(),
                             UserName: document.querySelector('#userToConfigure').selectedOptions[0].text,
                             BotToken: document.querySelector('#BotToken').value,
-                            ChatId: document.querySelector('#ChatId').value
+                            ChatId: document.querySelector('#ChatId').value,
+                            EnableUser: document.querySelector('#EnableUser').checked
                         });
                     }
                     ApiClient.updatePluginConfiguration(TelegramNotifierConfig.pluginUniqueId, config).then(function (result) {
