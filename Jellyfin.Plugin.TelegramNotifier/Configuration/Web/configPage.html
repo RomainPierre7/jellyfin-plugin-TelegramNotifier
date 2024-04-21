@@ -1,0 +1,45 @@
+<div id="TelegramNotifierConfigPage" data-role="page" class="page type-interior pluginConfigurationPage"
+    data-require="emby-input,emby-button,emby-select,emby-checkbox" data-controller="__plugin/Telegram Notifier.js">
+    <div data-role="content">
+        <div class="content-primary">
+            <form id="TelegramNotifierConfigForm">
+                <div class="checkboxContainer checkboxContainer-withDescription">
+                    <label class="emby-checkbox-label">
+                        <input id="EnablePlugin" name="EnablePluginCheckBox" type="checkbox" is="emby-checkbox" />
+                        <span>Enable Plugin</span>
+                    </label>
+                </div>
+                <div class="label">
+                    You can find a guide in the "Use the plugin" section of the README.md file of the project.
+                    <a is="emby-linkbutton" rel="noopener noreferrer"
+                        class="raised button-alt headerHelpButton emby-button" target="_blank"
+                        href="https://github.com/RomainPierre7/jellyfin-plugin-TelegramNotifier"> README </a>
+                </div>
+                <div class="sectionTitleContainer flex align-items-center">
+                    <h2>Telegram Bot Configuration</h2>
+                </div>
+                <div class="inputContainer">
+                    <label class="inputLabel inputLabelUnfocused" for="BotToken">Bot token</label>
+                    <input id="BotToken" name="BotToken" type="text" is="emby-input" />
+                    <div class="fieldDescription">Insert your telegram bot token here. </div>
+                </div>
+                <div class="inputContainer">
+                    <label class="inputLabel inputLabelUnfocused" for="ChatId">Chat ID</label>
+                    <input id="ChatId" name="ChatId" type="text" is="emby-input" />
+                    <div class="fieldDescription"> Insert your telegram chat id here. </div>
+                    <div>
+                        <button id="testButton" is="emby-button" class="raised button block emby-button">
+                            <span>Test bot configuration</span>
+                        </button>
+                    </div>
+                    <div>
+                        <button id="saveButton" is="emby-button" type="submit"
+                            class="raised button-submit block emby-button">
+                            <span>Save</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

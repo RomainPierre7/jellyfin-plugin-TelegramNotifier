@@ -7,7 +7,7 @@
     <Nullable>enable</Nullable>
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
     <CodeAnalysisRuleSet>../jellyfin.ruleset</CodeAnalysisRuleSet>
-    <NoWarn>CS1591</NoWarn>
+    <NoWarn>CS1591; CA1819</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,8 +24,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Configuration\configPage.html" />
-    <EmbeddedResource Include="Configuration\configPage.html" />
+    <None Remove="Configuration\Web\configPage.html" />
+    <EmbeddedResource Include="Configuration\Web\configPage.html" />
+    <None Remove="Configuration\Web\configPage.js" />
+    <EmbeddedResource Include="Configuration\Web\configPage.js" />
   </ItemGroup>
 
 </Project>

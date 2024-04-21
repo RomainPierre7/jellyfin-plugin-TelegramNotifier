@@ -33,13 +33,15 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
 
     public IEnumerable<PluginPageInfo> GetPages()
     {
-        return new[]
+        yield return new PluginPageInfo
         {
-            new PluginPageInfo
-            {
-                Name = this.Name,
-                EmbeddedResourcePath = string.Format(CultureInfo.InvariantCulture, "{0}.Configuration.configPage.html", GetType().Namespace)
-            }
+            Name = this.Name,
+            EmbeddedResourcePath = string.Format(CultureInfo.InvariantCulture, "{0}.Configuration.Web.configPage.html", GetType().Namespace)
+        };
+        yield return new PluginPageInfo
+        {
+            Name = $"{this.Name}.js",
+            EmbeddedResourcePath = string.Format(CultureInfo.InvariantCulture, "{0}.Configuration.Web.configPage.js", GetType().Namespace)
         };
     }
 }
