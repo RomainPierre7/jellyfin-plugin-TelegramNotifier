@@ -16,30 +16,45 @@
                         href="https://github.com/RomainPierre7/jellyfin-plugin-TelegramNotifier"> README </a>
                 </div>
                 <div class="sectionTitleContainer flex align-items-center">
-                    <h2>Telegram Bot Configuration</h2>
+                    <h2>Configuration</h2>
+                </div>
+                <div class="inputContainer">
+                    <div class="selectContainer">
+                        <label class="selectLabel" for="userToConfigure">User to configure</label>
+                        <select id="userToConfigure" name="userToConfigure" class="emby-select-withcolor emby-select">
+                        </select>
+                        <div class="fieldDescription">Select the user you want to configure.</div>
+                    </div>
+                </div>
+                <div class="sectionTitleContainer flex align-items-center">
+                    <h3>---------- Telegram Bot Configuration ----------</h3>
                 </div>
                 <div class="inputContainer">
                     <label class="inputLabel inputLabelUnfocused" for="BotToken">Bot token</label>
                     <input id="BotToken" name="BotToken" type="text" is="emby-input" />
-                    <div class="fieldDescription">Insert your telegram bot token here. </div>
+                    <div class="fieldDescription">Insert the telegram bot token here. </div>
                 </div>
                 <div class="inputContainer">
                     <label class="inputLabel inputLabelUnfocused" for="ChatId">Chat ID</label>
                     <input id="ChatId" name="ChatId" type="text" is="emby-input" />
-                    <div class="fieldDescription"> Insert your telegram chat id here. </div>
-                    <div>
-                        <button id="testButton" is="emby-button" class="raised button block emby-button">
-                            <span>Test bot configuration</span>
-                        </button>
-                    </div>
-                    <div>
-                        <button id="saveButton" is="emby-button" type="submit"
-                            class="raised button-submit block emby-button">
-                            <span>Save</span>
-                        </button>
-                    </div>
+                    <div class="fieldDescription"> Insert the telegram chat id here. </div>
                 </div>
-            </form>
+                <div>
+                    <button id="testButton" is="emby-button" class="raised button block emby-button">
+                        <span>Test bot configuration</span>
+                    </button>
+                </div>
+                <div class="sectionTitleContainer flex align-items-center">
+                    <h3>---------- Notification Configuration ----------</h3>
+                </div>
+                <div>
+                    <button id="saveButton" is="emby-button" type="submit"
+                        class="raised button-submit block emby-button">
+                        <span>Save</span>
+                    </button>
+                </div>
         </div>
+        </form>
     </div>
+</div>
 </div>

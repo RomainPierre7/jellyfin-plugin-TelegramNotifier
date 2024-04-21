@@ -30,9 +30,29 @@ export default function (view) {
             "UserDataSaved": "User Data Saved"
         },
 
+        user: {
+            loadUsers: async function () {
+                const users = await window.ApiClient.getUsers();
+                const selectElement = document.getElementById("userToConfigure");
+                selectElement.innerHTML = '';
+                for (const user of users) {
+                    const option = document.createElement('option');
+                    option.value = user.Id;
+                    option.textContent = user.Name;
+                    selectElement.appendChild(option);
+                }
+            },
+            getSelectedUserId: function () {
+                const userId = document.getElementById("userToConfigure").value;
+                return userId;
+            }
+        },
+
         init: async function () {
+            await this.user.loadUsers();
             this.loadConfig();
 
+            document.getElementById("userToConfigure").addEventListener('change', this.loadConfig);
             document.getElementById('testButton').addEventListener('click', this.testBotConfig);
             document.querySelector('#TelegramNotifierConfigForm').addEventListener('submit', this.saveConfig);
         },
@@ -41,51 +61,56 @@ export default function (view) {
             Dashboard.showLoadingMsg();
             ApiClient.getPluginConfiguration(TelegramNotifierConfig.pluginUniqueId).then(function (config) {
                 document.querySelector('#EnablePlugin').checked = config.EnablePlugin;
-                document.querySelector('#BotToken').value = config.BotToken;
-                document.querySelector('#ChatId').value = config.ChatId;
+                const userConfig = config.UserConfigurations.find(x => x.UserId === TelegramNotifierConfig.user.getSelectedUserId());
+                if (userConfig) {
+                    document.querySelector('#BotToken').value = userConfig.BotToken;
+                    document.querySelector('#ChatId').value = userConfig.ChatId;
+                }
                 Dashboard.hideLoadingMsg();
             });
         },
 
-        saveConfig: function () {
-            Dashboard.showLoadingMsg();
-            ApiClient.getPluginConfiguration(TelegramNotifierConfig.pluginUniqueId).then(function (config) {
-                config.EnablePlugin = document.querySelector('#EnablePlugin').checked;
-                config.BotToken = document.querySelector('#BotToken').value;
-                config.ChatId = document.querySelector('#ChatId').value;
-                config.UserConfigurations = [
-                    {
-                        UBotToken: "Test",
-                        UChatId: "Test"
+        saveConfig: function (e = null) {
+            if (e) {
+                e.preventDefault();
+            }
+            return new Promise((resolve, reject) => {
+                Dashboard.showLoadingMsg();
+                ApiClient.getPluginConfiguration(TelegramNotifierConfig.pluginUniqueId).then(function (config) {
+                    config.EnablePlugin = document.querySelector('#EnablePlugin').checked;
+                    const userConfig = config.UserConfigurations.find(x => x.UserId === TelegramNotifierConfig.user.getSelectedUserId());
+                    if (userConfig) {
+                        userConfig.BotToken = document.querySelector('#BotToken').value;
+                        userConfig.ChatId = document.querySelector('#ChatId').value;
+                    } else {
+                        config.UserConfigurations.push({
+                            UserId: TelegramNotifierConfig.user.getSelectedUserId(),
+                            UserName: document.querySelector('#userToConfigure').selectedOptions[0].text,
+                            BotToken: document.querySelector('#BotToken').value,
+                            ChatId: document.querySelector('#ChatId').value
+                        });
                     }
-                ];
-                ApiClient.updatePluginConfiguration(TelegramNotifierConfig.pluginUniqueId, config).then(function (result) {
-                    Dashboard.processPluginConfigurationUpdateResult(result);
-                });
+                    ApiClient.updatePluginConfiguration(TelegramNotifierConfig.pluginUniqueId, config).then(function (result) {
+                        Dashboard.processPluginConfigurationUpdateResult(result);
+                        resolve(result);
+                    }).catch(reject);
+                }).catch(reject);
             });
-            e.preventDefault();
-            return false;
         },
 
         testBotConfig: function () {
             var button = this;
             button.disabled = true;
-            ApiClient.getPluginConfiguration(TelegramNotifierConfig.pluginUniqueId)
-                .then(function (config) {
-                    Dashboard.showLoadingMsg();
-                    config.BotToken = document.querySelector('#BotToken').value;
-                    config.ChatId = document.querySelector('#ChatId').value;
-                    return ApiClient.updatePluginConfiguration(TelegramNotifierConfig.pluginUniqueId, config);
-                })
+            TelegramNotifierConfig.saveConfig()
                 .then(function () {
                     return ApiClient.getPluginConfiguration(TelegramNotifierConfig.pluginUniqueId);
                 })
                 .then(function (config) {
+                    const userConfig = config.UserConfigurations.find(x => x.UserId === TelegramNotifierConfig.user.getSelectedUserId());
                     const params = {
-                        botToken: config.BotToken,
-                        chatId: config.ChatId
+                        botToken: userConfig.BotToken,
+                        chatId: userConfig.ChatId
                     };
-                    console.log(params);
                     const url = new URL('/TelegramNotifierApi/TestNotifier', window.location.origin);
                     Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
                     return fetch(url);

@@ -47,8 +47,8 @@ namespace Jellyfin.Plugin.TelegramNotifier
                 return;
             }
 
-            string botToken = Plugin.Config.BotToken;
-            string chatId = Plugin.Config.ChatId;
+            string botToken = Plugin.Config.UserConfigurations[0]?.BotToken ?? string.Empty;
+            string chatId = Plugin.Config.UserConfigurations[0]?.ChatId ?? string.Empty;
             await _sender.SendMessage(type.ToString(), message, botToken, chatId).ConfigureAwait(false);
         }
     }
