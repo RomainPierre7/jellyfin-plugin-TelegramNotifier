@@ -3,6 +3,33 @@ export default function (view) {
     const TelegramNotifierConfig = {
         pluginUniqueId: 'fd76211d-17e0-4a72-a23f-c6eeb1e48b3a',
 
+        notificationType: {
+            "Test": "Test",
+            "ItemAdded": "Item Added",
+            "Generic": "Generic",
+            "PlaybackStart": "Playback Start",
+            "PlaybackProgress": "Playback Progress",
+            "PlaybackStop": "Playback Stop",
+            "SubtitleDownloadFailure": "Subtitle Download Failure",
+            "AuthenticationFailure": "Authentication Failure",
+            "AuthenticationSuccess": "Authentication Success",
+            "SessionStart": "Session Start",
+            "PendingRestart": "Pending Restart",
+            "TaskCompleted": "Task Completed",
+            "PluginInstallationCancelled": "Plugin Installation Cancelled",
+            "PluginInstallationFailed": "Plugin Installation Failed",
+            "PluginInstalled": "Plugin Installed",
+            "PluginInstalling": "Plugin Installing",
+            "PluginUninstalled": "Plugin Uninstalled",
+            "PluginUpdated": "Plugin Updated",
+            "UserCreated": "User Created",
+            "UserDeleted": "User Deleted",
+            "UserLockedOut": "User Locked Out",
+            "UserPasswordChanged": "User Password Changed",
+            "UserUpdated": "User Updated",
+            "UserDataSaved": "User Data Saved"
+        },
+
         init: async function () {
             this.loadConfig();
 
@@ -43,7 +70,6 @@ export default function (view) {
         testBotConfig: function () {
             var button = this;
             button.disabled = true;
-
             ApiClient.getPluginConfiguration(TelegramNotifierConfig.pluginUniqueId)
                 .then(function (config) {
                     Dashboard.showLoadingMsg();
@@ -52,7 +78,17 @@ export default function (view) {
                     return ApiClient.updatePluginConfiguration(TelegramNotifierConfig.pluginUniqueId, config);
                 })
                 .then(function () {
-                    return fetch('/TelegramNotifierApi/TestNotifier');
+                    return ApiClient.getPluginConfiguration(TelegramNotifierConfig.pluginUniqueId);
+                })
+                .then(function (config) {
+                    const params = {
+                        botToken: config.BotToken,
+                        chatId: config.ChatId
+                    };
+                    console.log(params);
+                    const url = new URL('/TelegramNotifierApi/TestNotifier', window.location.origin);
+                    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+                    return fetch(url);
                 })
                 .then(function (response) {
                     Dashboard.hideLoadingMsg();
@@ -63,7 +99,7 @@ export default function (view) {
                     button.style.color = 'white';
                     button.textContent = 'Test passed';
                 })
-                .catch(function (error) {
+                .catch(function () {
                     button.style.backgroundColor = 'red';
                     button.style.color = 'white';
                     button.textContent = 'Test failed';

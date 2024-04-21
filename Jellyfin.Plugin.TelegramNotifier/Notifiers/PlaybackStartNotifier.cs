@@ -32,6 +32,6 @@ public class PlaybackStartNotifier : IEventConsumer<PlaybackStartEventArgs>
                          $"🕒 {eventArgs.Item.RunTimeTicks / 600000000} minutes\n" +
                          $"📽 {eventArgs.Item.Overview}";
 
-        await _notificationFilter.Filter("PlaybackStart", message).ConfigureAwait(false);
+        await _notificationFilter.Filter(NotificationFilter.NotificationType.PlaybackStart, message).ConfigureAwait(false);
     }
 }

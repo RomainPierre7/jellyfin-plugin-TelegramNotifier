@@ -12,7 +12,35 @@ namespace Jellyfin.Plugin.TelegramNotifier
             _sender = sender;
         }
 
-        public async Task Filter(string notificationType, string message)
+        public enum NotificationType
+        {
+            Test,
+            ItemAdded,
+            Generic,
+            PlaybackStart,
+            PlaybackProgress,
+            PlaybackStop,
+            SubtitleDownloadFailure,
+            AuthenticationFailure,
+            AuthenticationSuccess,
+            SessionStart,
+            PendingRestart,
+            TaskCompleted,
+            PluginInstallationCancelled,
+            PluginInstallationFailed,
+            PluginInstalled,
+            PluginInstalling,
+            PluginUninstalled,
+            PluginUpdated,
+            UserCreated,
+            UserDeleted,
+            UserLockedOut,
+            UserPasswordChanged,
+            UserUpdated,
+            UserDataSaved
+        }
+
+        public async Task Filter(NotificationType type, string message)
         {
             if (Plugin.Config.EnablePlugin == false)
             {
@@ -21,7 +49,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
 
             string botToken = Plugin.Config.BotToken;
             string chatId = Plugin.Config.ChatId;
-            await _sender.SendMessage(notificationType, message, botToken, chatId).ConfigureAwait(false);
+            await _sender.SendMessage(type.ToString(), message, botToken, chatId).ConfigureAwait(false);
         }
     }
 }

@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Jellyfin.Plugin.TelegramNotifier.Telegram;
+namespace Jellyfin.Plugin.TelegramNotifier.Telegram.Configuration;
 
 [Route("TelegramNotifierApi/TestNotifier")]
 [ApiController]
@@ -15,15 +15,11 @@ public class TestNotifier : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<string>> Get()
+    public async Task<ActionResult<string>> Get([FromQuery] string botToken, [FromQuery] string chatId)
     {
         string message = "[Jellyfin] Test message: \n 🎉 Your configuration is correct ! 🥳";
 
-        string botToken = Plugin.Config.BotToken;
-
-        string chatId = Plugin.Config.ChatId;
-
-        bool result = await _sender.SendMessage("Test", message, botToken, chatId).ConfigureAwait(false);
+        bool result = await _sender.SendMessage(NotificationFilter.NotificationType.Test.ToString(), message, botToken, chatId).ConfigureAwait(false);
 
         if (result)
         {
