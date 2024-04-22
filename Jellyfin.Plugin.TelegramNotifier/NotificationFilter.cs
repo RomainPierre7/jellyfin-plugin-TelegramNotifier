@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Jellyfin.Plugin.TelegramNotifier.Configuration;
 
@@ -39,14 +41,37 @@ namespace Jellyfin.Plugin.TelegramNotifier
             UserDataSaved
         }
 
+        private bool GetPropertyValue(UserConfiguration user, string propertyName)
+        {
+            var property = user.GetType().GetProperty(propertyName);
+            if (property != null)
+            {
+                var value = property.GetValue(user);
+                if (value != null)
+                {
+                    return (bool)value;
+                }
+                else
+                {
+                    throw new ArgumentException($"The property {propertyName} is null.");
+                }
+            }
+            else
+            {
+                throw new ArgumentException($"The property {propertyName} does not exist.");
+            }
+        }
+
         public async Task Filter(NotificationType type, string message)
         {
-            if (Plugin.Config.EnablePlugin == false)
+            if (!Plugin.Config.EnablePlugin)
             {
                 return;
             }
 
             UserConfiguration[] users = Plugin.Config.UserConfigurations;
+            var tasks = new List<Task>();
+
             foreach (UserConfiguration user in users)
             {
                 if (user.EnableUser == false)
@@ -54,10 +79,27 @@ namespace Jellyfin.Plugin.TelegramNotifier
                     continue;
                 }
 
+                bool isNotificationTypeEnabled = GetPropertyValue(user, type.ToString());
+                if (!isNotificationTypeEnabled)
+                {
+                    continue;
+                }
+
                 string botToken = user.BotToken ?? string.Empty;
                 string chatId = user.ChatId ?? string.Empty;
-                await _sender.SendMessage(type.ToString(), message, botToken, chatId).ConfigureAwait(false);
+
+                try
+                {
+                    Task task = _sender.SendMessage(type.ToString(), message, botToken, chatId);
+                    tasks.Add(task);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"An error occurred while sending a message: {ex.Message}");
+                }
             }
+
+            await Task.WhenAll(tasks).ConfigureAwait(false);
         }
     }
 }
