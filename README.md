@@ -87,7 +87,7 @@ Available events:
 
 7. Click on the **Save** button
 
-**Example of the configuration page configuration:**
+**Example of the configuration page:**
 
 ![Configuration page exemple](assets/config.png)
 
