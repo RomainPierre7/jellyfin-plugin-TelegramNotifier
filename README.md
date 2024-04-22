@@ -2,9 +2,8 @@
 
 This project is a [Jellyfin](https://github.com/jellyfin) plugin that easily sends notifications to a Telegram bot when something happens on the server (like a new media added, a media deleted, etc.).
 
-<div style="text-align:center;">
-    <img src="assets/logo.png" alt="Logo" width="200" height="200">
-</div>
+<p align="center">
+<img src="assets/logo.png" alt="Logo" width="300" height="300">
 
 
 
