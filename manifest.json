@@ -1,0 +1,20 @@
+[
+    {
+        "category": "Notifications",
+        "guid": "fd76211d-17e0-4a72-a23f-c6eeb1e48b3a",
+        "name": "Telegram Notifier",
+        "description": "Easily send notifications to your Telegram bot !",
+        "owner": "RomainPierre7",
+        "overview": "Easily send notifications to your Telegram bot !",
+        "versions": [
+            {
+                "checksum": "",
+                "changelog": "Initial release",
+                "targetAbi": "10.8.13.0",
+                "sourceUrl": "",
+                "timestamp": "2024-04-22 19:00:00",
+                "version": "1.0.0.0"
+            }
+        ]
+    }
+]
