@@ -59,30 +59,29 @@ To use the plugin, you need to follow these steps:
 6. Select the events you want to be notified about
 
 Available events:
-- Item added
-- Generic
+- Item added *(soon...)*
+- Generic *(soon...)*
 - Playback start
-- Playback progress
+- Playback progress *(soon...)*
 - Playback stop
-- Subtitle download failure
-- Authentication failure
-- Authentication success
-- Session start
-- Pending restart
-- Task completed
-- Plugin installation cancelled
-- Plugin installation failed
-- Plugin installed
-- Plugin installing
-- Plugin uninstalled
-- Plugin updated
-- User created
-- User deleted
-- User locked out
-- User password changed
-- User updated
-- User data saved
-
+- Subtitle download failure *(soon...)*
+- Authentication failure *(soon...)*
+- Authentication success *(soon...)*
+- Session start *(soon...)*
+- Pending restart *(soon...)*
+- Task completed *(soon...)*
+- Plugin installation cancelled *(soon...)*
+- Plugin installation failed *(soon...)*
+- Plugin installed *(soon...)*
+- Plugin installing *(soon...)*
+- Plugin uninstalled *(soon...)*
+- Plugin updated *(soon...)*
+- User created *(soon...)*
+- User deleted *(soon...)*
+- User locked out *(soon...)*
+- User password changed *(soon...)*
+- User updated *(soon...)*
+- User data saved *(soon...)*
 
 7. Click on the **Save** button
 
