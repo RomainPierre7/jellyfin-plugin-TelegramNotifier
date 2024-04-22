@@ -19,7 +19,7 @@ public class TestNotifier : ControllerBase
     {
         string message = "[Jellyfin] Test message: \n 🎉 Your configuration is correct ! 🥳";
 
-        bool result = await _sender.SendMessage(NotificationFilter.NotificationType.Test.ToString(), message, botToken, chatId).ConfigureAwait(false);
+        bool result = await _sender.SendMessage("Test", message, botToken, chatId).ConfigureAwait(false);
 
         if (result)
         {

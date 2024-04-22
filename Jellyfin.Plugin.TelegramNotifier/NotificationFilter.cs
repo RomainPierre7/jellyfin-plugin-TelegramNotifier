@@ -1,7 +1,5 @@
-using System;
 using System.Threading.Tasks;
 using Jellyfin.Plugin.TelegramNotifier.Configuration;
-using Microsoft.Extensions.Configuration;
 
 namespace Jellyfin.Plugin.TelegramNotifier
 {
@@ -16,7 +14,6 @@ namespace Jellyfin.Plugin.TelegramNotifier
 
         public enum NotificationType
         {
-            Test,
             ItemAdded,
             Generic,
             PlaybackStart,
