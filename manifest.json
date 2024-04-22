@@ -8,11 +8,11 @@
         "overview": "Easily send notifications to your Telegram bot !",
         "versions": [
             {
-                "checksum": "ee9fe9a0ad0aa660d468b534cce5a129fe5f8a8254653a90f9c6d35daa982b0f",
+                "checksum": "ce8e05e821455d29c9a6a7d0e2089e6d",
                 "changelog": "Initial release",
                 "targetAbi": "10.8.0.0",
                 "sourceUrl": "https://github.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/releases/download/1.0.0/TelegramNotifier.zip",
-                "timestamp": "2024-04-22 19:00:00",
+                "timestamp": "2024-04-22 23:00:00",
                 "version": "1.0.0.0"
             }
         ]
