@@ -6,15 +6,15 @@
         "owner": "RomainPierre7",
         "overview": "Easily send notifications to your Telegram bot !",
         "description": "Configure for each user where to send notifications, and what kind of notifications to send.",
-        "imageUrl": "https://raw.githubusercontent.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/main/assets/logo.png",
+        "imageUrl": "https://raw.githubusercontent.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/main/assets/banner.png",
         "versions": [
             {
                 "checksum": "ce8e05e821455d29c9a6a7d0e2089e6d",
                 "changelog": "Initial release",
-                "targetAbi": "10.8.0.0",
-                "sourceUrl": "https://github.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/releases/download/1.0.0/TelegramNotifier.zip",
-                "timestamp": "2024-04-22 23:00:00",
-                "version": "1.0.0.0"
+                "targetAbi": "10.8.13.0",
+                "sourceUrl": "https://github.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/releases/download/10.8.13.0/TelegramNotifier.zip",
+                "timestamp": "2024-04-23 00:00:00",
+                "version": "10.8.13.0"
             }
         ]
     }
