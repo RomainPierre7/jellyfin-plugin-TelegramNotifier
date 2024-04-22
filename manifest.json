@@ -3,9 +3,10 @@
         "category": "Notifications",
         "guid": "fd76211d-17e0-4a72-a23f-c6eeb1e48b3a",
         "name": "Telegram Notifier",
-        "description": "Easily send notifications to your Telegram bot !",
         "owner": "RomainPierre7",
         "overview": "Easily send notifications to your Telegram bot !",
+        "description": "Configure for each user where to send notifications, and what kind of notifications to send.",
+        "imageUrl": "https://raw.githubusercontent.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/main/assets/logo.png",
         "versions": [
             {
                 "checksum": "ce8e05e821455d29c9a6a7d0e2089e6d",
