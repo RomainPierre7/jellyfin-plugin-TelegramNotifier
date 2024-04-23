@@ -9,7 +9,7 @@
         "imageUrl": "https://raw.githubusercontent.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/main/assets/banner.png",
         "versions": [
             {
-                "checksum": "ce8e05e821455d29c9a6a7d0e2089e6d",
+                "checksum": "59fea410b23da6735eb61111f2df7c9e",
                 "changelog": "Initial release",
                 "targetAbi": "10.8.13.0",
                 "sourceUrl": "https://github.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/releases/download/10.8.13.0/TelegramNotifier.zip",
