@@ -78,10 +78,10 @@ Available events:
 - Plugin installing *(soon...)*
 - Plugin uninstalled *(soon...)*
 - Plugin updated *(soon...)*
-- User created *(soon...)*
-- User deleted *(soon...)*
+- User created
+- User deleted
 - User locked out *(soon...)*
-- User password changed *(soon...)*
+- User password changed
 - User updated *(soon...)*
 - User data saved *(soon...)*
 
