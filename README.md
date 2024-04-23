@@ -100,6 +100,7 @@ To install the project, you need to follow these steps:
 1. Clone the repository
 2. Install the dependencies
 3. Compile the plugin
+4. Install the plugin
 
 ### 1. Clone the repository
 
@@ -135,3 +136,25 @@ Other commands are available in the **Makefile**:
 - ```make clean``` - Clean the project
 - ```make dev``` - Build the project and copy the `dll` file in the ```plugin``` directory
 - ```make plugin``` - Publish the project and copy the `dll` file in the ```plugin``` directory
+
+### 4. Install the plugin
+
+To install the plugin, you have to find the Jellyfin plugin directory. It depends on your installation but the most common paths are:
+
+- **Linux**: ```/var/lib/jellyfin/plugins```
+- **Windows**: ```C:\ProgramData\Jellyfin\Server\plugins```
+- **Docker**: ```/config/plugins``` or ```/config/data/plugins```
+
+Then, you have to copy the ```Jellyfin.Plugin.TelegramNotifier.dll``` file in a folder in the plugin directory.
+
+Example:
+
+```
+Plugin
+│
+└── TelegramNotifier
+    │
+    └── Jellyfin.Plugin.TelegramNotifier.dll
+```
+
+Finally, you have to restart the Jellyfin server.
