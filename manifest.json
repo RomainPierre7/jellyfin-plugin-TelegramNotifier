@@ -14,7 +14,7 @@
                 "version": "10.8.13.0",
                 "sourceUrl": "https://github.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/releases/download/10.8.13.0/TelegramNotifier.zip",
                 "timestamp": "2024-04-23 00:00:00",
-                "changelog": "🚀 New features:\n- Customize\nconfigurations (Bot Token, ChatId, notification type) for each user\n- Configuration tester\n📮 New notifiers:\n- Playback start\n- Playback stop\nThe rest is coming soon!"
+                "changelog": "### 🚀 New features: ###\n- Customize configurations (Bot Token, ChatId, notification type) for each user\n- Configuration tester\n\n#### 📮 New notifiers: ####\n- Playback start\n- Playback stop\n\n The rest is coming soon!"
             }
         ]
     }
