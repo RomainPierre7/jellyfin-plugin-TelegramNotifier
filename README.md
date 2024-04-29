@@ -72,12 +72,12 @@ Available events:
 - Session start
 - Pending restart *(soon...)*
 - Task completed *(soon...)*
-- Plugin installation cancelled *(soon...)*
-- Plugin installation failed *(soon...)*
-- Plugin installed *(soon...)*
-- Plugin installing *(soon...)*
-- Plugin uninstalled *(soon...)*
-- Plugin updated *(soon...)*
+- Plugin installation cancelled
+- Plugin installation failed
+- Plugin installed
+- Plugin installing
+- Plugin uninstalled
+- Plugin updated
 - User created
 - User deleted
 - User locked out *(soon...)*
