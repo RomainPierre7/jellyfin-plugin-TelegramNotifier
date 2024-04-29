@@ -1,7 +1,6 @@
 /* using System;
 using System.Threading.Tasks;
 using MediaBrowser.Controller.Events;
-using MediaBrowser.Controller.Library;
 
 namespace Jellyfin.Plugin.TelegramNotifier.Notifiers;
 
