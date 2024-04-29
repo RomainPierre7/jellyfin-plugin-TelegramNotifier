@@ -9,9 +9,17 @@
         "imageUrl": "https://raw.githubusercontent.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/main/assets/banner.png",
         "versions": [
             {
-                "checksum": "59fea410b23da6735eb61111f2df7c9e",
+                "checksum": "940694a06cd4fc40e8786c666e474d63",
+                "version": "10.8.13.1",
                 "targetAbi": "10.8.13.0",
+                "sourceUrl": "https://github.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/releases/download/10.8.13.1/TelegramNotifier.zip",
+                "timestamp": "2024-04-30 00:00:00",
+                "changelog": "### 📮 New notifiers: ####\n- Session start\n- User created\n- User deleted\n- User password changed\n- Plugin installation cancelled\n- Plugin installation failed\n- Plugin installed\n- Plugin installing\n- Plugin uninstalled\n- Plugin updated"
+            },
+            {
+                "checksum": "59fea410b23da6735eb61111f2df7c9e",
                 "version": "10.8.13.0",
+                "targetAbi": "10.8.13.0",
                 "sourceUrl": "https://github.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/releases/download/10.8.13.0/TelegramNotifier.zip",
                 "timestamp": "2024-04-23 00:00:00",
                 "changelog": "### 🚀 New features: ###\n- Customize configurations (Bot Token, ChatId, notification type) for each user\n- Configuration tester\n\n#### 📮 New notifiers: ####\n- Playback start\n- Playback stop\n\n The rest is coming soon!"
