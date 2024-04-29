@@ -69,7 +69,7 @@ Available events:
 - Subtitle download failure *(soon...)*
 - Authentication failure *(soon...)*
 - Authentication success *(soon...)*
-- Session start *(soon...)*
+- Session start
 - Pending restart *(soon...)*
 - Task completed *(soon...)*
 - Plugin installation cancelled *(soon...)*

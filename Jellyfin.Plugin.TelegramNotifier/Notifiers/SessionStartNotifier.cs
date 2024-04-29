@@ -2,7 +2,6 @@ using System;
 using System.Threading.Tasks;
 using MediaBrowser.Controller.Events;
 using MediaBrowser.Controller.Events.Session;
-using MediaBrowser.Controller.Library;
 
 namespace Jellyfin.Plugin.TelegramNotifier.Notifiers;
 
@@ -22,8 +21,8 @@ public class SessionStartNotifier : IEventConsumer<SessionStartedEventArgs>
             throw new ArgumentNullException(nameof(eventArgs));
         }
 
-        string message = $"Session started: {eventArgs.Argument.Client} ({eventArgs.Argument.DeviceName})\n" +
-                         $"Item: {eventArgs.Argument.FullNowPlayingItem}";
+        string message = $"👤 {eventArgs.Argument.UserName} has started a session on:\n" +
+                         $"{eventArgs.Argument.Client} ({eventArgs.Argument.DeviceName})\n";
 
         await _notificationFilter.Filter(NotificationFilter.NotificationType.SessionStart, message).ConfigureAwait(false);
     }
