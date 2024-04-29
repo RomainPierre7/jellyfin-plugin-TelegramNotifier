@@ -31,7 +31,7 @@ plugin:
 
 # Target for only compiling the DLL plugin file (for developers)
 dev:
-	dotnet publish --output tmp
+	dotnet build --output tmp
 	mkdir -p $(OUTPUT_DLL_DIR)
 	cp tmp/Jellyfin.Plugin.TelegramNotifier.dll $(OUTPUT_DLL_DIR)
 	rm -rf tmp
