@@ -21,7 +21,7 @@ public class UserPasswordChangedNotifier : IEventConsumer<UserPasswordChangedEve
             throw new ArgumentNullException(nameof(eventArgs));
         }
 
-        string message = $"👤🗘 User {eventArgs.Argument.Username} changed his password.";
+        string message = $"👤 User {eventArgs.Argument.Username} changed his password.";
 
         await _notificationFilter.Filter(NotificationFilter.NotificationType.UserPasswordChanged, message).ConfigureAwait(false);
     }
