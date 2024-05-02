@@ -64,7 +64,7 @@ Available events:
 - Item added *(soon...)*
 - Generic *(soon...)*
 - Playback start
-- Playback progress *(soon...)*
+- Playback progress
 - Playback stop
 - Subtitle download failure *(soon...)*
 - Authentication failure *(soon...)*
