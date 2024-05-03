@@ -27,7 +27,7 @@ public class PluginServiceRegistrator : IPluginServiceRegistrator
         serviceCollection.AddScoped<NotificationFilter>();
 
         // Library consumers.
-        // serviceCollection.AddScoped<IEventConsumer<SubtitleDownloadFailureEventArgs>, SubtitleDownloadFailureNotifier>();
+        serviceCollection.AddScoped<IEventConsumer<SubtitleDownloadFailureEventArgs>, SubtitleDownloadFailureNotifier>();
         // serviceCollection.AddSingleton<IItemAddedManager, ItemAddedManager>();
 
         // Security consumers.
