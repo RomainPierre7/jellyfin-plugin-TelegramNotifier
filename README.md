@@ -61,7 +61,7 @@ To use the plugin, you need to follow these steps:
 6. Select the events you want to be notified about
 
 Available events:
-- Item added *(soon...)*
+- Item added
 - Generic *(soon...)*
 - Playback start
 - Playback progress
