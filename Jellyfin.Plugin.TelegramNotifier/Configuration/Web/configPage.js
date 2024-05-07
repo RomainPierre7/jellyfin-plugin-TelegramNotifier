@@ -8,7 +8,7 @@ export default function (view) {
                 "ItemAdded": "Item Added",
                 "Generic": "Generic",
                 "PlaybackStart": "Playback Start",
-                "PlaybackProgress": "Playback Progress",
+                "PlaybackProgress": "Playback Progress (recommended: disabled)",
                 "PlaybackStop": "Playback Stop",
                 "SubtitleDownloadFailure": "Subtitle Download Failure",
                 "AuthenticationFailure": "Authentication Failure",
