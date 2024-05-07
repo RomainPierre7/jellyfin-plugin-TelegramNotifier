@@ -1,6 +1,6 @@
 # Jellyfin Plugin Telegram Notifier
 
-This project is a [Jellyfin](https://github.com/jellyfin) plugin that easily sends notifications to a Telegram bot when something happens on the server (like a new media added, a media deleted, etc.).
+This [Jellyfin](https://github.com/jellyfin) plugin provides notification functionalities via Telegram for various events occurring within your Jellyfin server. Stay informed about playback activities, user management, plugin operations, and more right from your Telegram account. You can personalize the configuration for each user.
 
 <p align="center">
 <img src="assets/logo.png" alt="Logo" width="300" height="300">
