@@ -55,7 +55,7 @@ public class ItemAddedManager : IItemAddedManager
             _logger.LogDebug("Notifying for {ItemName}", item.Name);
 
             // Send notification to each configured destination.
-            string message = $"🎬 {item.Name} added to library";
+            string message = $"🎬 {item.Name} ({item.ProductionYear}) added to library";
 
             await _notificationFilter.Filter(NotificationFilter.NotificationType.ItemAdded, message).ConfigureAwait(false);
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Plugins;
 
@@ -46,6 +47,14 @@ public class ItemAddedNotifierEntryPoint : IServerEntryPoint
             return;
         }
 
-        _itemAddedManager.AddItem(itemChangeEventArgs.Item);
+        // Only notify on movies, series, seasons, episodes, and audio.
+        if (itemChangeEventArgs.Item.GetType() == typeof(MediaBrowser.Controller.Entities.Movies.Movie) ||
+            itemChangeEventArgs.Item.GetType() == typeof(MediaBrowser.Controller.Entities.TV.Series) ||
+            itemChangeEventArgs.Item.GetType() == typeof(MediaBrowser.Controller.Entities.TV.Season) ||
+            itemChangeEventArgs.Item.GetType() == typeof(MediaBrowser.Controller.Entities.TV.Episode) ||
+            itemChangeEventArgs.Item.GetType() == typeof(MediaBrowser.Controller.Entities.Audio.Audio))
+        {
+            _itemAddedManager.AddItem(itemChangeEventArgs.Item);
+        }
     }
 }

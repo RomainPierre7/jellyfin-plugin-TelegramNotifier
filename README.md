@@ -5,7 +5,7 @@ This [Jellyfin](https://github.com/jellyfin) plugin provides notification functi
 <p align="center">
 <img src="assets/logo.png" alt="Logo" width="300" height="300">
 
-> If you encounter a problem, a bug or have an idea for a new feature, submit an issue [here](https://github.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/issues).
+> If you encounter a problem, a bug or have an idea for a new feature, submit an issue [here](https://github.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/issues). Please, submit only one feature or bug per issue.
 
 ## Table of contents
 
