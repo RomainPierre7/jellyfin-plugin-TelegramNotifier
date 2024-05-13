@@ -3,13 +3,14 @@ using Jellyfin.Data.Events.System;
 using Jellyfin.Data.Events.Users;
 using Jellyfin.Plugin.TelegramNotifier.Notifiers;
 using Jellyfin.Plugin.TelegramNotifier.Notifiers.ItemAddedNotifier;
-using MediaBrowser.Common.Plugins;
 using MediaBrowser.Common.Updates;
+using MediaBrowser.Controller;
 using MediaBrowser.Controller.Authentication;
 using MediaBrowser.Controller.Events;
 using MediaBrowser.Controller.Events.Session;
 using MediaBrowser.Controller.Events.Updates;
 using MediaBrowser.Controller.Library;
+using MediaBrowser.Controller.Plugins;
 using MediaBrowser.Controller.Session;
 using MediaBrowser.Controller.Subtitles;
 using MediaBrowser.Model.Tasks;
@@ -19,7 +20,7 @@ namespace Jellyfin.Plugin.TelegramNotifier;
 
 public class PluginServiceRegistrator : IPluginServiceRegistrator
 {
-    public void RegisterServices(IServiceCollection serviceCollection)
+    public void RegisterServices(IServiceCollection serviceCollection, IServerApplicationHost applicationHost)
     {
         // Register sender.
         serviceCollection.AddScoped<Sender>();

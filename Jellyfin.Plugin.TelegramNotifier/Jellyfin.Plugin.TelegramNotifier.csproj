@@ -1,24 +1,23 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <AssemblyVersion>10.8.13.3</AssemblyVersion>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyVersion>10.9.1.0</AssemblyVersion>
     <RootNamespace>Jellyfin.Plugin.TelegramNotifier</RootNamespace>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Nullable>enable</Nullable>
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
     <CodeAnalysisRuleSet>../jellyfin.ruleset</CodeAnalysisRuleSet>
-    <NoWarn>CS1591; CA1819</NoWarn>
+    <NoWarn>CS1591; CA1510; CA1819</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Jellyfin.Controller" Version="10.8.13" />
-    <PackageReference Include="Jellyfin.Model" Version="10.8.13" />
+    <PackageReference Include="Jellyfin.Controller" Version="10.*-*" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="SerilogAnalyzer" Version="0.15.0" PrivateAssets="All" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.507" PrivateAssets="All" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.556" PrivateAssets="All" />
     <PackageReference Include="SmartAnalyzers.MultithreadingAnalyzer" Version="1.1.31" PrivateAssets="All" />
   </ItemGroup>
 

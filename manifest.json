@@ -9,6 +9,14 @@
         "imageUrl": "https://raw.githubusercontent.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/main/assets/banner.png",
         "versions": [
             {
+                "checksum": "725245da653071f8d1ee2e8c580b8717",
+                "version": "10.9.1.0",
+                "targetAbi": "10.9.1.0",
+                "sourceUrl": "https://github.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/releases/download/10.9.1.0/TelegramNotifier.zip",
+                "timestamp": "2024-05-14 00:00:00",
+                "changelog": "### ♽ Dependancies: ###\n- Porting to Jellyfin 10.9.1 and .NET 8.0"
+            },
+            {
                 "checksum": "9e9d6d23184767a0b64e817194b3f4cd",
                 "version": "10.8.13.3",
                 "targetAbi": "10.8.13.0",

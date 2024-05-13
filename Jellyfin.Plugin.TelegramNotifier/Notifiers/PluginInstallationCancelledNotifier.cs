@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using MediaBrowser.Common.Updates;
 using MediaBrowser.Controller.Events;
 using MediaBrowser.Controller.Events.Updates;
 
