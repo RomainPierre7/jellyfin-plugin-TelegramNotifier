@@ -35,8 +35,6 @@ public class ItemAddedNotifierEntryPoint : IHostedService
         {
             _itemAddedManager.AddItem(itemChangeEventArgs.Item);
         }
-
-        _itemAddedManager.AddItem(itemChangeEventArgs.Item);
     }
 
     public Task StartAsync(CancellationToken cancellationToken)

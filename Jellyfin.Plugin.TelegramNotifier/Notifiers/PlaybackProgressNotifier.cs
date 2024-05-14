@@ -38,8 +38,9 @@ public class PlaybackProgressNotifier : IEventConsumer<PlaybackProgressEventArgs
                 string episodeNumber = episode.IndexNumber.HasValue ? episode.IndexNumber.Value.ToString("00", CultureInfo.InvariantCulture) : "00";
 
                 message = $"👤 {eventArgs.Users[0].Username} is still watching on {eventArgs.DeviceName}:\n" +
-                          $"🎬 {episode.Series.Name} ({eventArgs.Item.ProductionYear}) | S{seasonNumber} - E{episodeNumber}\n" +
-                          $"      {eventArgs.Item.Name}";
+                          $"🎬 {episode.Series.Name} ({eventArgs.Item.ProductionYear})\n" +
+                          $"      S{seasonNumber} - E{episodeNumber}\n" +
+                          $"      '{eventArgs.Item.Name}'";
                 break;
         }
 

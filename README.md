@@ -64,7 +64,6 @@ To use the plugin, you need to follow these steps:
 
 Available events:
 - Item added
-- Generic *(soon...)*
 - Playback start
 - Playback progress
 - Playback stop

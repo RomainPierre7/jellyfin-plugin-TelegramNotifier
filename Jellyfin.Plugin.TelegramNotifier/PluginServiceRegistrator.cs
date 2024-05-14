@@ -30,6 +30,7 @@ public class PluginServiceRegistrator : IPluginServiceRegistrator
 
         // Library consumers.
         serviceCollection.AddScoped<IEventConsumer<SubtitleDownloadFailureEventArgs>, SubtitleDownloadFailureNotifier>();
+        serviceCollection.AddHostedService<ItemAddedNotifierEntryPoint>();
         serviceCollection.AddSingleton<IItemAddedManager, ItemAddedManager>();
 
         // Security consumers.

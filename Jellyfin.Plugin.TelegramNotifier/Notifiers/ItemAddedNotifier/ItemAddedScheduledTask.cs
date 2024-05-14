@@ -9,7 +9,7 @@ namespace Jellyfin.Plugin.TelegramNotifier.Notifiers.ItemAddedNotifier;
 
 public class ItemAddedScheduledTask : IScheduledTask, IConfigurableScheduledTask
 {
-    private const int RecheckIntervalSec = 30;
+    private const int RecheckIntervalSec = 60;
     private readonly IItemAddedManager _itemAddedManager;
     private readonly ILocalizationManager _localizationManager;
 
@@ -21,9 +21,9 @@ public class ItemAddedScheduledTask : IScheduledTask, IConfigurableScheduledTask
         _localizationManager = localizationManager;
     }
 
-    public string Name => "Telegram Notifier Item Added Notifier";
+    public string Name => "TelegramNotifier Item Added Notifier";
 
-    public string Key => "TelegramNotifierItemAdded";
+    public string Key => "TelegramNotifier";
 
     public string Description => "Processes item added queue";
 

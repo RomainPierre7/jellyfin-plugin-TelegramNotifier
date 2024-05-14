@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Globalization;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
+using MediaBrowser.Controller;
 using MediaBrowser.Controller.Entities;
+using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Jellyfin.Plugin.TelegramNotifier.Notifiers.ItemAddedNotifier;
@@ -12,17 +16,17 @@ public class ItemAddedManager : IItemAddedManager
     private const int MaxRetries = 10;
     private readonly ILogger<ItemAddedManager> _logger;
     private readonly ILibraryManager _libraryManager;
-    private readonly NotificationFilter _notificationFilter;
+    private readonly IServerApplicationHost _applicationHost;
     private readonly ConcurrentDictionary<Guid, QueuedItemContainer> _itemProcessQueue;
 
     public ItemAddedManager(
         ILogger<ItemAddedManager> logger,
         ILibraryManager libraryManager,
-        NotificationFilter notificationFilter)
+        IServerApplicationHost applicationHost)
     {
         _logger = logger;
         _libraryManager = libraryManager;
-        _notificationFilter = notificationFilter;
+        _applicationHost = applicationHost;
         _itemProcessQueue = new ConcurrentDictionary<Guid, QueuedItemContainer>();
     }
 
@@ -31,36 +35,67 @@ public class ItemAddedManager : IItemAddedManager
         _logger.LogDebug("ProcessItemsAsync");
         // Attempt to process all items in queue.
         var currentItems = _itemProcessQueue.ToArray();
-        foreach (var (key, container) in currentItems)
+        if (currentItems.Length != 0)
         {
-            var item = _libraryManager.GetItemById(key);
-            if (item is null)
+            var scope = _applicationHost.ServiceProvider!.CreateAsyncScope();
+            var notificationFilter = scope.ServiceProvider.GetRequiredService<NotificationFilter>();
+            await using (scope.ConfigureAwait(false))
             {
-                // Remove item from queue.
-                _itemProcessQueue.TryRemove(key, out _);
-                return;
+                foreach (var (key, container) in currentItems)
+                {
+                    var item = _libraryManager.GetItemById(key);
+                    if (item is null)
+                    {
+                        // Remove item from queue.
+                        _itemProcessQueue.TryRemove(key, out _);
+                        return;
+                    }
+
+                    _logger.LogDebug("Item {ItemName}", item.Name);
+
+                    // Metadata not refreshed yet and under retry limit.
+                    if (item.ProviderIds.Keys.Count == 0 && container.RetryCount < MaxRetries)
+                    {
+                        _logger.LogDebug("Requeue {ItemName}, no provider ids", item.Name);
+                        container.RetryCount++;
+                        _itemProcessQueue.AddOrUpdate(key, container, (_, _) => container);
+                        continue;
+                    }
+
+                    _logger.LogDebug("Notifying for {ItemName}", item.Name);
+
+                    // Send notification.
+                    string message = $"🎬 {item.Name} ({item.ProductionYear}) added to library";
+
+                    switch (item)
+                    {
+                        case Series serie:
+                            message = $"📺 [Serie] {serie.Name} ({item.ProductionYear}) added to library";
+                            break;
+
+                        case Season season:
+                            string seasonNumber = season.IndexNumber.HasValue ? season.IndexNumber.Value.ToString("00", CultureInfo.InvariantCulture) : "00";
+
+                            message = $"📺 {season.Series.Name} ({item.ProductionYear})\n" +
+                                      $"      Season {seasonNumber} added to library";
+                            break;
+
+                        case Episode episode:
+                            string eSeasonNumber = episode.Season.IndexNumber.HasValue ? episode.Season.IndexNumber.Value.ToString("00", CultureInfo.InvariantCulture) : "00";
+                            string episodeNumber = episode.IndexNumber.HasValue ? episode.IndexNumber.Value.ToString("00", CultureInfo.InvariantCulture) : "00";
+
+                            message = $"📺 {episode.Series.Name} ({item.ProductionYear})\n" +
+                                      $"      S{eSeasonNumber} - E{episodeNumber}\n" +
+                                      $"      '{item.Name}' added to library";
+                            break;
+                    }
+
+                    await notificationFilter.Filter(NotificationFilter.NotificationType.ItemAdded, message).ConfigureAwait(false);
+
+                    // Remove item from queue.
+                    _itemProcessQueue.TryRemove(key, out _);
+                }
             }
-
-            _logger.LogDebug("Item {ItemName}", item.Name);
-
-            // Metadata not refreshed yet and under retry limit.
-            if (item.ProviderIds.Keys.Count == 0 && container.RetryCount < MaxRetries)
-            {
-                _logger.LogDebug("Requeue {ItemName}, no provider ids", item.Name);
-                container.RetryCount++;
-                _itemProcessQueue.AddOrUpdate(key, container, (_, _) => container);
-                continue;
-            }
-
-            _logger.LogDebug("Notifying for {ItemName}", item.Name);
-
-            // Send notification to each configured destination.
-            string message = $"🎬 {item.Name} ({item.ProductionYear}) added to library";
-
-            await _notificationFilter.Filter(NotificationFilter.NotificationType.ItemAdded, message).ConfigureAwait(false);
-
-            // Remove item from queue.
-            _itemProcessQueue.TryRemove(key, out _);
         }
     }
 

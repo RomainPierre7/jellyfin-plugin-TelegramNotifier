@@ -6,7 +6,6 @@ export default function (view) {
         notificationType: {
             values: {
                 "ItemAdded": "Item Added",
-                "Generic": "Generic",
                 "PlaybackStart": "Playback Start",
                 "PlaybackProgress": "Playback Progress (recommended: disabled)",
                 "PlaybackStop": "Playback Stop",
