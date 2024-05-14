@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <AssemblyVersion>10.9.1.0</AssemblyVersion>
+    <AssemblyVersion>10.9.1.1</AssemblyVersion>
     <RootNamespace>Jellyfin.Plugin.TelegramNotifier</RootNamespace>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Nullable>enable</Nullable>
