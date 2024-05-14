@@ -92,11 +92,13 @@ export default function (view) {
                 document.querySelector('#EnablePlugin').checked = config.EnablePlugin;
                 const userConfig = config.UserConfigurations.find(x => x.UserId === TelegramNotifierConfig.user.getSelectedUserId());
                 if (userConfig) {
+                    document.querySelector('#ServerUrl').value = config.ServerUrl;
                     document.querySelector('#BotToken').value = userConfig.BotToken;
                     document.querySelector('#ChatId').value = userConfig.ChatId;
                     document.querySelector('#EnableUser').checked = userConfig.EnableUser;
                     TelegramNotifierConfig.notificationType.loadNotificationTypes(userConfig);
                 } else {
+                    document.querySelector('#ServerUrl').value = config.ServerUrl;
                     document.querySelector('#BotToken').value = '';
                     document.querySelector('#ChatId').value = '';
                     document.querySelector('#EnableUser').checked = false;
@@ -116,11 +118,13 @@ export default function (view) {
                     config.EnablePlugin = document.querySelector('#EnablePlugin').checked;
                     const userConfig = config.UserConfigurations.find(x => x.UserId === TelegramNotifierConfig.user.getSelectedUserId());
                     if (userConfig) {
+                        config.ServerUrl = document.querySelector('#ServerUrl').value;
                         userConfig.BotToken = document.querySelector('#BotToken').value;
                         userConfig.ChatId = document.querySelector('#ChatId').value;
                         userConfig.EnableUser = document.querySelector('#EnableUser').checked;
                         TelegramNotifierConfig.notificationType.saveNotificationTypes(userConfig);
                     } else {
+                        config.ServerUrl = document.querySelector('#ServerUrl').value;
                         config.UserConfigurations.push({
                             UserId: TelegramNotifierConfig.user.getSelectedUserId(),
                             UserName: document.querySelector('#userToConfigure').selectedOptions[0].text,

@@ -61,7 +61,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
             }
         }
 
-        public async Task Filter(NotificationType type, string message)
+        public async Task Filter(NotificationType type, string message, string imagePath = "")
         {
             if (!Plugin.Config.EnablePlugin)
             {
@@ -89,8 +89,16 @@ namespace Jellyfin.Plugin.TelegramNotifier
 
                 try
                 {
-                    Task task = _sender.SendMessage(type.ToString(), message, botToken, chatId);
-                    tasks.Add(task);
+                    if (string.IsNullOrEmpty(imagePath))
+                    {
+                        Task task = _sender.SendMessage(type.ToString(), message, botToken, chatId);
+                        tasks.Add(task);
+                    }
+                    else
+                    {
+                        Task task = _sender.SendMessageWithPhoto(type.ToString(), message, imagePath, botToken, chatId);
+                        tasks.Add(task);
+                    }
                 }
                 catch (Exception ex)
                 {

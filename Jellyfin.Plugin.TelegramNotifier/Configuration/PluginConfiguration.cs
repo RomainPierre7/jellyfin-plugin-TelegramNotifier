@@ -7,9 +7,12 @@ public class PluginConfiguration : BasePluginConfiguration
 {
     public PluginConfiguration()
     {
+        ServerUrl = "localhost:8096";
         EnablePlugin = true;
         UserConfigurations = Array.Empty<UserConfiguration>();
     }
+
+    public string ServerUrl { get; set; }
 
     public bool EnablePlugin { get; set; }
 

@@ -50,6 +50,16 @@ public class PlaybackStartNotifier : IEventConsumer<PlaybackStartEventArgs>
                 break;
         }
 
-        await _notificationFilter.Filter(NotificationFilter.NotificationType.PlaybackStart, message).ConfigureAwait(false);
+        if (eventArgs.Item.PrimaryImagePath is not null)
+        {
+            string serverUrl = Plugin.Instance?.Configuration.ServerUrl ?? "localhost:8096";
+            string path = "http://" + serverUrl + "/Items/" + eventArgs.Item.Id + "/Images/Primary";
+
+            await _notificationFilter.Filter(NotificationFilter.NotificationType.PlaybackStart, message, path).ConfigureAwait(false);
+        }
+        else
+        {
+            await _notificationFilter.Filter(NotificationFilter.NotificationType.PlaybackStart, message).ConfigureAwait(false);
+        }
     }
 }

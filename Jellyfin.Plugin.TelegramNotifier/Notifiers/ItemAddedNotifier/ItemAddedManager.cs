@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Globalization;
 using System.Collections.Concurrent;
+using System.Globalization;
 using System.Threading.Tasks;
 using MediaBrowser.Controller;
 using MediaBrowser.Controller.Entities;
@@ -67,6 +67,8 @@ public class ItemAddedManager : IItemAddedManager
                     // Send notification.
                     string message = $"🎬 {item.Name} ({item.ProductionYear}) added to library";
 
+                    bool addImage = true;
+
                     switch (item)
                     {
                         case Series serie:
@@ -81,6 +83,7 @@ public class ItemAddedManager : IItemAddedManager
                             break;
 
                         case Episode episode:
+                            addImage = false;
                             string eSeasonNumber = episode.Season.IndexNumber.HasValue ? episode.Season.IndexNumber.Value.ToString("00", CultureInfo.InvariantCulture) : "00";
                             string episodeNumber = episode.IndexNumber.HasValue ? episode.IndexNumber.Value.ToString("00", CultureInfo.InvariantCulture) : "00";
 
@@ -90,7 +93,17 @@ public class ItemAddedManager : IItemAddedManager
                             break;
                     }
 
-                    await notificationFilter.Filter(NotificationFilter.NotificationType.ItemAdded, message).ConfigureAwait(false);
+                    if (item.PrimaryImagePath is not null && addImage)
+                    {
+                        string serverUrl = Plugin.Instance?.Configuration.ServerUrl ?? "localhost:8096";
+                        string path = "http://" + serverUrl + "/Items/" + item.Id + "/Images/Primary";
+
+                        await notificationFilter.Filter(NotificationFilter.NotificationType.ItemAdded, message, path).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        await notificationFilter.Filter(NotificationFilter.NotificationType.ItemAdded, message).ConfigureAwait(false);
+                    }
 
                     // Remove item from queue.
                     _itemProcessQueue.TryRemove(key, out _);
