@@ -28,25 +28,34 @@ public class PlaybackStartNotifier : IEventConsumer<PlaybackStartEventArgs>
             return;
         }
 
+        long? ticks = eventArgs.Item.RunTimeTicks;
+        long hours = ticks.HasValue ? ticks.Value / (600000000L * 60) : 0;
+        long minutes = ticks.HasValue ? (ticks.Value / 600000000L) % 60 : 0;
+        string duration = minutes < 10 ? $"{hours}h {minutes}m" : $"{hours}h 0{minutes}m";
+        if (hours == 0)
+        {
+            duration = minutes > 1 ? $"{minutes} minutes" : $"{minutes} minute";
+        }
+
         string message = $"👤 {eventArgs.Users[0].Username} is watching on {eventArgs.DeviceName}:\n" +
                          $"🎬 {eventArgs.Item.Name} ({eventArgs.Item.ProductionYear})\n" +
                          $"📺 [{eventArgs.Item.MediaType}] {string.Join(", ", eventArgs.Item.Genres)}\n" +
-                         $"🕒 {eventArgs.Item.RunTimeTicks / 600000000} minutes\n" +
+                         $"🕒 {duration}\n" +
                          $"📽 {eventArgs.Item.Overview}";
 
         switch (eventArgs.Item)
         {
             case Episode episode:
-                string seasonNumber = episode.Season.IndexNumber.HasValue ? episode.Season.IndexNumber.Value.ToString("00", CultureInfo.InvariantCulture) : "00";
-                string episodeNumber = episode.IndexNumber.HasValue ? episode.IndexNumber.Value.ToString("00", CultureInfo.InvariantCulture) : "00";
+                string seasonNumber = episode.Season.IndexNumber.HasValue ? episode.Season.IndexNumber.Value.ToString("00", CultureInfo.InvariantCulture) : "??";
+                string episodeNumber = episode.IndexNumber.HasValue ? episode.IndexNumber.Value.ToString("00", CultureInfo.InvariantCulture) : "??";
 
                 message = $"👤 {eventArgs.Users[0].Username} is watching on {eventArgs.DeviceName}:\n" +
-                          $"🎬 {episode.Series.Name} ({eventArgs.Item.ProductionYear})\n" +
-                          $"      S{seasonNumber} - E{episodeNumber}\n" +
-                          $"      '{eventArgs.Item.Name}'\n" +
-                          $"📺 [{eventArgs.Item.MediaType}] {string.Join(", ", eventArgs.Item.Genres)}\n" +
-                          $"🕒 {eventArgs.Item.RunTimeTicks / 600000000} minutes\n" +
-                          $"📽 {eventArgs.Item.Overview}";
+                                          $"🎬 {episode.Series.Name} ({eventArgs.Item.ProductionYear})\n" +
+                                          $"      S{seasonNumber} - E{episodeNumber}\n" +
+                                          $"      '{eventArgs.Item.Name}'\n" +
+                                          $"📺 [{eventArgs.Item.MediaType}] {string.Join(", ", eventArgs.Item.Genres)}\n" +
+                                          $"🕒 {duration}\n" +
+                                          $"📽 {eventArgs.Item.Overview}";
                 break;
         }
 
