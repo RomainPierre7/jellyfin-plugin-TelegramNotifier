@@ -1,5 +1,7 @@
 using System;
+using System.Globalization;
 using System.Threading.Tasks;
+using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Events;
 using MediaBrowser.Controller.Library;
 
@@ -28,6 +30,18 @@ public class PlaybackStopNotifier : IEventConsumer<PlaybackStopEventArgs>
 
         string message = $"👤 {eventArgs.Users[0].Username} stopped watching:\n" +
                          $"🎬 {eventArgs.Item.Name} ({eventArgs.Item.ProductionYear})";
+
+        switch (eventArgs.Item)
+        {
+            case Episode episode:
+                string seasonNumber = episode.Season.IndexNumber.HasValue ? episode.Season.IndexNumber.Value.ToString("00", CultureInfo.InvariantCulture) : "00";
+                string episodeNumber = episode.IndexNumber.HasValue ? episode.IndexNumber.Value.ToString("00", CultureInfo.InvariantCulture) : "00";
+
+                message = $"👤 {eventArgs.Users[0].Username} stopped watching:\n" +
+                          $"🎬 {episode.Series.Name} ({eventArgs.Item.ProductionYear}) | S{seasonNumber} - E{episodeNumber}\n" +
+                          $"      {eventArgs.Item.Name}";
+                break;
+        }
 
         await _notificationFilter.Filter(NotificationFilter.NotificationType.PlaybackStop, message).ConfigureAwait(false);
     }
