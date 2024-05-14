@@ -60,8 +60,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
                 formData.Add(new StringContent(chatId), "chat_id");
                 formData.Add(new StringContent(message), "caption");
 
-                _logger.LogInformation("({URL}): TEST sent successfully.", imageUrl);
-
+                _logger.LogInformation("Reaching for image: {Url}", imageUrl);
                 HttpResponseMessage imageResponse = await _httpClient.GetAsync(imageUrl).ConfigureAwait(false);
                 imageResponse.EnsureSuccessStatusCode();
                 byte[] imageBytes = await imageResponse.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
