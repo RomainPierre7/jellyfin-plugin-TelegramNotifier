@@ -31,11 +31,16 @@ namespace Jellyfin.Plugin.TelegramNotifier
             }
         }
 
-        public async Task<bool> SendMessage(string notificationType, string message, string botToken, string chatId)
+        public async Task<bool> SendMessage(string notificationType, string message, string botToken, string chatId, bool isSilentNotification)
         {
             try
             {
                 string url = $"https://api.telegram.org/bot{botToken}/sendMessage?chat_id={chatId}&text={message}";
+                if (isSilentNotification)
+                {
+                    url += "&disable_notification=true";
+                }
+
                 HttpResponseMessage response = await _httpClient.GetAsync(url).ConfigureAwait(false);
                 response.EnsureSuccessStatusCode();
 
@@ -49,7 +54,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
             }
         }
 
-        public async Task<bool> SendMessageWithPhoto(string notificationType, string message, string imageUrl, string botToken, string chatId)
+        public async Task<bool> SendMessageWithPhoto(string notificationType, string message, string imageUrl, string botToken, string chatId, bool isSilentNotification)
         {
             try
             {
@@ -59,6 +64,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
 
                 formData.Add(new StringContent(chatId), "chat_id");
                 formData.Add(new StringContent(message), "caption");
+                formData.Add(new StringContent(isSilentNotification ? "true" : "false"), "disable_notification");
 
                 _logger.LogInformation("Reaching for image: {Url}", imageUrl);
                 HttpResponseMessage imageResponse = await _httpClient.GetAsync(imageUrl).ConfigureAwait(false);

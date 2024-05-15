@@ -14,6 +14,8 @@ public class UserConfiguration
 
         EnableUser = false;
 
+        SilentNotification = false;
+
         ItemAdded = false;
 
         Generic = false;
@@ -70,6 +72,8 @@ public class UserConfiguration
     public string? ChatId { get; set; }
 
     public bool? EnableUser { get; set; }
+
+    public bool? SilentNotification { get; set; }
 
     public bool? ItemAdded { get; set; }
 
