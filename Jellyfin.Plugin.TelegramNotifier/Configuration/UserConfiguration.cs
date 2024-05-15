@@ -16,6 +16,8 @@ public class UserConfiguration
 
         SilentNotification = false;
 
+        DoNotMentionOwnActivities = false;
+
         ItemAdded = false;
 
         Generic = false;
@@ -74,6 +76,8 @@ public class UserConfiguration
     public bool? EnableUser { get; set; }
 
     public bool? SilentNotification { get; set; }
+
+    public bool? DoNotMentionOwnActivities { get; set; }
 
     public bool? ItemAdded { get; set; }
 

@@ -44,6 +44,8 @@ public class PlaybackStopNotifier : IEventConsumer<PlaybackStopEventArgs>
                 break;
         }
 
-        await _notificationFilter.Filter(NotificationFilter.NotificationType.PlaybackStop, message).ConfigureAwait(false);
+        string userId = eventArgs.Users[0].Id.ToString();
+
+        await _notificationFilter.Filter(NotificationFilter.NotificationType.PlaybackStop, message, userId: userId).ConfigureAwait(false);
     }
 }

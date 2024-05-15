@@ -65,7 +65,7 @@ public class ItemAddedManager : IItemAddedManager
                     _logger.LogDebug("Notifying for {ItemName}", item.Name);
 
                     // Send notification.
-                    string message = $"🎬 {item.Name} ({item.ProductionYear})\n" + 
+                    string message = $"🎬 {item.Name} ({item.ProductionYear})\n" +
                                      $"      added to library";
 
                     bool addImage = true;
@@ -99,7 +99,7 @@ public class ItemAddedManager : IItemAddedManager
                         string serverUrl = Plugin.Instance?.Configuration.ServerUrl ?? "localhost:8096";
                         string path = "http://" + serverUrl + "/Items/" + item.Id + "/Images/Primary";
 
-                        await notificationFilter.Filter(NotificationFilter.NotificationType.ItemAdded, message, path).ConfigureAwait(false);
+                        await notificationFilter.Filter(NotificationFilter.NotificationType.ItemAdded, message, imagePath: path).ConfigureAwait(false);
                     }
                     else
                     {

@@ -97,6 +97,7 @@ export default function (view) {
                     document.querySelector('#ChatId').value = userConfig.ChatId;
                     document.querySelector('#EnableUser').checked = userConfig.EnableUser;
                     document.querySelector('#SilentNotification').checked = userConfig.SilentNotification;
+                    document.querySelector('#DoNotMentionOwnActivities').checked = userConfig.DoNotMentionOwnActivities;
                     TelegramNotifierConfig.notificationType.loadNotificationTypes(userConfig);
                 } else {
                     document.querySelector('#ServerUrl').value = config.ServerUrl;
@@ -104,6 +105,7 @@ export default function (view) {
                     document.querySelector('#ChatId').value = '';
                     document.querySelector('#EnableUser').checked = false;
                     document.querySelector('#SilentNotification').checked = false;
+                    document.querySelector('#DoNotMentionOwnActivities').checked = false;
                     TelegramNotifierConfig.notificationType.loadNotificationTypes(null);
                 }
                 Dashboard.hideLoadingMsg();
@@ -125,6 +127,7 @@ export default function (view) {
                         userConfig.ChatId = document.querySelector('#ChatId').value;
                         userConfig.EnableUser = document.querySelector('#EnableUser').checked;
                         userConfig.SilentNotification = document.querySelector('#SilentNotification').checked;
+                        userConfig.DoNotMentionOwnActivities = document.querySelector('#DoNotMentionOwnActivities').checked;
                         TelegramNotifierConfig.notificationType.saveNotificationTypes(userConfig);
                     } else {
                         config.ServerUrl = document.querySelector('#ServerUrl').value;
@@ -134,7 +137,8 @@ export default function (view) {
                             BotToken: document.querySelector('#BotToken').value,
                             ChatId: document.querySelector('#ChatId').value,
                             EnableUser: document.querySelector('#EnableUser').checked,
-                            SilentNotification: document.querySelector('#SilentNotification').checked
+                            SilentNotification: document.querySelector('#SilentNotification').checked,
+                            DoNotMentionOwnActivities: document.querySelector('#DoNotMentionOwnActivities').checked
                         });
                         TelegramNotifierConfig.notificationType.saveNotificationTypes(config.UserConfigurations.find(x => x.UserId === TelegramNotifierConfig.user.getSelectedUserId()));
                     }

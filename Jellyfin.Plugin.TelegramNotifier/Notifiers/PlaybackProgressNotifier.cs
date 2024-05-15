@@ -44,6 +44,8 @@ public class PlaybackProgressNotifier : IEventConsumer<PlaybackProgressEventArgs
                 break;
         }
 
-        await _notificationFilter.Filter(NotificationFilter.NotificationType.PlaybackProgress, message).ConfigureAwait(false);
+        string userId = eventArgs.Users[0].Id.ToString();
+
+        await _notificationFilter.Filter(NotificationFilter.NotificationType.PlaybackProgress, message, userId: userId).ConfigureAwait(false);
     }
 }

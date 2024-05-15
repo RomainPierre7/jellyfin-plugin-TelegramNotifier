@@ -61,7 +61,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
             }
         }
 
-        public async Task Filter(NotificationType type, string message, string imagePath = "")
+        public async Task Filter(NotificationType type, string message, string userId = "", string imagePath = "")
         {
             if (!Plugin.Config.EnablePlugin)
             {
@@ -76,6 +76,16 @@ namespace Jellyfin.Plugin.TelegramNotifier
                 if (user.EnableUser == false)
                 {
                     continue;
+                }
+
+                if (user.DoNotMentionOwnActivities == true && user.UserId is not null)
+                {
+                    string currentUserid = user.UserId.Replace("-", string.Empty, StringComparison.OrdinalIgnoreCase);
+                    string notifUserId = userId.Replace("-", string.Empty, StringComparison.OrdinalIgnoreCase);
+                    if (currentUserid == notifUserId)
+                    {
+                        continue;
+                    }
                 }
 
                 bool isNotificationTypeEnabled = GetPropertyValue(user, type.ToString());

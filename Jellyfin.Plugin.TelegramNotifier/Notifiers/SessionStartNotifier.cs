@@ -24,6 +24,8 @@ public class SessionStartNotifier : IEventConsumer<SessionStartedEventArgs>
         string message = $"👤 {eventArgs.Argument.UserName} has started a session on:\n" +
                          $"💻 {eventArgs.Argument.Client} ({eventArgs.Argument.DeviceName})\n";
 
-        await _notificationFilter.Filter(NotificationFilter.NotificationType.SessionStart, message).ConfigureAwait(false);
+        string userId = eventArgs.Argument.UserId.ToString();
+
+        await _notificationFilter.Filter(NotificationFilter.NotificationType.SessionStart, message, userId).ConfigureAwait(false);
     }
 }
