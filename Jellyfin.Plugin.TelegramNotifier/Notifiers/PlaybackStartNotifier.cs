@@ -28,6 +28,11 @@ public class PlaybackStartNotifier : IEventConsumer<PlaybackStartEventArgs>
             return;
         }
 
+        if (eventArgs.Item.GetType() == typeof(MediaBrowser.Controller.Entities.Audio.Audio))
+        {
+            return;
+        }
+
         long? ticks = eventArgs.Item.RunTimeTicks;
         long hours = ticks.HasValue ? ticks.Value / (600000000L * 60) : 0;
         long minutes = ticks.HasValue ? (ticks.Value / 600000000L) % 60 : 0;
