@@ -65,7 +65,8 @@ public class ItemAddedManager : IItemAddedManager
                     _logger.LogDebug("Notifying for {ItemName}", item.Name);
 
                     // Send notification.
-                    string message = $"🎬 {item.Name} ({item.ProductionYear}) added to library";
+                    string message = $"🎬 {item.Name} ({item.ProductionYear})\n" + 
+                                     $"      added to library";
 
                     bool addImage = true;
 
