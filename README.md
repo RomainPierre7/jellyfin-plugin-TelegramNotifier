@@ -81,7 +81,7 @@ Available events:
 - Plugin updated
 - User created
 - User deleted
-- User locked out *(soon...)*
+- User locked out
 - User password changed
 - User updated *(soon...)*
 - User data saved *(soon...)*
