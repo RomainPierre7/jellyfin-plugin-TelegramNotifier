@@ -19,6 +19,10 @@ public class UserConfiguration
         DoNotMentionOwnActivities = false;
 
         ItemAdded = false;
+        ItemAddedMovie = false;
+        ItemAddedSerie = false;
+        ItemAddedSeason = false;
+        ItemAddedEpisode = false;
 
         Generic = false;
 
@@ -80,6 +84,14 @@ public class UserConfiguration
     public bool? DoNotMentionOwnActivities { get; set; }
 
     public bool? ItemAdded { get; set; }
+
+    public bool? ItemAddedMovie { get; set; }
+
+    public bool? ItemAddedSerie { get; set; }
+
+    public bool? ItemAddedSeason { get; set; }
+
+    public bool? ItemAddedEpisode { get; set; }
 
     public bool? Generic { get; set; }
 

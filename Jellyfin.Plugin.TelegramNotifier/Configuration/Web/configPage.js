@@ -5,7 +5,7 @@ export default function (view) {
 
         notificationType: {
             values: {
-                "ItemAdded": "Item Added",
+                "ItemAdded": ["Item Added", "Movie", "Serie", "Season", "Episode"],
                 "PlaybackStart": "Playback Start",
                 "PlaybackProgress": "Playback Progress (recommended: disabled)",
                 "PlaybackStop": "Playback Stop",
@@ -31,23 +31,47 @@ export default function (view) {
 
             loadNotificationTypes: function (userConfig) {
                 const temp = document.querySelector("#template-notification-type");
+                const subtemp = document.querySelector("#template-notification-subtype");
                 const container = document.querySelector("[data-name=notificationTypeContainer]");
                 container.innerHTML = '';
+
                 const notificationTypeKeys = Object.keys(TelegramNotifierConfig.notificationType.values).sort();
                 for (const key of notificationTypeKeys) {
                     const template = temp.cloneNode(true).content;
                     const name = template.querySelector("[data-name=notificationTypeName]");
                     const value = template.querySelector("[data-name=notificationTypeValue]");
 
-                    name.innerText = TelegramNotifierConfig.notificationType.values[key];
+                    if (typeof TelegramNotifierConfig.notificationType.values[key] !== 'string') {
+                        name.innerText = TelegramNotifierConfig.notificationType.values[key][0];
+                    } else {
+                        name.innerText = TelegramNotifierConfig.notificationType.values[key];
+                    }
                     value.dataset.value = key;
                     if (userConfig === null) {
                         value.checked = false;
                     } else {
                         value.checked = userConfig[key] === true;
                     }
-
                     container.appendChild(template);
+
+                    // Notification subtypes
+                    if (typeof TelegramNotifierConfig.notificationType.values[key] !== 'string') {
+                        for (const subtype of TelegramNotifierConfig.notificationType.values[key].slice(1)) {
+                            const template = subtemp.cloneNode(true).content;
+                            const name = template.querySelector("[data-name=notificationSubtypeName]");
+                            const value = template.querySelector("[data-name=notificationSubtypeValue]");
+
+                            name.innerText = subtype;
+                            const subkey = key + subtype.replace(/\s/g, '');
+                            value.dataset.value = subkey;
+                            if (userConfig === null) {
+                                value.checked = false;
+                            } else {
+                                value.checked = userConfig[subkey] === true;
+                            }
+                            container.appendChild(template);
+                        }
+                    }
                 }
             },
 
@@ -55,6 +79,14 @@ export default function (view) {
                 const notificationTypeKeys = Object.keys(TelegramNotifierConfig.notificationType.values).sort();
                 for (const key of notificationTypeKeys) {
                     userConfig[key] = document.querySelector(`[data-name=notificationTypeValue][data-value=${key}]`).checked;
+
+                    // Notification subtypes
+                    if (typeof TelegramNotifierConfig.notificationType.values[key] !== 'string') {
+                        for (const subtype of TelegramNotifierConfig.notificationType.values[key].slice(1)) {
+                            const subkey = key + subtype.replace(/\s/g, '');
+                            userConfig[subkey] = document.querySelector(`[data-name=notificationSubtypeValue][data-value=${subkey}]`).checked;
+                        }
+                    }
                 }
             }
         },

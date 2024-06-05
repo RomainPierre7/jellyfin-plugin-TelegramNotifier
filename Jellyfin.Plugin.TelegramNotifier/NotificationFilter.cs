@@ -61,7 +61,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
             }
         }
 
-        public async Task Filter(NotificationType type, string message, string userId = "", string imagePath = "")
+        public async Task Filter(NotificationType type, string message, string userId = "", string imagePath = "", string subtype = "")
         {
             if (!Plugin.Config.EnablePlugin)
             {
@@ -78,6 +78,21 @@ namespace Jellyfin.Plugin.TelegramNotifier
                     continue;
                 }
 
+                bool isNotificationTypeEnabled = GetPropertyValue(user, type.ToString());
+                if (!isNotificationTypeEnabled)
+                {
+                    continue;
+                }
+
+                if (!string.IsNullOrEmpty(subtype))
+                {
+                    bool isSubTypeEnabled = GetPropertyValue(user, subtype);
+                    if (!isSubTypeEnabled)
+                    {
+                        continue;
+                    }
+                }
+
                 if (user.DoNotMentionOwnActivities == true && user.UserId is not null)
                 {
                     string currentUserid = user.UserId.Replace("-", string.Empty, StringComparison.OrdinalIgnoreCase);
@@ -86,12 +101,6 @@ namespace Jellyfin.Plugin.TelegramNotifier
                     {
                         continue;
                     }
-                }
-
-                bool isNotificationTypeEnabled = GetPropertyValue(user, type.ToString());
-                if (!isNotificationTypeEnabled)
-                {
-                    continue;
                 }
 
                 string botToken = user.BotToken ?? string.Empty;

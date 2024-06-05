@@ -68,12 +68,14 @@ public class ItemAddedManager : IItemAddedManager
                     string message = $"🎬 {item.Name} ({item.ProductionYear})\n" +
                                      $"      added to library";
 
+                    string subtype = "ItemAddedMovie";
                     bool addImage = true;
 
                     switch (item)
                     {
                         case Series serie:
                             message = $"📺 [Serie] {serie.Name} ({item.ProductionYear}) added to library";
+                            subtype = "ItemAddedSerie";
                             break;
 
                         case Season season:
@@ -81,6 +83,7 @@ public class ItemAddedManager : IItemAddedManager
 
                             message = $"📺 {season.Series.Name} ({item.ProductionYear})\n" +
                                       $"      Season {seasonNumber} added to library";
+                            subtype = "ItemAddedSeason";
                             break;
 
                         case Episode episode:
@@ -91,6 +94,7 @@ public class ItemAddedManager : IItemAddedManager
                             message = $"📺 {episode.Series.Name} ({item.ProductionYear})\n" +
                                       $"      S{eSeasonNumber} - E{episodeNumber}\n" +
                                       $"      '{item.Name}' added to library";
+                            subtype = "ItemAddedEpisode";
                             break;
                     }
 
@@ -99,11 +103,11 @@ public class ItemAddedManager : IItemAddedManager
                         string serverUrl = Plugin.Instance?.Configuration.ServerUrl ?? "localhost:8096";
                         string path = "http://" + serverUrl + "/Items/" + item.Id + "/Images/Primary";
 
-                        await notificationFilter.Filter(NotificationFilter.NotificationType.ItemAdded, message, imagePath: path).ConfigureAwait(false);
+                        await notificationFilter.Filter(NotificationFilter.NotificationType.ItemAdded, message, imagePath: path, subtype: subtype).ConfigureAwait(false);
                     }
                     else
                     {
-                        await notificationFilter.Filter(NotificationFilter.NotificationType.ItemAdded, message).ConfigureAwait(false);
+                        await notificationFilter.Filter(NotificationFilter.NotificationType.ItemAdded, message, subtype: subtype).ConfigureAwait(false);
                     }
 
                     // Remove item from queue.
