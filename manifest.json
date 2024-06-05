@@ -9,6 +9,14 @@
         "imageUrl": "https://raw.githubusercontent.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/main/assets/banner.png",
         "versions": [
             {
+                "checksum": "0ed453256a6ba1e1de293c514d701885",
+                "version": "10.9.4.0",
+                "targetAbi": "10.9.4.0",
+                "sourceUrl": "https://github.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/releases/download/10.9.4.0/TelegramNotifier.zip",
+                "timestamp": "2024-06-05 00:00:00",
+                "changelog": "### 🚀 New features: ###\n- Item added granularity\n\n### 📮 New notifiers: ####\n- User locked out"
+            },
+            {
                 "checksum": "cc1aaa8fa25551ea257dfa7dfd24b7f8",
                 "version": "10.9.1.3",
                 "targetAbi": "10.9.1.0",
