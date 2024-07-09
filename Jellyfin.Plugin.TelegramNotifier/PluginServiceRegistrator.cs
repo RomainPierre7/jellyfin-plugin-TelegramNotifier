@@ -28,6 +28,9 @@ public class PluginServiceRegistrator : IPluginServiceRegistrator
         // Register notification filter.
         serviceCollection.AddScoped<NotificationFilter>();
 
+        // Register notification formatter
+        serviceCollection.AddSingleton<NotificationFormatter>();
+
         // Library consumers.
         serviceCollection.AddScoped<IEventConsumer<SubtitleDownloadFailureEventArgs>, SubtitleDownloadFailureNotifier>();
         serviceCollection.AddHostedService<ItemAddedNotifierEntryPoint>();

@@ -1,5 +1,5 @@
 <div id="TelegramNotifierConfigPage" data-role="page" class="page type-interior pluginConfigurationPage"
-    data-require="emby-input,emby-button,emby-select,emby-checkbox" data-controller="__plugin/Telegram Notifier.js">
+     data-require="emby-input,emby-button,emby-select,emby-checkbox" data-controller="__plugin/Telegram Notifier.js">
     <div data-role="content">
         <div class="content-primary">
             <form id="TelegramNotifierConfigForm">
@@ -12,8 +12,8 @@
                 <div class="label">
                     You can find a guide in the "Use the plugin" section of the README.md file of the project.
                     <a is="emby-linkbutton" rel="noopener noreferrer"
-                        class="raised button-alt headerHelpButton emby-button" target="_blank"
-                        href="https://github.com/RomainPierre7/jellyfin-plugin-TelegramNotifier"> README </a>
+                       class="raised button-alt headerHelpButton emby-button" target="_blank"
+                       href="https://github.com/RomainPierre7/jellyfin-plugin-TelegramNotifier"> README </a>
                 </div>
                 <div class="sectionTitleContainer flex align-items-center">
                     <h2>Configuration</h2>
@@ -21,8 +21,10 @@
                 <div class="inputContainer">
                     <label class="inputLabel inputLabelUnfocused" for="ServerUrl">Server URL</label>
                     <input id="ServerUrl" name="ServerUrl" type="text" is="emby-input" />
-                    <div class="fieldDescription">Insert the url of the jellyfin server (ex: localhost:8096,
-                        192.168.1.2:8096, jellyfin.myDomain.com, ...) </div>
+                    <div class="fieldDescription">
+                        Insert the url of the jellyfin server (ex: localhost:8096,
+                        192.168.1.2:8096, jellyfin.myDomain.com, ...)
+                    </div>
                 </div>
                 <div class="inputContainer">
                     <div class="selectContainer">
@@ -33,7 +35,7 @@
                     </div>
                 </div>
                 <div class="sectionTitleContainer flex align-items-center">
-                    <h3>---------- Telegram Bot Configuration ----------</h3>
+                    <h2>Telegram credentials</h2>
                 </div>
                 <div class="inputContainer">
                     <label class="inputLabel inputLabelUnfocused" for="BotToken">Bot token</label>
@@ -45,13 +47,20 @@
                     <input id="ChatId" name="ChatId" type="text" is="emby-input" />
                     <div class="fieldDescription"> Insert the telegram chat id here. </div>
                 </div>
+                <div class="inputContainer">
+                    <label class="inputLabel inputLabelUnfocused" for="MessageTest">Telegram message test</label>
+                    <input type="text" id="MessageTest" name="MessageTest" is="emby-input" />
+                    <div class="fieldDescription">
+                        Test message
+                    </div>
+                </div>
                 <div>
                     <button id="testButton" is="emby-button" class="raised button block emby-button">
                         <span>Test bot configuration</span>
                     </button>
                 </div>
                 <div class="sectionTitleContainer flex align-items-center">
-                    <h3>---------- Notification Configuration ---------- |Save at the end ↓|</h3>
+                    <h2>Notification Configuration</h2>
                 </div>
                 <div class="checkboxContainer checkboxContainer-withDescription">
                     <label class="emby-checkbox-label">
@@ -62,14 +71,14 @@
                 <div class="checkboxContainer checkboxContainer-withDescription">
                     <label class="emby-checkbox-label">
                         <input id="SilentNotification" name="SilentNotificationCheckBox" type="checkbox"
-                            is="emby-checkbox" />
+                               is="emby-checkbox" />
                         <span>Silent notifications for this user</span>
                     </label>
                 </div>
                 <div class="checkboxContainer checkboxContainer-withDescription">
                     <label class="emby-checkbox-label">
                         <input id="DoNotMentionOwnActivities" name="DoNotMentionOwnActivitiesCheckBox" type="checkbox"
-                            is="emby-checkbox" />
+                               is="emby-checkbox" />
                         <span>Do not notify user's own activities</span>
                     </label>
                 </div>
@@ -92,14 +101,42 @@
                     <div data-name="notificationTypeContainer">
                     </div>
                 </div>
+                <div class="sectionTitleContainer flex align-items-center">
+                    <h2>Notification Options</h2>
+                </div>
+                <div class="inputContainer">
+                    <label class="inputLabel inputLabelUnfocused" for="MessageItemAddedPrefix">Telegram message prefix</label>
+                    <input type="text" id="MessageItemAddedPrefix" name="MessageItemAddedPrefix" is="emby-input" />
+                    <div class="fieldDescription">
+                        Message prefix text
+                    </div>
+                </div>
+                <div class="inputContainer">
+                    <label class="inputLabel inputLabelUnfocused" for="MessageItemAddedSuffix">Telegram message suffix</label>
+                    <input type="text" id="MessageItemAddedSuffix" name="MessageItemAddedSuffix" is="emby-input" />
+                    <div class="fieldDescription">
+                        Message suffix text
+                    </div>
+                </div>
+                <div class="checkboxContainer checkboxContainer-withDescription">
+                    <label class="emby-checkbox-label" for="EnableItemAddedImage">
+                        <input id="EnableItemAddedImage" name="EnableItemAddedImage" type="checkbox" is="emby-checkbox" />
+                        <span>Enable image of the item in notification</span>
+                    </label>
+                </div>
+                <div class="checkboxContainer checkboxContainer-withDescription">
+                    <label class="emby-checkbox-label" for="EnableItemAddedOverview">
+                        <input id="EnableItemAddedOverview" name="EnableItemAddedOverview" type="checkbox" is="emby-checkbox" />
+                        <span>Enable overview text of the item in notification</span>
+                    </label>
+                </div>
                 <div>
                     <button id="saveButton" is="emby-button" type="submit"
-                        class="raised button-submit block emby-button">
+                            class="raised button-submit block emby-button">
                         <span>Save</span>
                     </button>
                 </div>
+            </form>
         </div>
-        </form>
     </div>
-</div>
 </div>

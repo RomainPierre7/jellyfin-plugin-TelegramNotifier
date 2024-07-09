@@ -1,4 +1,4 @@
-export default function (view) {
+﻿export default function (view) {
 
     const TelegramNotifierConfig = {
         pluginUniqueId: 'fd76211d-17e0-4a72-a23f-c6eeb1e48b3a',
@@ -127,17 +127,27 @@ export default function (view) {
                     document.querySelector('#ServerUrl').value = config.ServerUrl;
                     document.querySelector('#BotToken').value = userConfig.BotToken;
                     document.querySelector('#ChatId').value = userConfig.ChatId;
+                    document.querySelector('#MessageTest').value = userConfig.MessageTest;
                     document.querySelector('#EnableUser').checked = userConfig.EnableUser;
                     document.querySelector('#SilentNotification').checked = userConfig.SilentNotification;
                     document.querySelector('#DoNotMentionOwnActivities').checked = userConfig.DoNotMentionOwnActivities;
+                    document.querySelector('#MessageItemAddedPrefix').value = userConfig.MessageItemAddedPrefix;
+                    document.querySelector('#MessageItemAddedSuffix').value = userConfig.MessageItemAddedSuffix;
+                    document.querySelector('#EnableItemAddedImage').checked = userConfig.EnableItemAddedImage;
+                    document.querySelector('#EnableItemAddedOverview').checked = userConfig.EnableItemAddedOverview;
                     TelegramNotifierConfig.notificationType.loadNotificationTypes(userConfig);
                 } else {
                     document.querySelector('#ServerUrl').value = config.ServerUrl;
                     document.querySelector('#BotToken').value = '';
                     document.querySelector('#ChatId').value = '';
+                    document.querySelector('#MessageTest').value = "[Jellyfin] Test message: \n 🎉 Your configuration is correct ! 🥳";
                     document.querySelector('#EnableUser').checked = false;
                     document.querySelector('#SilentNotification').checked = false;
                     document.querySelector('#DoNotMentionOwnActivities').checked = false;
+                    document.querySelector('#MessageItemAddedPrefix').value = "🎬";
+                    document.querySelector('#MessageItemAddedSuffix').value = "added to library";
+                    document.querySelector('#EnableItemAddedImage').checked = false;
+                    document.querySelector('#EnableItemAddedOverview').checked = false;
                     TelegramNotifierConfig.notificationType.loadNotificationTypes(null);
                 }
                 Dashboard.hideLoadingMsg();
@@ -157,9 +167,14 @@ export default function (view) {
                         config.ServerUrl = document.querySelector('#ServerUrl').value;
                         userConfig.BotToken = document.querySelector('#BotToken').value;
                         userConfig.ChatId = document.querySelector('#ChatId').value;
+                        userConfig.MessageTest = document.querySelector('#MessageTest').value;
                         userConfig.EnableUser = document.querySelector('#EnableUser').checked;
                         userConfig.SilentNotification = document.querySelector('#SilentNotification').checked;
                         userConfig.DoNotMentionOwnActivities = document.querySelector('#DoNotMentionOwnActivities').checked;
+                        userConfig.MessageItemAddedPrefix = document.querySelector('#MessageItemAddedPrefix').value;
+                        userConfig.MessageItemAddedSuffix = document.querySelector('#MessageItemAddedSuffix').value;
+                        userConfig.EnableItemAddedImage = document.querySelector('#EnableItemAddedImage').checked;
+                        userConfig.EnableItemAddedOverview = document.querySelector('#EnableItemAddedOverview').checked;
                         TelegramNotifierConfig.notificationType.saveNotificationTypes(userConfig);
                     } else {
                         config.ServerUrl = document.querySelector('#ServerUrl').value;
@@ -168,9 +183,14 @@ export default function (view) {
                             UserName: document.querySelector('#userToConfigure').selectedOptions[0].text,
                             BotToken: document.querySelector('#BotToken').value,
                             ChatId: document.querySelector('#ChatId').value,
+                            MessageTest: document.querySelector('#MessageTest').value,
                             EnableUser: document.querySelector('#EnableUser').checked,
                             SilentNotification: document.querySelector('#SilentNotification').checked,
-                            DoNotMentionOwnActivities: document.querySelector('#DoNotMentionOwnActivities').checked
+                            DoNotMentionOwnActivities: document.querySelector('#DoNotMentionOwnActivities').checked,
+                            MessageItemAddedPrefix: document.querySelector('#MessageItemAddedPrefix').value,
+                            MessageItemAddedSuffix: document.querySelector('#MessageItemAddedSuffix').value,
+                            EnableItemAddedImage: document.querySelector('#EnableItemAddedImage').checked,
+                            EnableItemAddedOverview: document.querySelector('#EnableItemAddedOverview').checked
                         });
                         TelegramNotifierConfig.notificationType.saveNotificationTypes(config.UserConfigurations.find(x => x.UserId === TelegramNotifierConfig.user.getSelectedUserId()));
                     }
@@ -193,7 +213,8 @@ export default function (view) {
                     const userConfig = config.UserConfigurations.find(x => x.UserId === TelegramNotifierConfig.user.getSelectedUserId());
                     const params = {
                         botToken: userConfig.BotToken,
-                        chatId: userConfig.ChatId
+                        chatId: userConfig.ChatId,
+                        messageTest: userConfig.MessageTest
                     };
                     const url = new URL('/TelegramNotifierApi/TestNotifier', window.location.origin);
                     Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));

@@ -64,37 +64,39 @@ public class ItemAddedManager : IItemAddedManager
 
                     _logger.LogDebug("Notifying for {ItemName}", item.Name);
 
-                    // Send notification.
-                    string message = $"🎬 {item.Name} ({item.ProductionYear})\n" +
-                                     $"      added to library";
-
-                    string subtype = "ItemAddedMovie";
+                    string? message, subtype, overview;
                     bool addImage = true;
 
                     switch (item)
                     {
                         case Series serie:
-                            message = $"📺 [Serie] {serie.Name} ({item.ProductionYear}) added to library";
+                            message = $"{serie.Name} ({item.ProductionYear})";
                             subtype = "ItemAddedSerie";
+                            overview = $"{serie.Overview}";
                             break;
 
                         case Season season:
-                            string seasonNumber = season.IndexNumber.HasValue ? season.IndexNumber.Value.ToString("00", CultureInfo.InvariantCulture) : "00";
-
-                            message = $"📺 {season.Series.Name} ({item.ProductionYear})\n" +
-                                      $"      Season {seasonNumber} added to library";
+                            string seasonNumber = season.IndexNumber?.ToString("00", CultureInfo.InvariantCulture) ?? "00";
+                            message = $"{season.Series.Name} ({item.ProductionYear})\n" +
+                                      $"      Season {seasonNumber}";
                             subtype = "ItemAddedSeason";
+                            overview = string.Empty;
                             break;
 
                         case Episode episode:
                             addImage = false;
-                            string eSeasonNumber = episode.Season.IndexNumber.HasValue ? episode.Season.IndexNumber.Value.ToString("00", CultureInfo.InvariantCulture) : "00";
-                            string episodeNumber = episode.IndexNumber.HasValue ? episode.IndexNumber.Value.ToString("00", CultureInfo.InvariantCulture) : "00";
-
-                            message = $"📺 {episode.Series.Name} ({item.ProductionYear})\n" +
+                            string eSeasonNumber = episode.Season.IndexNumber?.ToString("00", CultureInfo.InvariantCulture) ?? "00";
+                            string episodeNumber = episode.IndexNumber?.ToString("00", CultureInfo.InvariantCulture) ?? "00";
+                            message = $"{episode.Series.Name} ({item.ProductionYear})\n" +
                                       $"      S{eSeasonNumber} - E{episodeNumber}\n" +
-                                      $"      '{item.Name}' added to library";
+                                      $"      '{item.Name}'";
                             subtype = "ItemAddedEpisode";
+                            overview = $"{episode.Overview}";
+                            break;
+                        default:
+                            message = $"{item.Name} ({item.ProductionYear})";
+                            subtype = "ItemAddedMovie";
+                            overview = $"{item.Overview}";
                             break;
                     }
 
@@ -103,11 +105,11 @@ public class ItemAddedManager : IItemAddedManager
                         string serverUrl = Plugin.Instance?.Configuration.ServerUrl ?? "localhost:8096";
                         string path = "http://" + serverUrl + "/Items/" + item.Id + "/Images/Primary";
 
-                        await notificationFilter.Filter(NotificationFilter.NotificationType.ItemAdded, message, imagePath: path, subtype: subtype).ConfigureAwait(false);
+                        await notificationFilter.Filter(NotificationFilter.NotificationType.ItemAdded, message, imagePath: path, subtype: subtype, overview: overview).ConfigureAwait(false);
                     }
                     else
                     {
-                        await notificationFilter.Filter(NotificationFilter.NotificationType.ItemAdded, message, subtype: subtype).ConfigureAwait(false);
+                        await notificationFilter.Filter(NotificationFilter.NotificationType.ItemAdded, message, subtype: subtype, overview: overview).ConfigureAwait(false);
                     }
 
                     // Remove item from queue.

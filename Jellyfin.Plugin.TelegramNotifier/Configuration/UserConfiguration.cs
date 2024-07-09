@@ -1,4 +1,4 @@
-namespace Jellyfin.Plugin.TelegramNotifier.Configuration;
+﻿namespace Jellyfin.Plugin.TelegramNotifier.Configuration;
 
 public class UserConfiguration
 {
@@ -12,6 +12,8 @@ public class UserConfiguration
 
         ChatId = string.Empty;
 
+        MessageTest = string.Empty;
+
         EnableUser = false;
 
         SilentNotification = false;
@@ -19,9 +21,13 @@ public class UserConfiguration
         DoNotMentionOwnActivities = false;
 
         ItemAdded = false;
+
         ItemAddedMovie = false;
+
         ItemAddedSerie = false;
+
         ItemAddedSeason = false;
+
         ItemAddedEpisode = false;
 
         Generic = false;
@@ -67,6 +73,14 @@ public class UserConfiguration
         UserUpdated = false;
 
         UserDataSaved = false;
+
+        MessageItemAddedPrefix = string.Empty;
+
+        MessageItemAddedSuffix = string.Empty;
+
+        EnableItemAddedImage = false;
+
+        EnableItemAddedOverview = false;
     }
 
     public string? UserId { get; set; }
@@ -76,6 +90,8 @@ public class UserConfiguration
     public string? BotToken { get; set; }
 
     public string? ChatId { get; set; }
+
+    public string? MessageTest { get; set; }
 
     public bool? EnableUser { get; set; }
 
@@ -136,4 +152,12 @@ public class UserConfiguration
     public bool? UserUpdated { get; set; }
 
     public bool? UserDataSaved { get; set; }
+
+    public string? MessageItemAddedPrefix { get; set; }
+
+    public string? MessageItemAddedSuffix { get; set; }
+
+    public bool? EnableItemAddedImage { get; set; }
+
+    public bool? EnableItemAddedOverview { get; set; }
 }

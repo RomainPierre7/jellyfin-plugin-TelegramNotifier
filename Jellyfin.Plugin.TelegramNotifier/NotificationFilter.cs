@@ -8,10 +8,12 @@ namespace Jellyfin.Plugin.TelegramNotifier
     public class NotificationFilter
     {
         private readonly Sender _sender;
+        private readonly NotificationFormatter _formatter;
 
-        public NotificationFilter(Sender sender)
+        public NotificationFilter(Sender sender, NotificationFormatter formatter)
         {
             _sender = sender;
+            _formatter = formatter;
         }
 
         public enum NotificationType
@@ -61,7 +63,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
             }
         }
 
-        public async Task Filter(NotificationType type, string message, string userId = "", string imagePath = "", string subtype = "")
+        public async Task Filter(NotificationType type, string message, string userId = "", string imagePath = "", string subtype = "", string overview = "")
         {
             if (!Plugin.Config.EnablePlugin)
             {
@@ -106,17 +108,21 @@ namespace Jellyfin.Plugin.TelegramNotifier
                 string botToken = user.BotToken ?? string.Empty;
                 string chatId = user.ChatId ?? string.Empty;
                 bool isSilentNotification = user.SilentNotification ?? false;
+                bool isEnableItemAddedImage = user.EnableItemAddedImage ?? false;
+
+                // Format the message with prefix and suffix
+                string formattedMessage = _formatter.FormatMessage(type, message, user, subtype, overview);
 
                 try
                 {
-                    if (string.IsNullOrEmpty(imagePath))
+                    if (string.IsNullOrEmpty(imagePath) || !isEnableItemAddedImage)
                     {
-                        Task task = _sender.SendMessage(type.ToString(), message, botToken, chatId, isSilentNotification);
+                        Task task = _sender.SendMessage(type.ToString(), formattedMessage, botToken, chatId, isSilentNotification);
                         tasks.Add(task);
                     }
                     else
                     {
-                        Task task = _sender.SendMessageWithPhoto(type.ToString(), message, imagePath, botToken, chatId, isSilentNotification);
+                        Task task = _sender.SendMessageWithPhoto(type.ToString(), formattedMessage, imagePath, botToken, chatId, isSilentNotification);
                         tasks.Add(task);
                     }
                 }
