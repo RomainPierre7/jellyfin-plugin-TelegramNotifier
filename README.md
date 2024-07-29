@@ -8,6 +8,8 @@ This [Jellyfin](https://github.com/jellyfin) plugin provides notification functi
 > If you encounter a problem, a bug or have an idea for a new feature, submit an issue [here](https://github.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/issues). Please, submit only one feature or bug per issue.
 
 > If you're finding value in this project and it's been helpful to you, consider giving it a star ⭐️ on GitHub ! Your support means a lot and helps others discover the project too.
+> 
+<a href='https://ko-fi.com/B0B8112Y0Y' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
 
 ## Table of contents
 
