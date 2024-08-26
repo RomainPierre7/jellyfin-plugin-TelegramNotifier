@@ -1,5 +1,11 @@
 # Jellyfin Plugin Telegram Notifier
 
+<a href='https://ko-fi.com/B0B8112Y0Y' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
+
+![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/RomainPierre7/jellyfin-plugin-TelegramNotifier/total)
+
+![GitHub Downloads (all assets, latest release)](https://img.shields.io/github/downloads/RomainPierre7/jellyfin-plugin-TelegramNotifier/latest/total)
+
 This [Jellyfin](https://github.com/jellyfin) plugin provides notification functionalities via Telegram for various events occurring within your Jellyfin server. Stay informed about playback activities, user management, plugin operations, and more right from your Telegram account. You can personalize the configuration for each user.
 
 <p align="center">
