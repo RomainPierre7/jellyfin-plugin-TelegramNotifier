@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Threading.Tasks;
 using MediaBrowser.Controller;
 using MediaBrowser.Controller.Entities;
+using MediaBrowser.Controller.Entities.Audio;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
 using Microsoft.Extensions.DependencyInjection;
@@ -95,6 +96,16 @@ public class ItemAddedManager : IItemAddedManager
                                       $"      S{eSeasonNumber} - E{episodeNumber}\n" +
                                       $"      '{item.Name}' added to library";
                             subtype = "ItemAddedEpisode";
+                            break;
+
+                        case MusicAlbum album:
+                            message = $"🎵 [Album] {album.Name} ({item.ProductionYear}) added to library";
+                            subtype = "ItemAddedAlbum";
+                            break;
+
+                        case Audio audio:
+                            message = $"🎵 [Audio] {audio.Name} ({item.ProductionYear}) added to library";
+                            subtype = "ItemAddedAudio";
                             break;
                     }
 

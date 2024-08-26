@@ -15,11 +15,11 @@ public class TestNotifier : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<string>> Get([FromQuery] string botToken, [FromQuery] string chatId)
+    public async Task<ActionResult<string>> Get([FromQuery] string botToken, [FromQuery] string chatId, [FromQuery] string threadId)
     {
         string message = "[Jellyfin] Test message: \n 🎉 Your configuration is correct ! 🥳";
 
-        bool result = await _sender.SendMessage("Test", message, botToken, chatId, false).ConfigureAwait(false);
+        bool result = await _sender.SendMessage("Test", message, botToken, chatId, false, threadId).ConfigureAwait(false);
 
         if (result)
         {

@@ -12,6 +12,8 @@ public class UserConfiguration
 
         ChatId = string.Empty;
 
+        ThreadId = string.Empty;
+
         EnableUser = false;
 
         SilentNotification = false;
@@ -19,10 +21,12 @@ public class UserConfiguration
         DoNotMentionOwnActivities = false;
 
         ItemAdded = false;
-        ItemAddedMovie = false;
-        ItemAddedSerie = false;
-        ItemAddedSeason = false;
-        ItemAddedEpisode = false;
+        ItemAddedMovies = false;
+        ItemAddedSeries = false;
+        ItemAddedSeasons = false;
+        ItemAddedEpisodes = false;
+        ItemAddedAlbums = false;
+        ItemAddedSongs = false;
 
         Generic = false;
 
@@ -77,6 +81,8 @@ public class UserConfiguration
 
     public string? ChatId { get; set; }
 
+    public string? ThreadId { get; set; }
+
     public bool? EnableUser { get; set; }
 
     public bool? SilentNotification { get; set; }
@@ -85,13 +91,17 @@ public class UserConfiguration
 
     public bool? ItemAdded { get; set; }
 
-    public bool? ItemAddedMovie { get; set; }
+    public bool? ItemAddedMovies { get; set; }
 
-    public bool? ItemAddedSerie { get; set; }
+    public bool? ItemAddedSeries { get; set; }
 
-    public bool? ItemAddedSeason { get; set; }
+    public bool? ItemAddedSeasons { get; set; }
 
-    public bool? ItemAddedEpisode { get; set; }
+    public bool? ItemAddedEpisodes { get; set; }
+
+    public bool? ItemAddedAlbums { get; set; }
+
+    public bool? ItemAddedSongs { get; set; }
 
     public bool? Generic { get; set; }
 

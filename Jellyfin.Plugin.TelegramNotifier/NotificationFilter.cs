@@ -106,17 +106,18 @@ namespace Jellyfin.Plugin.TelegramNotifier
                 string botToken = user.BotToken ?? string.Empty;
                 string chatId = user.ChatId ?? string.Empty;
                 bool isSilentNotification = user.SilentNotification ?? false;
+                string threadId = user.ThreadId ?? string.Empty;
 
                 try
                 {
                     if (string.IsNullOrEmpty(imagePath))
                     {
-                        Task task = _sender.SendMessage(type.ToString(), message, botToken, chatId, isSilentNotification);
+                        Task task = _sender.SendMessage(type.ToString(), message, botToken, chatId, isSilentNotification, threadId);
                         tasks.Add(task);
                     }
                     else
                     {
-                        Task task = _sender.SendMessageWithPhoto(type.ToString(), message, imagePath, botToken, chatId, isSilentNotification);
+                        Task task = _sender.SendMessageWithPhoto(type.ToString(), message, imagePath, botToken, chatId, isSilentNotification, threadId);
                         tasks.Add(task);
                     }
                 }

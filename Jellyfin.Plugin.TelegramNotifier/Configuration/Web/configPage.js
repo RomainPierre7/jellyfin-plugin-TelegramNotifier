@@ -5,7 +5,7 @@ export default function (view) {
 
         notificationType: {
             values: {
-                "ItemAdded": ["Item Added", "Movie", "Serie", "Season", "Episode"],
+                "ItemAdded": ["Item Added", "Movies", "Series", "Seasons", "Episodes", "Albums", "Songs"],
                 "PlaybackStart": "Playback Start",
                 "PlaybackProgress": "Playback Progress (recommended: disabled)",
                 "PlaybackStop": "Playback Stop",
@@ -127,6 +127,7 @@ export default function (view) {
                     document.querySelector('#ServerUrl').value = config.ServerUrl;
                     document.querySelector('#BotToken').value = userConfig.BotToken;
                     document.querySelector('#ChatId').value = userConfig.ChatId;
+                    document.querySelector('#ThreadId').value = userConfig.ThreadId;
                     document.querySelector('#EnableUser').checked = userConfig.EnableUser;
                     document.querySelector('#SilentNotification').checked = userConfig.SilentNotification;
                     document.querySelector('#DoNotMentionOwnActivities').checked = userConfig.DoNotMentionOwnActivities;
@@ -135,6 +136,7 @@ export default function (view) {
                     document.querySelector('#ServerUrl').value = config.ServerUrl;
                     document.querySelector('#BotToken').value = '';
                     document.querySelector('#ChatId').value = '';
+                    document.querySelector('#ThreadId').value = '';
                     document.querySelector('#EnableUser').checked = false;
                     document.querySelector('#SilentNotification').checked = false;
                     document.querySelector('#DoNotMentionOwnActivities').checked = false;
@@ -157,6 +159,7 @@ export default function (view) {
                         config.ServerUrl = document.querySelector('#ServerUrl').value;
                         userConfig.BotToken = document.querySelector('#BotToken').value;
                         userConfig.ChatId = document.querySelector('#ChatId').value;
+                        userConfig.ThreadId = document.querySelector('#ThreadId').value;
                         userConfig.EnableUser = document.querySelector('#EnableUser').checked;
                         userConfig.SilentNotification = document.querySelector('#SilentNotification').checked;
                         userConfig.DoNotMentionOwnActivities = document.querySelector('#DoNotMentionOwnActivities').checked;
@@ -168,6 +171,7 @@ export default function (view) {
                             UserName: document.querySelector('#userToConfigure').selectedOptions[0].text,
                             BotToken: document.querySelector('#BotToken').value,
                             ChatId: document.querySelector('#ChatId').value,
+                            ThreadId: document.querySelector('#ThreadId').value,
                             EnableUser: document.querySelector('#EnableUser').checked,
                             SilentNotification: document.querySelector('#SilentNotification').checked,
                             DoNotMentionOwnActivities: document.querySelector('#DoNotMentionOwnActivities').checked
@@ -191,9 +195,14 @@ export default function (view) {
                 })
                 .then(function (config) {
                     const userConfig = config.UserConfigurations.find(x => x.UserId === TelegramNotifierConfig.user.getSelectedUserId());
+                    var threadId = userConfig.ThreadId;
+                    if (threadId === '') {
+                        threadId = null;
+                    }
                     const params = {
                         botToken: userConfig.BotToken,
-                        chatId: userConfig.ChatId
+                        chatId: userConfig.ChatId,
+                        threadId: threadId,
                     };
                     const url = new URL('/TelegramNotifierApi/TestNotifier', window.location.origin);
                     Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
