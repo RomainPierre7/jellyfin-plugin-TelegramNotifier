@@ -11,7 +11,7 @@
             {
                 "checksum": "b7f2aca7c2ebd9fffc39613d17ad1393",
                 "version": "10.9.10.0",
-                "targetAbi": "10.9.10.0",
+                "targetAbi": "10.9.4.0",
                 "sourceUrl": "https://github.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/releases/download/10.9.10.0/TelegramNotifier.zip",
                 "timestamp": "2024-08-26 00:00:00",
                 "changelog": "### 🚀 New features: ###\n- Item added granularity with songs and albums\n- Possibility to use thread for topic group"
