@@ -13,7 +13,7 @@
                 "version": "10.9.10.1",
                 "targetAbi": "10.9.4.0",
                 "sourceUrl": "https://github.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/releases/download/10.9.10.1/TelegramNotifier.zip",
-                "timestamp": "2024-08-26 00:00:00",
+                "timestamp": "2024-08-29 00:00:00",
                 "changelog": "### ⚙️ Fixes: ###\n- Item added notifier didn't work properly"
             },
             {
