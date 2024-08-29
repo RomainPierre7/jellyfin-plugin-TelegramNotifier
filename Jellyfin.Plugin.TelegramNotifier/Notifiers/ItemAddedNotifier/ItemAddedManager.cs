@@ -69,14 +69,14 @@ public class ItemAddedManager : IItemAddedManager
                     string message = $"🎬 {item.Name} ({item.ProductionYear})\n" +
                                      $"      added to library";
 
-                    string subtype = "ItemAddedMovie";
+                    string subtype = "ItemAddedMovies";
                     bool addImage = true;
 
                     switch (item)
                     {
                         case Series serie:
                             message = $"📺 [Serie] {serie.Name} ({item.ProductionYear}) added to library";
-                            subtype = "ItemAddedSerie";
+                            subtype = "ItemAddedSeries";
                             break;
 
                         case Season season:
@@ -84,7 +84,7 @@ public class ItemAddedManager : IItemAddedManager
 
                             message = $"📺 {season.Series.Name} ({item.ProductionYear})\n" +
                                       $"      Season {seasonNumber} added to library";
-                            subtype = "ItemAddedSeason";
+                            subtype = "ItemAddedSeasons";
                             break;
 
                         case Episode episode:
@@ -95,17 +95,17 @@ public class ItemAddedManager : IItemAddedManager
                             message = $"📺 {episode.Series.Name} ({item.ProductionYear})\n" +
                                       $"      S{eSeasonNumber} - E{episodeNumber}\n" +
                                       $"      '{item.Name}' added to library";
-                            subtype = "ItemAddedEpisode";
+                            subtype = "ItemAddedEpisodes";
                             break;
 
                         case MusicAlbum album:
                             message = $"🎵 [Album] {album.Name} ({item.ProductionYear}) added to library";
-                            subtype = "ItemAddedAlbum";
+                            subtype = "ItemAddedAlbums";
                             break;
 
                         case Audio audio:
                             message = $"🎵 [Audio] {audio.Name} ({item.ProductionYear}) added to library";
-                            subtype = "ItemAddedAudio";
+                            subtype = "ItemAddedAudios";
                             break;
                     }
 
