@@ -118,7 +118,6 @@ git clone https://github.com/RomainPierre7/jellyfin_telegram_notifier.git
 ### 2. Install the dependencies
 
 ```bash
-dotnet add package Jellyfin.Model
 dotnet add package Jellyfin.Controller
 ```
 
