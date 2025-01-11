@@ -33,6 +33,15 @@ public class PlaybackProgressNotifier : IEventConsumer<PlaybackProgressEventArgs
             return;
         }
 
+        string subtype = "PlaybackProgressMovies";
+
+        switch (eventArgs.Item)
+        {
+            case Episode episode:
+                subtype = "PlaybackProgressEpisodes";
+                break;
+        }
+
         /* string message = $"👤 {eventArgs.Users[0].Username} is still watching on {eventArgs.DeviceName}:\n" +
                          $"🎬 {eventArgs.Item.Name} ({eventArgs.Item.ProductionYear})";
 
@@ -51,6 +60,6 @@ public class PlaybackProgressNotifier : IEventConsumer<PlaybackProgressEventArgs
 
         string userId = eventArgs.Users[0].Id.ToString();
 
-        await _notificationFilter.Filter(NotificationFilter.NotificationType.PlaybackProgress, userId: userId).ConfigureAwait(false);
+        await _notificationFilter.Filter(NotificationFilter.NotificationType.PlaybackProgress, userId: userId, subtype: subtype).ConfigureAwait(false);
     }
 }

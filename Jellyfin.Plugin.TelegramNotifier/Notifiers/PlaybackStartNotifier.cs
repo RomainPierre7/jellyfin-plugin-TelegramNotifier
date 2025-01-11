@@ -42,6 +42,15 @@ public class PlaybackStartNotifier : IEventConsumer<PlaybackStartEventArgs>
             duration = minutes > 1 ? $"{minutes} minutes" : $"{minutes} minute";
         }
 
+        string subtype = "PlaybackStartMovies";
+
+        switch (eventArgs.Item)
+        {
+            case Episode episode:
+                subtype = "PlaybackStartEpisodes";
+                break;
+        }
+
         /* string message = $"👤 {eventArgs.Users[0].Username} is watching on {eventArgs.DeviceName}:\n" +
                          $"🎬 {eventArgs.Item.Name} ({eventArgs.Item.ProductionYear})\n" +
                          $"📺 [{eventArgs.Item.MediaType}] {string.Join(", ", eventArgs.Item.Genres)}\n" +
@@ -71,11 +80,11 @@ public class PlaybackStartNotifier : IEventConsumer<PlaybackStartEventArgs>
             string serverUrl = Plugin.Instance?.Configuration.ServerUrl ?? "localhost:8096";
             string path = "http://" + serverUrl + "/Items/" + eventArgs.Item.Id + "/Images/Primary";
 
-            await _notificationFilter.Filter(NotificationFilter.NotificationType.PlaybackStart, userId: userId, imagePath: path).ConfigureAwait(false);
+            await _notificationFilter.Filter(NotificationFilter.NotificationType.PlaybackStart, userId: userId, imagePath: path, subtype: subtype).ConfigureAwait(false);
         }
         else
         {
-            await _notificationFilter.Filter(NotificationFilter.NotificationType.PlaybackStart, userId: userId).ConfigureAwait(false);
+            await _notificationFilter.Filter(NotificationFilter.NotificationType.PlaybackStart, userId: userId, subtype: subtype).ConfigureAwait(false);
         }
     }
 }

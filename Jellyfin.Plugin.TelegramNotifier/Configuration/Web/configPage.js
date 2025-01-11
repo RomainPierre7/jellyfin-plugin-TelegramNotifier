@@ -6,9 +6,9 @@ export default function (view) {
         notificationType: {
             values: {
                 "ItemAdded": ["Item Added", "Movies", "Series", "Seasons", "Episodes", "Albums", "Songs"],
-                "PlaybackStart": "Playback Start",
-                "PlaybackProgress": "Playback Progress (recommended: disabled)",
-                "PlaybackStop": "Playback Stop",
+                "PlaybackStart": ["Playback Start", "Movies", "Episodes"],
+                "PlaybackProgress": ["Playback Progress (recommended: disabled)", "Movies", "Episodes"],
+                "PlaybackStop": ["Playback Stop", "Movies", "Episodes"],
                 "SubtitleDownloadFailure": "Subtitle Download Failure",
                 "AuthenticationFailure": "Authentication Failure",
                 "AuthenticationSuccess": "Authentication Success",

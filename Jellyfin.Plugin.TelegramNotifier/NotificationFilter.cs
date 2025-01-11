@@ -40,26 +40,45 @@ namespace Jellyfin.Plugin.TelegramNotifier
             UserDataSaved
         }
 
-        private (bool value, string message) GetPropertyValue(UserConfiguration user, string propertyName)
+        private bool GetPropertyValue(UserConfiguration user, string propertyName)
         {
             var property = user.GetType().GetProperty(propertyName);
-            var property_message = user.GetType().GetProperty(propertyName + "StringMessage");
-            if (property != null && property_message != null)
+            if (property != null)
             {
                 var value = property.GetValue(user);
-                var message = property_message.GetValue(user);
-                if (value != null && message != null)
+                if (value != null)
                 {
-                    return ((bool)value, (string)message);
+                    return (bool)value;
                 }
                 else
                 {
-                    throw new ArgumentException($"The property {propertyName} or {propertyName + "StringMessage"} is null.");
+                    throw new ArgumentException($"The property {propertyName} is null.");
                 }
             }
             else
             {
-                throw new ArgumentException($"The property {propertyName} or {propertyName + "StringMessage"} does not exist.");
+                throw new ArgumentException($"The property {propertyName} does not exist.");
+            }
+        }
+
+        private string GetPropertyMessage(UserConfiguration user, string propertyName)
+        {
+            var property_message = user.GetType().GetProperty(propertyName + "StringMessage");
+            if (property_message != null)
+            {
+                var message = property_message.GetValue(user);
+                if (message != null)
+                {
+                    return (string)message;
+                }
+                else
+                {
+                    throw new ArgumentException($"The property {propertyName + "StringMessage"} is null.");
+                }
+            }
+            else
+            {
+                throw new ArgumentException($"The property {propertyName + "StringMessage"} does not exist.");
             }
         }
 
@@ -80,7 +99,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
                     continue;
                 }
 
-                bool isNotificationTypeEnabled = GetPropertyValue(user, type.ToString()).value;
+                bool isNotificationTypeEnabled = GetPropertyValue(user, type.ToString());
                 if (!isNotificationTypeEnabled)
                 {
                     continue;
@@ -90,17 +109,17 @@ namespace Jellyfin.Plugin.TelegramNotifier
 
                 if (!string.IsNullOrEmpty(subtype))
                 {
-                    bool isSubTypeEnabled = GetPropertyValue(user, subtype).value;
+                    bool isSubTypeEnabled = GetPropertyValue(user, subtype);
                     if (!isSubTypeEnabled)
                     {
                         continue;
                     }
 
-                    message = GetPropertyValue(user, subtype).message;
+                    message = GetPropertyMessage(user, subtype);
                 }
                 else
                 {
-                    message = GetPropertyValue(user, type.ToString()).message;
+                    message = GetPropertyMessage(user, type.ToString());
                 }
 
                 if (user.DoNotMentionOwnActivities == true && user.UserId is not null)

@@ -33,6 +33,15 @@ public class PlaybackStopNotifier : IEventConsumer<PlaybackStopEventArgs>
             return;
         }
 
+        string subtype = "PlaybackStopMovies";
+
+        switch (eventArgs.Item)
+        {
+            case Episode episode:
+                subtype = "PlaybackStopEpisodes";
+                break;
+        }
+
         /* string message = $"👤 {eventArgs.Users[0].Username} stopped watching:\n" +
                          $"🎬 {eventArgs.Item.Name} ({eventArgs.Item.ProductionYear})";
 
@@ -51,6 +60,6 @@ public class PlaybackStopNotifier : IEventConsumer<PlaybackStopEventArgs>
 
         string userId = eventArgs.Users[0].Id.ToString();
 
-        await _notificationFilter.Filter(NotificationFilter.NotificationType.PlaybackStop, userId: userId).ConfigureAwait(false);
+        await _notificationFilter.Filter(NotificationFilter.NotificationType.PlaybackStop, userId: userId, subtype: subtype).ConfigureAwait(false);
     }
 }

@@ -41,13 +41,28 @@ public class UserConfiguration
         ItemAddedSongsStringMessage = DefaultMessageConfiguration.ItemAddedSongs;
 
         PlaybackStart = false;
-        PlaybackStartStringMessage = DefaultMessageConfiguration.PlaybackStart;
+
+        PlaybackStartMovies = false;
+        PlaybackStartMoviesStringMessage = DefaultMessageConfiguration.PlaybackStartMovies;
+
+        PlaybackStartEpisodes = false;
+        PlaybackStartEpisodesStringMessage = DefaultMessageConfiguration.PlaybackStartEpisodes;
 
         PlaybackProgress = false;
-        PlaybackProgressStringMessage = DefaultMessageConfiguration.PlaybackProgress;
+
+        PlaybackProgressMovies = false;
+        PlaybackProgressMoviesStringMessage = DefaultMessageConfiguration.PlaybackProgressMovies;
+
+        PlaybackProgressEpisodes = false;
+        PlaybackProgressEpisodesStringMessage = DefaultMessageConfiguration.PlaybackProgressEpisodes;
 
         PlaybackStop = false;
-        PlaybackStopStringMessage = DefaultMessageConfiguration.PlaybackStop;
+
+        PlaybackStopMovies = false;
+        PlaybackStopMoviesStringMessage = DefaultMessageConfiguration.PlaybackStopMovies;
+
+        PlaybackStopEpisodes = false;
+        PlaybackStopEpisodesStringMessage = DefaultMessageConfiguration.PlaybackStopEpisodes;
 
         SubtitleDownloadFailure = false;
         SubtitleDownloadFailureStringMessage = DefaultMessageConfiguration.SubtitleDownloadFailure;
@@ -148,15 +163,33 @@ public class UserConfiguration
 
     public bool PlaybackStart { get; set; }
 
-    public string PlaybackStartStringMessage { get; set; }
+    public bool PlaybackStartMovies { get; set; }
+
+    public string PlaybackStartMoviesStringMessage { get; set; }
+
+    public bool PlaybackStartEpisodes { get; set; }
+
+    public string PlaybackStartEpisodesStringMessage { get; set; }
 
     public bool PlaybackProgress { get; set; }
 
-    public string PlaybackProgressStringMessage { get; set; }
+    public bool PlaybackProgressMovies { get; set; }
+
+    public string PlaybackProgressMoviesStringMessage { get; set; }
+
+    public bool PlaybackProgressEpisodes { get; set; }
+
+    public string PlaybackProgressEpisodesStringMessage { get; set; }
 
     public bool PlaybackStop { get; set; }
 
-    public string PlaybackStopStringMessage { get; set; }
+    public bool PlaybackStopMovies { get; set; }
+
+    public string PlaybackStopMoviesStringMessage { get; set; }
+
+    public bool PlaybackStopEpisodes { get; set; }
+
+    public string PlaybackStopEpisodesStringMessage { get; set; }
 
     public bool SubtitleDownloadFailure { get; set; }
 
