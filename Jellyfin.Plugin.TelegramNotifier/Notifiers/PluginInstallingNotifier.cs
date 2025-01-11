@@ -21,8 +21,6 @@ public class PluginInstallingNotifier : IEventConsumer<PluginInstallingEventArgs
             throw new ArgumentNullException(nameof(eventArgs));
         }
 
-        string message = $"🚧 {eventArgs.Argument.Name} plugin is installing (version {eventArgs.Argument.Version})";
-
-        await _notificationFilter.Filter(NotificationFilter.NotificationType.PluginInstalling, message).ConfigureAwait(false);
+        await _notificationFilter.Filter(NotificationFilter.NotificationType.PluginInstalling).ConfigureAwait(false);
     }
 }

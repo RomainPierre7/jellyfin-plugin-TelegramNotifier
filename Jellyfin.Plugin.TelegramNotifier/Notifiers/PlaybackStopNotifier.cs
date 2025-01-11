@@ -33,7 +33,7 @@ public class PlaybackStopNotifier : IEventConsumer<PlaybackStopEventArgs>
             return;
         }
 
-        string message = $"👤 {eventArgs.Users[0].Username} stopped watching:\n" +
+        /* string message = $"👤 {eventArgs.Users[0].Username} stopped watching:\n" +
                          $"🎬 {eventArgs.Item.Name} ({eventArgs.Item.ProductionYear})";
 
         switch (eventArgs.Item)
@@ -47,10 +47,10 @@ public class PlaybackStopNotifier : IEventConsumer<PlaybackStopEventArgs>
                           $"      S{seasonNumber} - E{episodeNumber}\n" +
                           $"      '{eventArgs.Item.Name}'";
                 break;
-        }
+        } */
 
         string userId = eventArgs.Users[0].Id.ToString();
 
-        await _notificationFilter.Filter(NotificationFilter.NotificationType.PlaybackStop, message, userId: userId).ConfigureAwait(false);
+        await _notificationFilter.Filter(NotificationFilter.NotificationType.PlaybackStop, userId: userId).ConfigureAwait(false);
     }
 }

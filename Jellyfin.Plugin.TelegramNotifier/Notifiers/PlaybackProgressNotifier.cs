@@ -33,7 +33,7 @@ public class PlaybackProgressNotifier : IEventConsumer<PlaybackProgressEventArgs
             return;
         }
 
-        string message = $"👤 {eventArgs.Users[0].Username} is still watching on {eventArgs.DeviceName}:\n" +
+        /* string message = $"👤 {eventArgs.Users[0].Username} is still watching on {eventArgs.DeviceName}:\n" +
                          $"🎬 {eventArgs.Item.Name} ({eventArgs.Item.ProductionYear})";
 
         switch (eventArgs.Item)
@@ -47,10 +47,10 @@ public class PlaybackProgressNotifier : IEventConsumer<PlaybackProgressEventArgs
                           $"      S{seasonNumber} - E{episodeNumber}\n" +
                           $"      '{eventArgs.Item.Name}'";
                 break;
-        }
+        } */
 
         string userId = eventArgs.Users[0].Id.ToString();
 
-        await _notificationFilter.Filter(NotificationFilter.NotificationType.PlaybackProgress, message, userId: userId).ConfigureAwait(false);
+        await _notificationFilter.Filter(NotificationFilter.NotificationType.PlaybackProgress, userId: userId).ConfigureAwait(false);
     }
 }

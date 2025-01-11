@@ -21,8 +21,6 @@ public class SubtitleDownloadFailureNotifier : IEventConsumer<SubtitleDownloadFa
             throw new ArgumentNullException(nameof(eventArgs));
         }
 
-        string message = $"🚫 Subtitle download failed for {eventArgs.Item.Name}";
-
-        await _notificationFilter.Filter(NotificationFilter.NotificationType.SubtitleDownloadFailure, message).ConfigureAwait(false);
+        await _notificationFilter.Filter(NotificationFilter.NotificationType.SubtitleDownloadFailure).ConfigureAwait(false);
     }
 }

@@ -21,9 +21,6 @@ public class PluginUpdatedNotifier : IEventConsumer<PluginUpdatedEventArgs>
             throw new ArgumentNullException(nameof(eventArgs));
         }
 
-        string message = $"🚧 {eventArgs.Argument.Name} plugin updated to version {eventArgs.Argument.Version}:" +
-                         $"🗒️ {eventArgs.Argument.Changelog}";
-
-        await _notificationFilter.Filter(NotificationFilter.NotificationType.PluginUpdated, message).ConfigureAwait(false);
+        await _notificationFilter.Filter(NotificationFilter.NotificationType.PluginUpdated).ConfigureAwait(false);
     }
 }

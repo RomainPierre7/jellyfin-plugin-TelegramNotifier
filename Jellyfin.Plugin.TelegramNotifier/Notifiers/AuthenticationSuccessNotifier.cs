@@ -22,8 +22,6 @@ public class AuthenticationSuccessNotifier : IEventConsumer<GenericEventArgs<Aut
             throw new ArgumentNullException(nameof(eventArgs));
         }
 
-        string message = $"🔓 Authentication success for user {eventArgs.Argument.User.Name} on {eventArgs.Argument.SessionInfo.DeviceName}";
-
-        await _notificationFilter.Filter(NotificationFilter.NotificationType.AuthenticationSuccess, message).ConfigureAwait(false);
+        await _notificationFilter.Filter(NotificationFilter.NotificationType.AuthenticationSuccess).ConfigureAwait(false);
     }
 }

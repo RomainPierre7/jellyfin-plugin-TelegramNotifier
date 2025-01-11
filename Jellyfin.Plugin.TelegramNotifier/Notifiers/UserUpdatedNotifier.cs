@@ -21,8 +21,6 @@ public class UserUpdatedNotifier : IEventConsumer<UserUpdatedEventArgs>
             throw new ArgumentNullException(nameof(eventArgs));
         }
 
-        string message = $"👤 User {eventArgs.Argument.Username} has been updated";
-
-        await _notificationFilter.Filter(NotificationFilter.NotificationType.UserUpdated, message).ConfigureAwait(false);
+        await _notificationFilter.Filter(NotificationFilter.NotificationType.UserUpdated).ConfigureAwait(false);
     }
 }

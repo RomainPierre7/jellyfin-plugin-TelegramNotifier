@@ -22,8 +22,6 @@ public class AuthenticationFailureNotifier : IEventConsumer<GenericEventArgs<Aut
             throw new ArgumentNullException(nameof(eventArgs));
         }
 
-        string message = $"🔒 Authentication failure on {eventArgs.Argument.DeviceName} for user {eventArgs.Argument.Username}";
-
-        await _notificationFilter.Filter(NotificationFilter.NotificationType.AuthenticationFailure, message).ConfigureAwait(false);
+        await _notificationFilter.Filter(NotificationFilter.NotificationType.AuthenticationFailure).ConfigureAwait(false);
     }
 }

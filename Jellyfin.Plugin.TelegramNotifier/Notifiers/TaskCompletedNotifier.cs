@@ -21,9 +21,6 @@ public class TaskCompletedNotifier : IEventConsumer<TaskCompletionEventArgs>
             throw new ArgumentNullException(nameof(eventArgs));
         }
 
-        string message = $"🧰 Task {eventArgs.Task.Name} completed: {eventArgs.Task.CurrentProgress}%\n" +
-                         $"🗒️ ({eventArgs.Task.Category}) {eventArgs.Task.Description}";
-
-        await _notificationFilter.Filter(NotificationFilter.NotificationType.TaskCompleted, message).ConfigureAwait(false);
+        await _notificationFilter.Filter(NotificationFilter.NotificationType.TaskCompleted).ConfigureAwait(false);
     }
 }

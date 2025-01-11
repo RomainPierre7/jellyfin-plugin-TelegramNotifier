@@ -63,7 +63,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
             }
         }
 
-        public async Task Filter(NotificationType type, string message, string userId = "", string imagePath = "", string subtype = "")
+        public async Task Filter(NotificationType type, string userId = "", string imagePath = "", string subtype = "")
         {
             if (!Plugin.Config.EnablePlugin)
             {
@@ -85,6 +85,8 @@ namespace Jellyfin.Plugin.TelegramNotifier
                 {
                     continue;
                 }
+
+                string message;
 
                 if (!string.IsNullOrEmpty(subtype))
                 {

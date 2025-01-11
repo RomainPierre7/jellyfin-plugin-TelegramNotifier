@@ -21,8 +21,6 @@ public class UserCreatedNotifier : IEventConsumer<UserCreatedEventArgs>
             throw new ArgumentNullException(nameof(eventArgs));
         }
 
-        string message = $"👤 User {eventArgs.Argument.Username} created.";
-
-        await _notificationFilter.Filter(NotificationFilter.NotificationType.UserCreated, message).ConfigureAwait(false);
+        await _notificationFilter.Filter(NotificationFilter.NotificationType.UserCreated).ConfigureAwait(false);
     }
 }

@@ -21,9 +21,6 @@ public class PluginInstallationFailedNotifier : IEventConsumer<InstallationFaile
             throw new ArgumentNullException(nameof(eventArgs));
         }
 
-        string message = $"🔴 {eventArgs.InstallationInfo} plugin installation failed (version {eventArgs.VersionInfo}):\n" +
-                         $"{eventArgs.Exception}";
-
-        await _notificationFilter.Filter(NotificationFilter.NotificationType.PluginInstallationFailed, message).ConfigureAwait(false);
+        await _notificationFilter.Filter(NotificationFilter.NotificationType.PluginInstallationFailed).ConfigureAwait(false);
     }
 }

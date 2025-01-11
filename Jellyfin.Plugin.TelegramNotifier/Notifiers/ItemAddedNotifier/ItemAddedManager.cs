@@ -65,25 +65,18 @@ public class ItemAddedManager : IItemAddedManager
 
                     _logger.LogDebug("Notifying for {ItemName}", item.Name);
 
-                    // Send notification.
-                    string message = $"🎬 {item.Name} ({item.ProductionYear})\n" +
-                                     $"      added to library";
-
                     string subtype = "ItemAddedMovies";
                     bool addImage = true;
 
                     switch (item)
                     {
                         case Series serie:
-                            message = $"📺 [Serie] {serie.Name} ({item.ProductionYear}) added to library";
                             subtype = "ItemAddedSeries";
                             break;
 
                         case Season season:
                             string seasonNumber = season.IndexNumber.HasValue ? season.IndexNumber.Value.ToString("00", CultureInfo.InvariantCulture) : "00";
 
-                            message = $"📺 {season.Series.Name} ({item.ProductionYear})\n" +
-                                      $"      Season {seasonNumber} added to library";
                             subtype = "ItemAddedSeasons";
                             break;
 
@@ -92,19 +85,14 @@ public class ItemAddedManager : IItemAddedManager
                             string eSeasonNumber = episode.Season.IndexNumber.HasValue ? episode.Season.IndexNumber.Value.ToString("00", CultureInfo.InvariantCulture) : "00";
                             string episodeNumber = episode.IndexNumber.HasValue ? episode.IndexNumber.Value.ToString("00", CultureInfo.InvariantCulture) : "00";
 
-                            message = $"📺 {episode.Series.Name} ({item.ProductionYear})\n" +
-                                      $"      S{eSeasonNumber} - E{episodeNumber}\n" +
-                                      $"      '{item.Name}' added to library";
                             subtype = "ItemAddedEpisodes";
                             break;
 
                         case MusicAlbum album:
-                            message = $"🎵 [Album] {album.Name} ({item.ProductionYear}) added to library";
                             subtype = "ItemAddedAlbums";
                             break;
 
                         case Audio audio:
-                            message = $"🎵 [Audio] {audio.Name} ({item.ProductionYear}) added to library";
                             subtype = "ItemAddedAudios";
                             break;
                     }
@@ -114,11 +102,11 @@ public class ItemAddedManager : IItemAddedManager
                         string serverUrl = Plugin.Instance?.Configuration.ServerUrl ?? "localhost:8096";
                         string path = "http://" + serverUrl + "/Items/" + item.Id + "/Images/Primary";
 
-                        await notificationFilter.Filter(NotificationFilter.NotificationType.ItemAdded, message, imagePath: path, subtype: subtype).ConfigureAwait(false);
+                        await notificationFilter.Filter(NotificationFilter.NotificationType.ItemAdded, imagePath: path, subtype: subtype).ConfigureAwait(false);
                     }
                     else
                     {
-                        await notificationFilter.Filter(NotificationFilter.NotificationType.ItemAdded, message, subtype: subtype).ConfigureAwait(false);
+                        await notificationFilter.Filter(NotificationFilter.NotificationType.ItemAdded, subtype: subtype).ConfigureAwait(false);
                     }
 
                     // Remove item from queue.

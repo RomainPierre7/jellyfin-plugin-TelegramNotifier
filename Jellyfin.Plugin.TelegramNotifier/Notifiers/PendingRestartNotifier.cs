@@ -21,8 +21,6 @@ public class PendingRestartNotifier : IEventConsumer<PendingRestartEventArgs>
             throw new ArgumentNullException(nameof(eventArgs));
         }
 
-        string message = $"🔄 Jellyfin is pending a restart.";
-
-        await _notificationFilter.Filter(NotificationFilter.NotificationType.PendingRestart, message).ConfigureAwait(false);
+        await _notificationFilter.Filter(NotificationFilter.NotificationType.PendingRestart).ConfigureAwait(false);
     }
 }

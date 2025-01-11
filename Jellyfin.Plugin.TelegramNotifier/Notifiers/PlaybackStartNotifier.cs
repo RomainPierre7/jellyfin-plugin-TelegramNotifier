@@ -42,7 +42,7 @@ public class PlaybackStartNotifier : IEventConsumer<PlaybackStartEventArgs>
             duration = minutes > 1 ? $"{minutes} minutes" : $"{minutes} minute";
         }
 
-        string message = $"👤 {eventArgs.Users[0].Username} is watching on {eventArgs.DeviceName}:\n" +
+        /* string message = $"👤 {eventArgs.Users[0].Username} is watching on {eventArgs.DeviceName}:\n" +
                          $"🎬 {eventArgs.Item.Name} ({eventArgs.Item.ProductionYear})\n" +
                          $"📺 [{eventArgs.Item.MediaType}] {string.Join(", ", eventArgs.Item.Genres)}\n" +
                          $"🕒 {duration}\n" +
@@ -62,7 +62,7 @@ public class PlaybackStartNotifier : IEventConsumer<PlaybackStartEventArgs>
                                           $"🕒 {duration}\n" +
                                           $"📽 {eventArgs.Item.Overview}";
                 break;
-        }
+        } */
 
         string userId = eventArgs.Users[0].Id.ToString();
 
@@ -71,11 +71,11 @@ public class PlaybackStartNotifier : IEventConsumer<PlaybackStartEventArgs>
             string serverUrl = Plugin.Instance?.Configuration.ServerUrl ?? "localhost:8096";
             string path = "http://" + serverUrl + "/Items/" + eventArgs.Item.Id + "/Images/Primary";
 
-            await _notificationFilter.Filter(NotificationFilter.NotificationType.PlaybackStart, message, userId: userId, imagePath: path).ConfigureAwait(false);
+            await _notificationFilter.Filter(NotificationFilter.NotificationType.PlaybackStart, userId: userId, imagePath: path).ConfigureAwait(false);
         }
         else
         {
-            await _notificationFilter.Filter(NotificationFilter.NotificationType.PlaybackStart, message, userId: userId).ConfigureAwait(false);
+            await _notificationFilter.Filter(NotificationFilter.NotificationType.PlaybackStart, userId: userId).ConfigureAwait(false);
         }
     }
 }

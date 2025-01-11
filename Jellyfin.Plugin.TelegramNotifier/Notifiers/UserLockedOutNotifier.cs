@@ -21,8 +21,6 @@ public class UserLockedOutNotifier : IEventConsumer<UserLockedOutEventArgs>
             throw new ArgumentNullException(nameof(eventArgs));
         }
 
-        string message = $"👤🔒 User {eventArgs.Argument.Username} locked out";
-
-        await _notificationFilter.Filter(NotificationFilter.NotificationType.UserLockedOut, message).ConfigureAwait(false);
+        await _notificationFilter.Filter(NotificationFilter.NotificationType.UserLockedOut).ConfigureAwait(false);
     }
 }

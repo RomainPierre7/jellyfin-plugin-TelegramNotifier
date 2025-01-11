@@ -21,8 +21,6 @@ public class PluginInstallationCancelledNotifier : IEventConsumer<PluginInstalla
             throw new ArgumentNullException(nameof(eventArgs));
         }
 
-        string message = $"🔴 {eventArgs.Argument.Name} plugin installation cancelled (version {eventArgs.Argument.Version}):";
-
-        await _notificationFilter.Filter(NotificationFilter.NotificationType.PluginInstallationCancelled, message).ConfigureAwait(false);
+        await _notificationFilter.Filter(NotificationFilter.NotificationType.PluginInstallationCancelled).ConfigureAwait(false);
     }
 }

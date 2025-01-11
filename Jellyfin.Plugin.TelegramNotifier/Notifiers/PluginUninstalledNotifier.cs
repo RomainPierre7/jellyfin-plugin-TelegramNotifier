@@ -21,8 +21,6 @@ public class PluginUninstalledNotifier : IEventConsumer<PluginUninstalledEventAr
             throw new ArgumentNullException(nameof(eventArgs));
         }
 
-        string message = $"🚧 {eventArgs.Argument.Name} plugin uninstalled";
-
-        await _notificationFilter.Filter(NotificationFilter.NotificationType.PluginUninstalled, message).ConfigureAwait(false);
+        await _notificationFilter.Filter(NotificationFilter.NotificationType.PluginUninstalled).ConfigureAwait(false);
     }
 }

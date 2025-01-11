@@ -21,8 +21,6 @@ public class UserDeletedNotifier : IEventConsumer<UserDeletedEventArgs>
             throw new ArgumentNullException(nameof(eventArgs));
         }
 
-        string message = $"🗑️ User {eventArgs.Argument.Username} deleted.";
-
-        await _notificationFilter.Filter(NotificationFilter.NotificationType.UserDeleted, message).ConfigureAwait(false);
+        await _notificationFilter.Filter(NotificationFilter.NotificationType.UserDeleted).ConfigureAwait(false);
     }
 }

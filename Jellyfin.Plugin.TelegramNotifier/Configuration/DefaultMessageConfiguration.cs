@@ -1,35 +1,65 @@
+using MediaBrowser.Model.Session;
+
 namespace Jellyfin.Plugin.TelegramNotifier.Configuration
 {
     public static class DefaultMessageConfiguration
     {
         static DefaultMessageConfiguration()
         {
-            ItemAdded = "ND🆕 {eventArgs.Argument.ItemName} has been added to your library.";
-            PlaybackStart = "ND▶️ {eventArgs.Argument.UserName} has started playback of {eventArgs.Argument.ItemName}.";
-            PlaybackProgress = "ND⏩ {eventArgs.Argument.UserName} has progressed playback of {eventArgs.Argument.ItemName} to {eventArgs.Argument.PlaybackPosition}.";
-            PlaybackStop = "ND⏹️ {eventArgs.Argument.UserName} has stopped playback of {eventArgs.Argument.ItemName}.";
-            SubtitleDownloadFailure = "ND❌ Subtitle download failed for {eventArgs.Argument.ItemName}.";
-            AuthenticationFailure = "ND🔒 Authentication failed for {eventArgs.Argument.UserName}.";
-            AuthenticationSuccess = "ND🔓 Authentication succeeded for {eventArgs.Argument.UserName}.";
-            SessionStart = "ND👤 {eventArgs.Argument.UserName} has started a session on:\n" +
+            ItemAddedMovies = "🎬 {item.Name} ({item.ProductionYear})\n" +
+                "      added to library";
+            ItemAddedSeries = "📺 [Serie] {serie.Name} ({item.ProductionYear}) added to library";
+            ItemAddedSeasons = "📺 {season.Series.Name} ({item.ProductionYear})\n" +
+                "      Season {seasonNumber} added to library";
+            ItemAddedEpisodes = "📺 {episode.Series.Name} ({item.ProductionYear})\n" +
+                "      S{eSeasonNumber} - E{episodeNumber}\n" +
+                "      '{item.Name}' added to library";
+            ItemAddedAlbums = "🎵 [Album] {album.Name} ({item.ProductionYear}) added to library";
+            ItemAddedSongs = "🎵 [Audio] {audio.Name} ({item.ProductionYear}) added to library";
+            AuthenticationFailure = "🔒 Authentication failure on {eventArgs.Argument.DeviceName} for user {eventArgs.Argument.Username}";
+            AuthenticationSuccess = "🔓 Authentication success for user {eventArgs.Argument.User.Name} on {eventArgs.Argument.SessionInfo.DeviceName}";
+            PendingRestart = "🔄 Jellyfin is pending a restart.";
+            PlaybackProgress = "👤 {eventArgs.Users[0].Username} is still watching on {eventArgs.DeviceName}:\n" +
+                "🎬 {eventArgs.Item.Name} ({eventArgs.Item.ProductionYear})";
+            PlaybackStart = "👤 {eventArgs.Users[0].Username} is watching on {eventArgs.DeviceName}:\n" +
+                "🎬 {eventArgs.Item.Name} ({eventArgs.Item.ProductionYear})\n" +
+                "📺 [{eventArgs.Item.MediaType}] {string.Join(', ', eventArgs.Item.Genres)}\n" +
+                "🕒 {duration}\n" +
+                "📽 {eventArgs.Item.Overview}";
+            PlaybackStop = "👤 {eventArgs.Users[0].Username} stopped watching:\n" +
+                "🎬 {eventArgs.Item.Name} ({eventArgs.Item.ProductionYear})";
+            PluginInstallationCancelled = "🔴 {eventArgs.Argument.Name} plugin installation cancelled (version {eventArgs.Argument.Version}):";
+            PluginInstallationFailed = "🔴 {eventArgs.InstallationInfo} plugin installation failed (version {eventArgs.VersionInfo}):\n" +
+                "{eventArgs.Exception}";
+            PluginInstalled = "🚧 {eventArgs.Argument.Name} plugin installed (version {eventArgs.Argument.Version})";
+            PluginInstalling = "🚧 {eventArgs.Argument.Name} plugin is installing (version {eventArgs.Argument.Version})";
+            PluginUninstalled = "🚧 {eventArgs.Argument.Name} plugin uninstalled";
+            PluginUpdated = "🚧 {eventArgs.Argument.Name} plugin updated to version {eventArgs.Argument.Version}:" +
+                "🗒️ {eventArgs.Argument.Changelog}";
+            SessionStart = "👤 {eventArgs.Argument.UserName} has started a session on:\n" +
                 "💻 {eventArgs.Argument.Client} ({eventArgs.Argument.DeviceName})\n";
-            PendingRestart = "ND🔄 Jellyfin is pending a restart.";
-            TaskCompleted = "ND✅ Task has been completed.";
-            PluginInstallationCancelled = "ND❌ Plugin installation has been cancelled.";
-            PluginInstallationFailed = "ND❌ Plugin installation has failed.";
-            PluginInstalled = "ND✅ Plugin has been installed.";
-            PluginInstalling = "ND🔄 Plugin is being installed.";
-            PluginUninstalled = "ND❌ Plugin has been uninstalled.";
-            PluginUpdated = "ND🔄 Plugin has been updated.";
-            UserCreated = "ND👤 User {eventArgs.Argument.UserName} has been created.";
-            UserDeleted = "ND👤 User {eventArgs.Argument.UserName} has been deleted.";
-            UserLockedOut = "ND🔒 User {eventArgs.Argument.UserName} has been locked out.";
-            UserPasswordChanged = "ND🔒 Password for user {eventArgs.Argument.UserName} has been changed.";
-            UserUpdated = "ND👤 User {eventArgs.Argument.UserName} has been updated.";
-            UserDataSaved = "ND👤 User data for {eventArgs.Argument.UserName} has been saved.";
+            SubtitleDownloadFailure = "🚫 Subtitle download failed for {eventArgs.Item.Name}";
+            TaskCompleted = "🧰 Task {eventArgs.Task.Name} completed: {eventArgs.Task.CurrentProgress}%\n" +
+                "🗒️ ({eventArgs.Task.Category}) {eventArgs.Task.Description}";
+            UserCreated = "👤 User {eventArgs.Argument.Username} created.";
+            UserDeleted = "🗑️ User {eventArgs.Argument.Username} deleted.";
+            UserLockedOut = "👤🔒 User {eventArgs.Argument.Username} locked out";
+            UserPasswordChanged = "👤 User {eventArgs.Argument.Username} changed his password.";
+            UserUpdated = "👤 User {eventArgs.Argument.Username} has been updated";
+            UserDataSaved = "👤 User {eventArgs.Argument.Username} data saved.";
         }
 
-        public static string ItemAdded { get; }
+        public static string ItemAddedMovies { get; }
+
+        public static string ItemAddedSeries { get; }
+
+        public static string ItemAddedSeasons { get; }
+
+        public static string ItemAddedEpisodes { get; }
+
+        public static string ItemAddedAlbums { get; }
+
+        public static string ItemAddedSongs { get; }
 
         public static string PlaybackStart { get; }
 
