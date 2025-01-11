@@ -40,24 +40,26 @@ namespace Jellyfin.Plugin.TelegramNotifier
             UserDataSaved
         }
 
-        private bool GetPropertyValue(UserConfiguration user, string propertyName)
+        private (bool value, string message) GetPropertyValue(UserConfiguration user, string propertyName)
         {
             var property = user.GetType().GetProperty(propertyName);
-            if (property != null)
+            var property_message = user.GetType().GetProperty(propertyName + "StringMessage");
+            if (property != null && property_message != null)
             {
                 var value = property.GetValue(user);
-                if (value != null)
+                var message = property_message.GetValue(user);
+                if (value != null && message != null)
                 {
-                    return (bool)value;
+                    return ((bool)value, (string)message);
                 }
                 else
                 {
-                    throw new ArgumentException($"The property {propertyName} is null.");
+                    throw new ArgumentException($"The property {propertyName} or {propertyName + "StringMessage"} is null.");
                 }
             }
             else
             {
-                throw new ArgumentException($"The property {propertyName} does not exist.");
+                throw new ArgumentException($"The property {propertyName} or {propertyName + "StringMessage"} does not exist.");
             }
         }
 
@@ -78,7 +80,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
                     continue;
                 }
 
-                bool isNotificationTypeEnabled = GetPropertyValue(user, type.ToString());
+                bool isNotificationTypeEnabled = GetPropertyValue(user, type.ToString()).value;
                 if (!isNotificationTypeEnabled)
                 {
                     continue;
@@ -86,11 +88,17 @@ namespace Jellyfin.Plugin.TelegramNotifier
 
                 if (!string.IsNullOrEmpty(subtype))
                 {
-                    bool isSubTypeEnabled = GetPropertyValue(user, subtype);
+                    bool isSubTypeEnabled = GetPropertyValue(user, subtype).value;
                     if (!isSubTypeEnabled)
                     {
                         continue;
                     }
+
+                    message = GetPropertyValue(user, subtype).message;
+                }
+                else
+                {
+                    message = GetPropertyValue(user, type.ToString()).message;
                 }
 
                 if (user.DoNotMentionOwnActivities == true && user.UserId is not null)
@@ -103,10 +111,10 @@ namespace Jellyfin.Plugin.TelegramNotifier
                     }
                 }
 
-                string botToken = user.BotToken ?? string.Empty;
-                string chatId = user.ChatId ?? string.Empty;
-                bool isSilentNotification = user.SilentNotification ?? false;
-                string threadId = user.ThreadId ?? string.Empty;
+                string botToken = user.BotToken;
+                string chatId = user.ChatId;
+                bool isSilentNotification = user.SilentNotification;
+                string threadId = user.ThreadId;
 
                 try
                 {

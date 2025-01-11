@@ -21,11 +21,8 @@ public class SessionStartNotifier : IEventConsumer<SessionStartedEventArgs>
             throw new ArgumentNullException(nameof(eventArgs));
         }
 
-        string message = $"👤 {eventArgs.Argument.UserName} has started a session on:\n" +
-                         $"💻 {eventArgs.Argument.Client} ({eventArgs.Argument.DeviceName})\n";
-
         string userId = eventArgs.Argument.UserId.ToString();
 
-        await _notificationFilter.Filter(NotificationFilter.NotificationType.SessionStart, message, userId).ConfigureAwait(false);
+        await _notificationFilter.Filter(NotificationFilter.NotificationType.SessionStart, string.Empty, userId).ConfigureAwait(false);
     }
 }
