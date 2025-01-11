@@ -38,7 +38,7 @@ namespace Jellyfin.Plugin.TelegramNotifier.Configuration
 
             PlaybackStartMovies = "👤 {eventArgs.Users[0].Username} is watching on {eventArgs.DeviceName}:\n" +
                 "🎬 {eventArgs.Item.Name} ({eventArgs.Item.ProductionYear})\n" +
-                "📺 [{eventArgs.Item.MediaType}] {string.Join(\", \", eventArgs.Item.Genres)}\n" +
+                "📺 [{eventArgs.Item.MediaType}] {eventArgs.Item.Genres}\n" +
                 "🕒 {duration}\n" +
                 "📽 {eventArgs.Item.Overview}";
 
@@ -46,7 +46,7 @@ namespace Jellyfin.Plugin.TelegramNotifier.Configuration
                 "🎬 {episode.Series.Name} ({eventArgs.Item.ProductionYear})\n" +
                 "      S{seasonNumber} - E{episodeNumber}\n" +
                 "      '{eventArgs.Item.Name}'\n" +
-                "📺 [{eventArgs.Item.MediaType}] {string.Join(\", \", eventArgs.Item.Genres)}\n" +
+                "📺 [{eventArgs.Item.MediaType}] {eventArgs.Item.Genres}\n" +
                 "🕒 {duration}\n" +
                 "📽 {eventArgs.Item.Overview}";
 

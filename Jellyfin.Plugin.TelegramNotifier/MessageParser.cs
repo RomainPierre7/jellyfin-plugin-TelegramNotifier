@@ -12,10 +12,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
         private static readonly string[] ItemProductionYearPath = new[] { "ProductionYear" };
         private static readonly string[] SerieNamePath = new[] { "Name" };
         private static readonly string[] SeasonSeriesNamePath = new[] { "Series", "Name" };
-        private static readonly string[] SeasonNumberPath = new[] { "seasonNumber" };
         private static readonly string[] EpisodeSeriesNamePath = new[] { "Series", "Name" };
-        private static readonly string[] ESeasonNumberPath = new[] { "eSeasonNumber" };
-        private static readonly string[] EpisodeNumberPath = new[] { "episodeNumber" };
         private static readonly string[] AlbumNamePath = new[] { "Name" };
         private static readonly string[] AudioNamePath = new[] { "Name" };
         private static readonly string[] EventArgsArgumentDeviceNamePath = new[] { "Argument", "DeviceName" };
@@ -53,10 +50,10 @@ namespace Jellyfin.Plugin.TelegramNotifier
             { "{item.ProductionYear}", GetPropertySafely(objEventArgs, ItemProductionYearPath) },
             { "{serie.Name}", GetPropertySafely(objEventArgs, SerieNamePath) },
             { "{season.Series.Name}", GetPropertySafely(objEventArgs, SeasonSeriesNamePath) },
-            { "{seasonNumber}", GetPropertySafely(objEventArgs, SeasonNumberPath) },
+            { "{seasonNumber}", GetSeasonNumberSafely(objEventArgs) },
             { "{episode.Series.Name}", GetPropertySafely(objEventArgs, EpisodeSeriesNamePath) },
-            { "{eSeasonNumber}", GetPropertySafely(objEventArgs, ESeasonNumberPath) },
-            { "{episodeNumber}", GetPropertySafely(objEventArgs, EpisodeNumberPath) },
+            { "{eSeasonNumber}", GetESeasonNumberSafely(objEventArgs) },
+            { "{episodeNumber}", GetEpisodeNumberSafely(objEventArgs) },
             { "{album.Name}", GetPropertySafely(objEventArgs, AlbumNamePath) },
             { "{audio.Name}", GetPropertySafely(objEventArgs, AudioNamePath) },
             { "{eventArgs.Argument.DeviceName}", GetPropertySafely(objEventArgs, EventArgsArgumentDeviceNamePath) },
@@ -68,7 +65,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
             { "{eventArgs.Item.Name}", GetPropertySafely(objEventArgs, EventArgsItemNamePath) },
             { "{eventArgs.Item.ProductionYear}", GetPropertySafely(objEventArgs, EventArgsItemProductionYearPath) },
             { "{eventArgs.Item.MediaType}", GetPropertySafely(objEventArgs, EventArgsItemMediaTypePath) },
-            { "{string.Join(\", \", eventArgs.Item.Genres)}", GetPropertySafely(objEventArgs, EventArgsItemGenresPath) },
+            { "{eventArgs.Item.Genres}", GetPropertySafely(objEventArgs, EventArgsItemGenresPath) },
             { "{duration}", GetDurationSafely(objEventArgs) },
             { "{eventArgs.Item.Overview}", GetPropertySafely(objEventArgs, EventArgsItemOverviewPath) },
             { "{eventArgs.InstallationInfo}", GetPropertySafely(objEventArgs, EventArgsInstallationInfoPath) },
@@ -149,7 +146,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
 
             if (itemProperty == null || itemProperty.GetValue(obj) == null)
             {
-                return "Durée non disponible";
+                return "No duration available";
             }
 
             var item = itemProperty.GetValue(obj);
@@ -158,7 +155,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
 
             if (ticksProperty == null || ticksProperty.GetValue(item) == null)
             {
-                return "Durée non disponible";
+                return "No duration available";
             }
 
             var ticksValue = ticksProperty.GetValue(item);
@@ -182,7 +179,82 @@ namespace Jellyfin.Plugin.TelegramNotifier
             }
             else
             {
-                return "Durée invalide";
+                return "Invalid duration";
+            }
+        }
+
+        private static string GetSeasonNumberSafely(object obj)
+        {
+            // string seasonNumber = season.IndexNumber.HasValue ? season.IndexNumber.Value.ToString("00", CultureInfo.InvariantCulture) : "00";
+            var itemProperty = obj.GetType().GetProperty("IndexNumber");
+
+            if (itemProperty == null || itemProperty.GetValue(obj) == null)
+            {
+                return "Error";
+            }
+
+            var item = itemProperty.GetValue(obj);
+
+            if (int.TryParse(item.ToString(), out int seasonNumber))
+            {
+                return seasonNumber.ToString("00", CultureInfo.InvariantCulture);
+            }
+            else
+            {
+                return "Error";
+            }
+        }
+
+        private static string GetESeasonNumberSafely(object obj)
+        {
+            // string eSeasonNumber = episode.Season.IndexNumber.HasValue ? episode.Season.IndexNumber.Value.ToString("00", CultureInfo.InvariantCulture) : "00";
+            var itemProperty = obj.GetType().GetProperty("Season");
+
+            if (itemProperty == null || itemProperty.GetValue(obj) == null)
+            {
+                return "Error";
+            }
+
+            var item = itemProperty.GetValue(obj);
+
+            var seasonNumberProperty = item.GetType().GetProperty("IndexNumber");
+
+            if (seasonNumberProperty == null || seasonNumberProperty.GetValue(item) == null)
+            {
+                return "Error";
+            }
+
+            var seasonNumberItem = seasonNumberProperty.GetValue(item);
+
+            if (int.TryParse(seasonNumberItem.ToString(), out int seasonNumber))
+            {
+                return seasonNumber.ToString("00", CultureInfo.InvariantCulture);
+            }
+            else
+            {
+                return "Error";
+            }
+        }
+
+        private static string GetEpisodeNumberSafely(object obj)
+        {
+            // string episodeNumber = episode.IndexNumber.HasValue ? episode.IndexNumber.Value.ToString("00", CultureInfo.InvariantCulture) : "00";
+            var itemProperty = obj.GetType().GetProperty("IndexNumber");
+
+            if (itemProperty == null || itemProperty.GetValue(obj) == null)
+            {
+                return "Error";
+            }
+
+            var item = itemProperty.GetValue(obj);
+
+            if (int.TryParse(item.ToString(), out int episodeNumber))
+            {
+                return episodeNumber.ToString("00", CultureInfo.InvariantCulture);
+            }
+            else
+            {
+                return "Error";
             }
         }
 
@@ -211,7 +283,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
             {
                 return $"Error: Wrong message configuration for event {eventArgs?.GetType()?.Name ?? "Unknown"}.\n" +
                        "One or more keys are invalid or do not exist.\n\n" +
-                       $"Message:\n{message}\n\n{ex.Message}";
+                       $"Message:\n{message}\n\n{ex.Message} Check your configuration.";
             }
         }
     }
