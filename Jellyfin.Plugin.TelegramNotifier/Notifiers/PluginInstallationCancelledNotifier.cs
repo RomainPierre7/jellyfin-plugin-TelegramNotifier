@@ -21,6 +21,6 @@ public class PluginInstallationCancelledNotifier : IEventConsumer<PluginInstalla
             throw new ArgumentNullException(nameof(eventArgs));
         }
 
-        await _notificationFilter.Filter(NotificationFilter.NotificationType.PluginInstallationCancelled).ConfigureAwait(false);
+        await _notificationFilter.Filter(NotificationFilter.NotificationType.PluginInstallationCancelled, eventArgs).ConfigureAwait(false);
     }
 }

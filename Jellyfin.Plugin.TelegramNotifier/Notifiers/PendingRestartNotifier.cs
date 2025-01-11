@@ -21,6 +21,6 @@ public class PendingRestartNotifier : IEventConsumer<PendingRestartEventArgs>
             throw new ArgumentNullException(nameof(eventArgs));
         }
 
-        await _notificationFilter.Filter(NotificationFilter.NotificationType.PendingRestart).ConfigureAwait(false);
+        await _notificationFilter.Filter(NotificationFilter.NotificationType.PendingRestart, eventArgs).ConfigureAwait(false);
     }
 }

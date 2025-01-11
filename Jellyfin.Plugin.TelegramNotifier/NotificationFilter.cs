@@ -82,7 +82,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
             }
         }
 
-        public async Task Filter(NotificationType type, string userId = "", string imagePath = "", string subtype = "")
+        public async Task Filter(NotificationType type, dynamic eventArgs, string userId = "", string imagePath = "", string subtype = "")
         {
             if (!Plugin.Config.EnablePlugin)
             {
@@ -105,6 +105,16 @@ namespace Jellyfin.Plugin.TelegramNotifier
                     continue;
                 }
 
+                if (user.DoNotMentionOwnActivities == true && user.UserId is not null)
+                {
+                    string currentUserid = user.UserId.Replace("-", string.Empty, StringComparison.OrdinalIgnoreCase);
+                    string notifUserId = userId.Replace("-", string.Empty, StringComparison.OrdinalIgnoreCase);
+                    if (currentUserid == notifUserId)
+                    {
+                        continue;
+                    }
+                }
+
                 string message;
 
                 if (!string.IsNullOrEmpty(subtype))
@@ -122,15 +132,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
                     message = GetPropertyMessage(user, type.ToString());
                 }
 
-                if (user.DoNotMentionOwnActivities == true && user.UserId is not null)
-                {
-                    string currentUserid = user.UserId.Replace("-", string.Empty, StringComparison.OrdinalIgnoreCase);
-                    string notifUserId = userId.Replace("-", string.Empty, StringComparison.OrdinalIgnoreCase);
-                    if (currentUserid == notifUserId)
-                    {
-                        continue;
-                    }
-                }
+                message = MessageParser.ParseMessage(message, eventArgs);
 
                 string botToken = user.BotToken;
                 string chatId = user.ChatId;

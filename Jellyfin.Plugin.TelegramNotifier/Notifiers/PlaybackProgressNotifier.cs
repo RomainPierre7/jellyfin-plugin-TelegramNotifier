@@ -60,6 +60,6 @@ public class PlaybackProgressNotifier : IEventConsumer<PlaybackProgressEventArgs
 
         string userId = eventArgs.Users[0].Id.ToString();
 
-        await _notificationFilter.Filter(NotificationFilter.NotificationType.PlaybackProgress, userId: userId, subtype: subtype).ConfigureAwait(false);
+        await _notificationFilter.Filter(NotificationFilter.NotificationType.PlaybackProgress, eventArgs, userId: userId, subtype: subtype).ConfigureAwait(false);
     }
 }

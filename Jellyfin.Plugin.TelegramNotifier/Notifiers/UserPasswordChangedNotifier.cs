@@ -21,6 +21,6 @@ public class UserPasswordChangedNotifier : IEventConsumer<UserPasswordChangedEve
             throw new ArgumentNullException(nameof(eventArgs));
         }
 
-        await _notificationFilter.Filter(NotificationFilter.NotificationType.UserPasswordChanged).ConfigureAwait(false);
+        await _notificationFilter.Filter(NotificationFilter.NotificationType.UserPasswordChanged, eventArgs).ConfigureAwait(false);
     }
 }

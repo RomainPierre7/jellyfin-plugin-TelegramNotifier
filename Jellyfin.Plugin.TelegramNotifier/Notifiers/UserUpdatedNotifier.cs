@@ -21,6 +21,6 @@ public class UserUpdatedNotifier : IEventConsumer<UserUpdatedEventArgs>
             throw new ArgumentNullException(nameof(eventArgs));
         }
 
-        await _notificationFilter.Filter(NotificationFilter.NotificationType.UserUpdated).ConfigureAwait(false);
+        await _notificationFilter.Filter(NotificationFilter.NotificationType.UserUpdated, eventArgs).ConfigureAwait(false);
     }
 }

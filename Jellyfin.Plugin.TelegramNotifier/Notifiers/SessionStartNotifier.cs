@@ -23,6 +23,6 @@ public class SessionStartNotifier : IEventConsumer<SessionStartedEventArgs>
 
         string userId = eventArgs.Argument.UserId.ToString();
 
-        await _notificationFilter.Filter(NotificationFilter.NotificationType.SessionStart, userId).ConfigureAwait(false);
+        await _notificationFilter.Filter(NotificationFilter.NotificationType.SessionStart, eventArgs, userId).ConfigureAwait(false);
     }
 }

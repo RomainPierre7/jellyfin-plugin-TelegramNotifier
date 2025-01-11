@@ -21,6 +21,6 @@ public class SubtitleDownloadFailureNotifier : IEventConsumer<SubtitleDownloadFa
             throw new ArgumentNullException(nameof(eventArgs));
         }
 
-        await _notificationFilter.Filter(NotificationFilter.NotificationType.SubtitleDownloadFailure).ConfigureAwait(false);
+        await _notificationFilter.Filter(NotificationFilter.NotificationType.SubtitleDownloadFailure, eventArgs).ConfigureAwait(false);
     }
 }

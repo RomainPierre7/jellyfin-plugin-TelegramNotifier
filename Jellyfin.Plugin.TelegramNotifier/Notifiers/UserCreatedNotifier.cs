@@ -21,6 +21,6 @@ public class UserCreatedNotifier : IEventConsumer<UserCreatedEventArgs>
             throw new ArgumentNullException(nameof(eventArgs));
         }
 
-        await _notificationFilter.Filter(NotificationFilter.NotificationType.UserCreated).ConfigureAwait(false);
+        await _notificationFilter.Filter(NotificationFilter.NotificationType.UserCreated, eventArgs).ConfigureAwait(false);
     }
 }

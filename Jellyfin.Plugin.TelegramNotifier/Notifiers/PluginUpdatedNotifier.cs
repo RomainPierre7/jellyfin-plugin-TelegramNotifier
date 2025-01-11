@@ -21,6 +21,6 @@ public class PluginUpdatedNotifier : IEventConsumer<PluginUpdatedEventArgs>
             throw new ArgumentNullException(nameof(eventArgs));
         }
 
-        await _notificationFilter.Filter(NotificationFilter.NotificationType.PluginUpdated).ConfigureAwait(false);
+        await _notificationFilter.Filter(NotificationFilter.NotificationType.PluginUpdated, eventArgs).ConfigureAwait(false);
     }
 }

@@ -22,6 +22,6 @@ public class AuthenticationSuccessNotifier : IEventConsumer<GenericEventArgs<Aut
             throw new ArgumentNullException(nameof(eventArgs));
         }
 
-        await _notificationFilter.Filter(NotificationFilter.NotificationType.AuthenticationSuccess).ConfigureAwait(false);
+        await _notificationFilter.Filter(NotificationFilter.NotificationType.AuthenticationSuccess, eventArgs).ConfigureAwait(false);
     }
 }

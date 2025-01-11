@@ -68,7 +68,6 @@ namespace Jellyfin.Plugin.TelegramNotifier
             }
         }
 
-
         public async Task<bool> SendMessageWithPhoto(string notificationType, string message, string imageUrl, string botToken, string chatId, bool isSilentNotification, string threadId)
         {
             try

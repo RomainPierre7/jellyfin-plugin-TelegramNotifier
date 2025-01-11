@@ -80,11 +80,11 @@ public class PlaybackStartNotifier : IEventConsumer<PlaybackStartEventArgs>
             string serverUrl = Plugin.Instance?.Configuration.ServerUrl ?? "localhost:8096";
             string path = "http://" + serverUrl + "/Items/" + eventArgs.Item.Id + "/Images/Primary";
 
-            await _notificationFilter.Filter(NotificationFilter.NotificationType.PlaybackStart, userId: userId, imagePath: path, subtype: subtype).ConfigureAwait(false);
+            await _notificationFilter.Filter(NotificationFilter.NotificationType.PlaybackStart, eventArgs, userId: userId, imagePath: path, subtype: subtype).ConfigureAwait(false);
         }
         else
         {
-            await _notificationFilter.Filter(NotificationFilter.NotificationType.PlaybackStart, userId: userId, subtype: subtype).ConfigureAwait(false);
+            await _notificationFilter.Filter(NotificationFilter.NotificationType.PlaybackStart, eventArgs, userId: userId, subtype: subtype).ConfigureAwait(false);
         }
     }
 }

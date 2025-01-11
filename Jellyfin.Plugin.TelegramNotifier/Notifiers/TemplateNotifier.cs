@@ -20,6 +20,6 @@ public class TemplateNotifier : IEventConsumer<TemplateEventArgs>
             throw new ArgumentNullException(nameof(eventArgs));
         }
 
-        await _notificationFilter.Filter(NotificationFilter.NotificationType.Template).ConfigureAwait(false);
+        await _notificationFilter.Filter(NotificationFilter.NotificationType.Template, eventArgs).ConfigureAwait(false);
     }
 } */

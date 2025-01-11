@@ -21,6 +21,6 @@ public class UserDeletedNotifier : IEventConsumer<UserDeletedEventArgs>
             throw new ArgumentNullException(nameof(eventArgs));
         }
 
-        await _notificationFilter.Filter(NotificationFilter.NotificationType.UserDeleted).ConfigureAwait(false);
+        await _notificationFilter.Filter(NotificationFilter.NotificationType.UserDeleted, eventArgs).ConfigureAwait(false);
     }
 }

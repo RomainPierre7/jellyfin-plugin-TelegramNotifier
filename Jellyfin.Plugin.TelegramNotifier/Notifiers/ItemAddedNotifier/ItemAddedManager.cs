@@ -68,16 +68,20 @@ public class ItemAddedManager : IItemAddedManager
                     string subtype = "ItemAddedMovies";
                     bool addImage = true;
 
+                    dynamic eventArgs = item;
+
                     switch (item)
                     {
                         case Series serie:
                             subtype = "ItemAddedSeries";
+                            eventArgs = serie;
                             break;
 
                         case Season season:
                             string seasonNumber = season.IndexNumber.HasValue ? season.IndexNumber.Value.ToString("00", CultureInfo.InvariantCulture) : "00";
 
                             subtype = "ItemAddedSeasons";
+                            eventArgs = season;
                             break;
 
                         case Episode episode:
@@ -86,14 +90,17 @@ public class ItemAddedManager : IItemAddedManager
                             string episodeNumber = episode.IndexNumber.HasValue ? episode.IndexNumber.Value.ToString("00", CultureInfo.InvariantCulture) : "00";
 
                             subtype = "ItemAddedEpisodes";
+                            eventArgs = episode;
                             break;
 
                         case MusicAlbum album:
                             subtype = "ItemAddedAlbums";
+                            eventArgs = album;
                             break;
 
                         case Audio audio:
                             subtype = "ItemAddedAudios";
+                            eventArgs = audio;
                             break;
                     }
 
@@ -102,11 +109,11 @@ public class ItemAddedManager : IItemAddedManager
                         string serverUrl = Plugin.Instance?.Configuration.ServerUrl ?? "localhost:8096";
                         string path = "http://" + serverUrl + "/Items/" + item.Id + "/Images/Primary";
 
-                        await notificationFilter.Filter(NotificationFilter.NotificationType.ItemAdded, imagePath: path, subtype: subtype).ConfigureAwait(false);
+                        await notificationFilter.Filter(NotificationFilter.NotificationType.ItemAdded, eventArgs, imagePath: path, subtype: subtype).ConfigureAwait(false);
                     }
                     else
                     {
-                        await notificationFilter.Filter(NotificationFilter.NotificationType.ItemAdded, subtype: subtype).ConfigureAwait(false);
+                        await notificationFilter.Filter(NotificationFilter.NotificationType.ItemAdded, eventArgs, subtype: subtype).ConfigureAwait(false);
                     }
 
                     // Remove item from queue.
