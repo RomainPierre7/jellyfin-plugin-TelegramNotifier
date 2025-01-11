@@ -1,0 +1,109 @@
+[
+    {
+        "category": "Notifications",
+        "guid": "fd76211d-17e0-4a72-a23f-c6eeb1e48b3a",
+        "name": "Telegram Notifier",
+        "owner": "RomainPierre7",
+        "overview": "Easily send notifications to your Telegram bot!",
+        "description": "Configure for each user where to send notifications, and what kind of notifications to send.",
+        "imageUrl": "https://raw.githubusercontent.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/main/assets/banner.png",
+        "versions": [
+            {
+                "checksum": "3eedfa1c0d7b748b203a161a627417b4",
+                "version": "10.9.10.2",
+                "targetAbi": "10.9.4.0",
+                "sourceUrl": "https://github.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/releases/download/10.9.10.2/TelegramNotifier.zip",
+                "timestamp": "2024-10-01T00:00:00Z",
+                "changelog": "### ⚙️ Fixes: ###\n- Wrong assembly version (thumbnail didn't show properly)"
+            },
+            {
+                "checksum": "c9a8e51dda3969fc65cc7f70c485be22",
+                "version": "10.9.10.1",
+                "targetAbi": "10.9.4.0",
+                "sourceUrl": "https://github.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/releases/download/10.9.10.1/TelegramNotifier.zip",
+                "timestamp": "2024-08-29T00:00:00Z",
+                "changelog": "### ⚙️ Fixes: ###\n- Item added notifier didn't work properly"
+            },
+            {
+                "checksum": "b7f2aca7c2ebd9fffc39613d17ad1393",
+                "version": "10.9.10.0",
+                "targetAbi": "10.9.4.0",
+                "sourceUrl": "https://github.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/releases/download/10.9.10.0/TelegramNotifier.zip",
+                "timestamp": "2024-08-26T00:00:00Z",
+                "changelog": "### 🚀 New features: ###\n- Item added granularity with songs and albums\n- Possibility to use thread for topic group"
+            },
+            {
+                "checksum": "0416753519adf786443b7a8b19a1c6ad",
+                "version": "10.9.4.0",
+                "targetAbi": "10.9.4.0",
+                "sourceUrl": "https://github.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/releases/download/10.9.4.0/TelegramNotifier.zip",
+                "timestamp": "2024-06-05T00:00:00Z",
+                "changelog": "### 🚀 New features: ###\n- Item added granularity\n\n### 📮 New notifiers: ####\n- User locked out"
+            },
+            {
+                "checksum": "cc1aaa8fa25551ea257dfa7dfd24b7f8",
+                "version": "10.9.1.3",
+                "targetAbi": "10.9.1.0",
+                "sourceUrl": "https://github.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/releases/download/10.9.1.3/TelegramNotifier.zip",
+                "timestamp": "2024-05-16T00:00:00Z",
+                "changelog": "### 🚀 New features: ###\n- Silent notifications option\n- Do not notify user's own activities option"
+            },
+            {
+                "checksum": "06b29e90b4bd572596648564571a4d0e",
+                "version": "10.9.1.2",
+                "targetAbi": "10.9.1.0",
+                "sourceUrl": "https://github.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/releases/download/10.9.1.2/TelegramNotifier.zip",
+                "timestamp": "2024-05-14T19:00:00Z",
+                "changelog": "### 🚀 New features: ###\n- Primary image support"
+            },
+            {
+                "checksum": "8dd49e79edb95c346b6d66b9b110fb3c",
+                "version": "10.9.1.1",
+                "targetAbi": "10.9.1.0",
+                "sourceUrl": "https://github.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/releases/download/10.9.1.1/TelegramNotifier.zip",
+                "timestamp": "2024-05-14T17:00:00Z",
+                "changelog": "### 🚀 New features: ###\n- Series support\n\n### ⚙️ Fixes: ###\n- Item added notifier didn't work properly"
+            },
+            {
+                "checksum": "725245da653071f8d1ee2e8c580b8717",
+                "version": "10.9.1.0",
+                "targetAbi": "10.9.1.0",
+                "sourceUrl": "https://github.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/releases/download/10.9.1.0/TelegramNotifier.zip",
+                "timestamp": "2024-05-14T00:00:00Z",
+                "changelog": "### ♽ Dependancies: ###\n- Porting to Jellyfin 10.9.1 and .NET 8.0"
+            },
+            {
+                "checksum": "9e9d6d23184767a0b64e817194b3f4cd",
+                "version": "10.8.13.3",
+                "targetAbi": "10.8.13.0",
+                "sourceUrl": "https://github.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/releases/download/10.8.13.3/TelegramNotifier.zip",
+                "timestamp": "2024-05-09T00:00:00Z",
+                "changelog": "### ⚙️ Fixes: ###\n- Item added notifier notified for all items"
+            },
+            {
+                "checksum": "9c6f43aa067e0f110077400857dc3300",
+                "version": "10.8.13.2",
+                "targetAbi": "10.8.13.0",
+                "sourceUrl": "https://github.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/releases/download/10.8.13.2/TelegramNotifier.zip",
+                "timestamp": "2024-05-08T00:00:00Z",
+                "changelog": "### 📮 New notifiers: ####\n- Item added\n- Playback progress"
+            },
+            {
+                "checksum": "940694a06cd4fc40e8786c666e474d63",
+                "version": "10.8.13.1",
+                "targetAbi": "10.8.13.0",
+                "sourceUrl": "https://github.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/releases/download/10.8.13.1/TelegramNotifier.zip",
+                "timestamp": "2024-04-30T00:00:00Z",
+                "changelog": "### 📮 New notifiers: ####\n- Session start\n- User created\n- User deleted\n- User password changed\n- Plugin installation cancelled\n- Plugin installation failed\n- Plugin installed\n- Plugin installing\n- Plugin uninstalled\n- Plugin updated"
+            },
+            {
+                "checksum": "59fea410b23da6735eb61111f2df7c9e",
+                "version": "10.8.13.0",
+                "targetAbi": "10.8.13.0",
+                "sourceUrl": "https://github.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/releases/download/10.8.13.0/TelegramNotifier.zip",
+                "timestamp": "2024-04-23T00:00:00Z",
+                "changelog": "### 🚀 New features: ###\n- Customize configurations (Bot Token, ChatId, notification type) for each user\n- Configuration tester\n\n#### 📮 New notifiers: ####\n- Playback start\n- Playback stop\n\n The rest is coming soon!"
+            }
+        ]
+    }
+]
