@@ -31,13 +31,17 @@ export default function (view) {
 
             loadNotificationTypes: function (userConfig) {
                 const temp = document.querySelector("#template-notification-type");
+                const temp_without_textarea = document.querySelector("#template-notification-type-without-textarea");
                 const subtemp = document.querySelector("#template-notification-subtype");
                 const container = document.querySelector("[data-name=notificationTypeContainer]");
                 container.innerHTML = '';
 
                 const notificationTypeKeys = Object.keys(TelegramNotifierConfig.notificationType.values).sort();
                 for (const key of notificationTypeKeys) {
-                    const template = temp.cloneNode(true).content;
+                    let template = temp.cloneNode(true).content;
+                    if (typeof TelegramNotifierConfig.notificationType.values[key] !== 'string') {
+                        template = temp_without_textarea.cloneNode(true).content;
+                    }
                     const name = template.querySelector("[data-name=notificationTypeName]");
                     const value = template.querySelector("[data-name=notificationTypeValue]");
 
@@ -57,7 +61,7 @@ export default function (view) {
                     // Notification subtypes
                     if (typeof TelegramNotifierConfig.notificationType.values[key] !== 'string') {
                         for (const subtype of TelegramNotifierConfig.notificationType.values[key].slice(1)) {
-                            const template = subtemp.cloneNode(true).content;
+                            template = subtemp.cloneNode(true).content;
                             const name = template.querySelector("[data-name=notificationSubtypeName]");
                             const value = template.querySelector("[data-name=notificationSubtypeValue]");
 
@@ -113,9 +117,25 @@ export default function (view) {
             await this.user.loadUsers();
             this.loadConfig();
 
-            document.getElementById("userToConfigure").addEventListener('change', this.loadConfig);
+            document.getElementById('userToConfigure').addEventListener('change', this.loadConfig);
             document.getElementById('testButton').addEventListener('click', this.testBotConfig);
-            document.querySelector('#TelegramNotifierConfigForm').addEventListener('submit', this.saveConfig);
+            document.getElementById('saveButton').addEventListener('click', this.saveConfig);
+
+            document.body.addEventListener('click', function (event) {
+                const button = event.target.closest('.edit-template-button');
+
+                if (button) {
+                    const container = button.closest('div');
+                    const resetButton = container.querySelector('.reset-template-button');
+                    const textarea = container.querySelector('textarea[data-name="txtTemplate"]');
+
+                    if (resetButton && textarea) {
+                        resetButton.style.display = resetButton.style.display === 'none' ? 'block' : 'none';
+                        textarea.style.display = textarea.style.display === 'none' ? 'block' : 'none';
+                    }
+                }
+            });
+
         },
 
         loadConfig: function () {

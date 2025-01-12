@@ -94,12 +94,36 @@
                         <input is="emby-checkbox" type="checkbox" data-name="notificationTypeValue" />
                         <span data-name="notificationTypeName"></span>
                     </label>
+                    <div>
+                        <button class="edit-template-button raised" is="emby-button">
+                            <span>Edit template</span>
+                        </button>
+                        <button class="reset-template-button raised" style="display: none;" is="emby-button">
+                            <span>Reset template</span>
+                        </button>
+                        <textarea data-name="txtTemplate" style="width: 100%; height: 400px; display: none"></textarea>
+                    </div>
+                </template>
+                <template id="template-notification-type-without-textarea">
+                    <label class="checkboxContainer">
+                        <input is="emby-checkbox" type="checkbox" data-name="notificationTypeValue" />
+                        <span data-name="notificationTypeName"></span>
+                    </label>
                 </template>
                 <template id="template-notification-subtype">
                     <label class="checkboxContainer" style="margin-left: 4em;">
                         <input is="emby-checkbox" type="checkbox" data-name="notificationSubtypeValue" />
                         <span data-name="notificationSubtypeName"></span>
                     </label>
+                    <div>
+                        <button class="edit-template-button raised" is="emby-button">
+                            <span>Edit template</span>
+                        </button>
+                        <button class="reset-template-button raised" style="display: none;" is="emby-button">
+                            <span>Reset template</span>
+                        </button>
+                        <textarea data-name="txtTemplate" style="width: 100%; height: 400px; display: none"></textarea>
+                    </div>
                 </template>
                 <div>
                     <div class="sectionTitleContainer flex align-items-center">
@@ -109,8 +133,7 @@
                     </div>
                 </div>
                 <div>
-                    <button id="saveButton" is="emby-button" type="submit"
-                        class="raised button-submit block emby-button">
+                    <button id="saveButton" is="emby-button" type="submit" class="raised block emby-button">
                         <span>Save</span>
                     </button>
                 </div>
