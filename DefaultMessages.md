@@ -1,0 +1,196 @@
+# Default Messages
+
+This document provides a list of default messages of the plugin. You can use these messages as a reference to create your own custom messages.
+
+> **Note:** If you want to use dynamic values in your messages, you must respect the placeholders used in the default messages `{}`. The plugin will replace these placeholders with the actual values.
+>> The available placeholders depends on the event type.
+
+---
+
+## **Library Additions**
+- **Movies**
+  ```
+  🎬 {item.Name} ({item.ProductionYear})
+        added to library
+  ```
+- **Series**
+  ```
+  📺 [Serie] {serie.Name} ({item.ProductionYear}) added to library
+  ```
+- **Seasons**
+  ```
+  📺 {season.Series.Name} ({item.ProductionYear})
+        Season {seasonNumber} added to library
+  ```
+- **Episodes**
+  ```
+  📺 {episode.Series.Name} ({item.ProductionYear})
+        S{eSeasonNumber} - E{episodeNumber}
+        '{item.Name}' added to library
+  ```
+- **Albums**
+  ```
+  🎵 [Album] {album.Name} ({item.ProductionYear}) added to library
+  ```
+- **Songs**
+  ```
+  🎵 [Audio] {audio.Name} ({item.ProductionYear}) added to library
+  ```
+
+---
+
+## **Authentication**
+- **Failure**
+  ```
+  🔒 Authentication failure on {eventArgs.Argument.DeviceName} for user {eventArgs.Argument.Username}
+  ```
+- **Success**
+  ```
+  🔓 Authentication success for user {eventArgs.Argument.User.Name} on {eventArgs.Argument.SessionInfo.DeviceName}
+  ```
+
+---
+
+## **System Events**
+- **Pending Restart**
+  ```
+  🔄 Jellyfin is pending a restart.
+  ```
+
+---
+
+## **Playback Progress**
+- **Movies**
+  ```
+  👤 {eventArgs.Users[0].Username} is still watching on {eventArgs.DeviceName}:
+  🎬 {eventArgs.Item.Name} ({eventArgs.Item.ProductionYear})
+  ```
+- **Episodes**
+  ```
+  👤 {eventArgs.Users[0].Username} is still watching on {eventArgs.DeviceName}:
+  🎬 {episode.Series.Name} ({eventArgs.Item.ProductionYear})
+        S{seasonNumber} - E{episodeNumber}
+        '{eventArgs.Item.Name}'
+  ```
+
+---
+
+## **Playback Start**
+- **Movies**
+  ```
+  👤 {eventArgs.Users[0].Username} is watching on {eventArgs.DeviceName}:
+  🎬 {eventArgs.Item.Name} ({eventArgs.Item.ProductionYear})
+  📺 [{eventArgs.Item.MediaType}] {eventArgs.Item.Genres}
+  🕒 {duration}
+  📽 {eventArgs.Item.Overview}
+  ```
+- **Episodes**
+  ```
+  👤 {eventArgs.Users[0].Username} is watching on {eventArgs.DeviceName}:
+  🎬 {episode.Series.Name} ({eventArgs.Item.ProductionYear})
+        S{seasonNumber} - E{episodeNumber}
+        '{eventArgs.Item.Name}'
+  📺 [{eventArgs.Item.MediaType}] {eventArgs.Item.Genres}
+  🕒 {duration}
+  📽 {eventArgs.Item.Overview}
+  ```
+
+---
+
+## **Playback Stop**
+- **Movies**
+  ```
+  👤 {eventArgs.Users[0].Username} stopped watching:
+  🎬 {eventArgs.Item.Name} ({eventArgs.Item.ProductionYear})
+  ```
+- **Episodes**
+  ```
+  👤 {eventArgs.Users[0].Username} stopped watching:
+  🎬 {episode.Series.Name} ({eventArgs.Item.ProductionYear})
+        S{seasonNumber} - E{episodeNumber}
+        '{eventArgs.Item.Name}'
+  ```
+
+---
+
+## **Plugin Management**
+- **Installation Cancelled**
+  ```
+  🔴 {eventArgs.Argument.Name} plugin installation cancelled (version {eventArgs.Argument.Version}):
+  ```
+- **Installation Failed**
+  ```
+  🔴 {eventArgs.InstallationInfo} plugin installation failed (version {eventArgs.VersionInfo}):
+  {eventArgs.Exception}
+  ```
+- **Installed**
+  ```
+  🚧 {eventArgs.Argument.Name} plugin installed (version {eventArgs.Argument.Version})
+  ```
+- **Installing**
+  ```
+  🚧 {eventArgs.Argument.Name} plugin is installing (version {eventArgs.Argument.Version})
+  ```
+- **Uninstalled**
+  ```
+  🚧 {eventArgs.Argument.Name} plugin uninstalled
+  ```
+- **Updated**
+  ```
+  🚧 {eventArgs.Argument.Name} plugin updated to version {eventArgs.Argument.Version}:
+  🗒️ {eventArgs.Argument.Changelog}
+  ```
+
+---
+
+## **Session Events**
+- **Start**
+  ```
+  👤 {eventArgs.Argument.UserName} has started a session on:
+  💻 {eventArgs.Argument.Client} ({eventArgs.Argument.DeviceName})
+  ```
+
+---
+
+## **Subtitle Download**
+- **Failure**
+  ```
+  🚫 Subtitle download failed for {eventArgs.Item.Name}
+  ```
+
+---
+
+## **Tasks**
+- **Completed**
+  ```
+  🧰 Task {eventArgs.Task.Name} completed: {eventArgs.Task.CurrentProgress}%
+  🗒️ ({eventArgs.Task.Category}) {eventArgs.Task.Description}
+  ```
+
+---
+
+## **User Management**
+- **Created**
+  ```
+  👤 User {eventArgs.Argument.Username} created.
+  ```
+- **Deleted**
+  ```
+  🗑️ User {eventArgs.Argument.Username} deleted.
+  ```
+- **Locked Out**
+  ```
+  👤🔒 User {eventArgs.Argument.Username} locked out
+  ```
+- **Password Changed**
+  ```
+  👤 User {eventArgs.Argument.Username} changed his password.
+  ```
+- **Updated**
+  ```
+  👤 User {eventArgs.Argument.Username} has been updated
+  ```
+- **Data Saved**
+  ```
+  👤 User {eventArgs.Argument.Username} data saved.
+  ```
