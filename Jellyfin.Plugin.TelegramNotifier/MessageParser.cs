@@ -199,7 +199,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
                 string duration;
                 if (hours > 0)
                 {
-                    duration = minutes < 10 ? $"{hours}h {minutes}m" : $"{hours}h 0{minutes}m";
+                    duration = minutes < 10 ? $"{hours}h 0{minutes}m" : $"{hours}h {minutes}m";
                 }
                 else
                 {
@@ -376,7 +376,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
             {
                 return $"Error: Wrong message configuration for event {eventArgs?.GetType()?.Name ?? "Unknown"}.\n" +
                        "One or more keys are invalid or do not exist.\n\n" +
-                       $"Message:\n{message}\n\n{ex.Message} Check your configuration.";
+                       $"Message:\n{message}\n\n{ex.Message} Check your configuration or metadata.";
             }
         }
     }

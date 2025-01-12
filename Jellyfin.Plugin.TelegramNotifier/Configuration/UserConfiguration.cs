@@ -22,46 +22,46 @@ public class UserConfiguration
 
         ItemAdded = false;
 
-        ItemAddedMovies = false;
+        ItemAddedMovies = true;
         ItemAddedMoviesStringMessage = DefaultMessageConfiguration.ItemAddedMovies;
 
-        ItemAddedSeries = false;
+        ItemAddedSeries = true;
         ItemAddedSeriesStringMessage = DefaultMessageConfiguration.ItemAddedSeries;
 
-        ItemAddedSeasons = false;
+        ItemAddedSeasons = true;
         ItemAddedSeasonsStringMessage = DefaultMessageConfiguration.ItemAddedSeasons;
 
-        ItemAddedEpisodes = false;
+        ItemAddedEpisodes = true;
         ItemAddedEpisodesStringMessage = DefaultMessageConfiguration.ItemAddedEpisodes;
 
-        ItemAddedAlbums = false;
+        ItemAddedAlbums = true;
         ItemAddedAlbumsStringMessage = DefaultMessageConfiguration.ItemAddedAlbums;
 
-        ItemAddedSongs = false;
+        ItemAddedSongs = true;
         ItemAddedSongsStringMessage = DefaultMessageConfiguration.ItemAddedSongs;
 
         PlaybackStart = false;
 
-        PlaybackStartMovies = false;
+        PlaybackStartMovies = true;
         PlaybackStartMoviesStringMessage = DefaultMessageConfiguration.PlaybackStartMovies;
 
-        PlaybackStartEpisodes = false;
+        PlaybackStartEpisodes = true;
         PlaybackStartEpisodesStringMessage = DefaultMessageConfiguration.PlaybackStartEpisodes;
 
         PlaybackProgress = false;
 
-        PlaybackProgressMovies = false;
+        PlaybackProgressMovies = true;
         PlaybackProgressMoviesStringMessage = DefaultMessageConfiguration.PlaybackProgressMovies;
 
-        PlaybackProgressEpisodes = false;
+        PlaybackProgressEpisodes = true;
         PlaybackProgressEpisodesStringMessage = DefaultMessageConfiguration.PlaybackProgressEpisodes;
 
         PlaybackStop = false;
 
-        PlaybackStopMovies = false;
+        PlaybackStopMovies = true;
         PlaybackStopMoviesStringMessage = DefaultMessageConfiguration.PlaybackStopMovies;
 
-        PlaybackStopEpisodes = false;
+        PlaybackStopEpisodes = true;
         PlaybackStopEpisodesStringMessage = DefaultMessageConfiguration.PlaybackStopEpisodes;
 
         SubtitleDownloadFailure = false;
