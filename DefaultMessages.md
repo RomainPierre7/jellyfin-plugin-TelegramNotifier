@@ -68,8 +68,8 @@ This document provides a list of default messages of the plugin. You can use the
 - **Episodes**
   ```
   👤 {eventArgs.Users[0].Username} is still watching on {eventArgs.DeviceName}:
-  🎬 {episode.Series.Name} ({eventArgs.Item.ProductionYear})
-        S{seasonNumber} - E{episodeNumber}
+  🎬 {eventArgs.Item.Series.Name} ({eventArgs.Item.ProductionYear})
+        S{playbackSeasonNumber} - E{playbackEpisodeNumber}
         '{eventArgs.Item.Name}'
   ```
 
@@ -87,8 +87,8 @@ This document provides a list of default messages of the plugin. You can use the
 - **Episodes**
   ```
   👤 {eventArgs.Users[0].Username} is watching on {eventArgs.DeviceName}:
-  🎬 {episode.Series.Name} ({eventArgs.Item.ProductionYear})
-        S{seasonNumber} - E{episodeNumber}
+  🎬 {eventArgs.Item.Series.Name} ({eventArgs.Item.ProductionYear})
+        S{playbackSeasonNumber} - E{playbackEpisodeNumber}
         '{eventArgs.Item.Name}'
   📺 [{eventArgs.Item.MediaType}] {eventArgs.Item.Genres}
   🕒 {duration}
@@ -106,8 +106,8 @@ This document provides a list of default messages of the plugin. You can use the
 - **Episodes**
   ```
   👤 {eventArgs.Users[0].Username} stopped watching:
-  🎬 {episode.Series.Name} ({eventArgs.Item.ProductionYear})
-        S{seasonNumber} - E{episodeNumber}
+  🎬 {eventArgs.Item.Series.Name} ({eventArgs.Item.ProductionYear})
+        S{playbackSeasonNumber} - E{playbackEpisodeNumber}
         '{eventArgs.Item.Name}'
   ```
 

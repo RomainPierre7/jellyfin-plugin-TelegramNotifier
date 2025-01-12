@@ -32,8 +32,8 @@ namespace Jellyfin.Plugin.TelegramNotifier.Configuration
                 "🎬 {eventArgs.Item.Name} ({eventArgs.Item.ProductionYear})";
 
             PlaybackProgressEpisodes = "👤 {eventArgs.Users[0].Username} is still watching on {eventArgs.DeviceName}:\n" +
-                "🎬 {episode.Series.Name} ({eventArgs.Item.ProductionYear})\n" +
-                "      S{seasonNumber} - E{episodeNumber}\n" +
+                "🎬 {eventArgs.Item.Series.Name} ({eventArgs.Item.ProductionYear})\n" +
+                "      S{playbackSeasonNumber} - E{playbackEpisodeNumber}\n" +
                 "      '{eventArgs.Item.Name}'";
 
             PlaybackStartMovies = "👤 {eventArgs.Users[0].Username} is watching on {eventArgs.DeviceName}:\n" +
@@ -43,8 +43,8 @@ namespace Jellyfin.Plugin.TelegramNotifier.Configuration
                 "📽 {eventArgs.Item.Overview}";
 
             PlaybackStartEpisodes = "👤 {eventArgs.Users[0].Username} is watching on {eventArgs.DeviceName}:\n" +
-                "🎬 {episode.Series.Name} ({eventArgs.Item.ProductionYear})\n" +
-                "      S{seasonNumber} - E{episodeNumber}\n" +
+                "🎬 {eventArgs.Item.Series.Name} ({eventArgs.Item.ProductionYear})\n" +
+                "      S{playbackSeasonNumber} - E{playbackEpisodeNumber}\n" +
                 "      '{eventArgs.Item.Name}'\n" +
                 "📺 [{eventArgs.Item.MediaType}] {eventArgs.Item.Genres}\n" +
                 "🕒 {duration}\n" +
@@ -54,8 +54,8 @@ namespace Jellyfin.Plugin.TelegramNotifier.Configuration
                 "🎬 {eventArgs.Item.Name} ({eventArgs.Item.ProductionYear})";
 
             PlaybackStopEpisodes = "👤 {eventArgs.Users[0].Username} stopped watching:\n" +
-                "🎬 {episode.Series.Name} ({eventArgs.Item.ProductionYear})\n" +
-                "      S{seasonNumber} - E{episodeNumber}\n" +
+                "🎬 {eventArgs.Item.Series.Name} ({eventArgs.Item.ProductionYear})\n" +
+                "      S{playbackSeasonNumber} - E{playbackEpisodeNumber}\n" +
                 "      '{eventArgs.Item.Name}'";
 
             PluginInstallationCancelled = "🔴 {eventArgs.Argument.Name} plugin installation cancelled (version {eventArgs.Argument.Version}):";
