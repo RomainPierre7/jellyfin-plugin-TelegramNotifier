@@ -12,6 +12,8 @@ namespace Jellyfin.Plugin.TelegramNotifier
         private static readonly string[] ItemProductionYearPath = new[] { "ProductionYear" };
         private static readonly string[] SerieNamePath = new[] { "Name" };
         private static readonly string[] SeasonSeriesNamePath = new[] { "Series", "Name" };
+
+        private static readonly string[] EpisodeSeriesNamePath = new[] { "Series", "Name" };
         private static readonly string[] AlbumNamePath = new[] { "Name" };
         private static readonly string[] AudioNamePath = new[] { "Name" };
         private static readonly string[] EventArgsArgumentDeviceNamePath = new[] { "Argument", "DeviceName" };
@@ -49,6 +51,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
             { "{item.ProductionYear}", GetPropertySafely(objEventArgs, ItemProductionYearPath) },
             { "{serie.Name}", GetPropertySafely(objEventArgs, SerieNamePath) },
             { "{season.Series.Name}", GetPropertySafely(objEventArgs, SeasonSeriesNamePath) },
+            { "{episode.Series.Name}", GetPropertySafely(objEventArgs, EpisodeSeriesNamePath) },
             { "{seasonNumber}", GetSeasonNumberSafely(objEventArgs) },
             { "{eSeasonNumber}", GetESeasonNumberSafely(objEventArgs) },
             { "{episodeNumber}", GetEpisodeNumberSafely(objEventArgs) },
