@@ -166,6 +166,7 @@ export default function (view) {
             document.getElementById('saveButton').addEventListener('click', this.saveConfig);
 
             document.body.addEventListener('click', function (event) {
+                event.preventDefault();
                 const button = event.target.closest('.edit-template-button');
 
                 if (button) {
@@ -181,6 +182,7 @@ export default function (view) {
             });
 
             document.body.addEventListener('click', function (event) {
+                event.preventDefault();
                 const button = event.target.closest('.reset-template-button');
 
                 if (button) {
