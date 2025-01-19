@@ -7,16 +7,20 @@ namespace Jellyfin.Plugin.TelegramNotifier.Configuration
         static DefaultMessageConfiguration()
         {
             ItemAddedMovies = "🎬 {item.Name} ({item.ProductionYear})\n" +
-                "      added to library";
+                "      added to library\n\n" +
+                "📽 {item.Overview}";
 
-            ItemAddedSeries = "📺 [Serie] {serie.Name} ({item.ProductionYear}) added to library";
+            ItemAddedSeries = "📺 [Serie] {serie.Name} ({item.ProductionYear}) added to library\n\n" +
+                "📽 {item.Overview}";
 
             ItemAddedSeasons = "📺 {season.Series.Name} ({item.ProductionYear})\n" +
-                "      Season {seasonNumber} added to library";
+                "      Season {seasonNumber} added to library\n\n" +
+                "📽 {item.Overview}";
 
             ItemAddedEpisodes = "📺 {episode.Series.Name} ({item.ProductionYear})\n" +
                 "      S{eSeasonNumber} - E{episodeNumber}\n" +
-                "      '{item.Name}' added to library";
+                "      '{item.Name}' added to library\n\n" +
+                "📽 {item.Overview}";
 
             ItemAddedAlbums = "🎵 [Album] {album.Name} ({item.ProductionYear}) added to library";
 

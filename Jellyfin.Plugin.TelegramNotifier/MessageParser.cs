@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Jellyfin.Data.Entities.Libraries;
 
 namespace Jellyfin.Plugin.TelegramNotifier
 {
@@ -10,6 +11,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
     {
         private static readonly string[] ItemNamePath = new[] { "Name" };
         private static readonly string[] ItemProductionYearPath = new[] { "ProductionYear" };
+        private static readonly string[] ItemOverviewPath = new[] { "Overview" };
         private static readonly string[] SerieNamePath = new[] { "Name" };
         private static readonly string[] SeasonSeriesNamePath = new[] { "Series", "Name" };
 
@@ -49,6 +51,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
         {
             { "{item.Name}", GetPropertySafely(objEventArgs, ItemNamePath) },
             { "{item.ProductionYear}", GetPropertySafely(objEventArgs, ItemProductionYearPath) },
+            { "{item.Overview}", GetPropertySafely(objEventArgs, ItemOverviewPath) },
             { "{serie.Name}", GetPropertySafely(objEventArgs, SerieNamePath) },
             { "{season.Series.Name}", GetPropertySafely(objEventArgs, SeasonSeriesNamePath) },
             { "{episode.Series.Name}", GetPropertySafely(objEventArgs, EpisodeSeriesNamePath) },
@@ -304,14 +307,23 @@ namespace Jellyfin.Plugin.TelegramNotifier
 
             var item = itemProperty.GetValue(obj);
 
-            var seasonNumberProperty = item.GetType().GetProperty("IndexNumber");
+            var seasonProperty = item.GetType().GetProperty("Season");
 
-            if (seasonNumberProperty == null || seasonNumberProperty.GetValue(item) == null)
+            if (seasonProperty == null || seasonProperty.GetValue(item) == null)
             {
                 return " Error ";
             }
 
-            var seasonNumberItem = seasonNumberProperty.GetValue(item);
+            var seasonItem = seasonProperty.GetValue(item);
+
+            var seasonNumberProperty = seasonItem.GetType().GetProperty("IndexNumber");
+
+            if (seasonNumberProperty == null || seasonNumberProperty.GetValue(seasonItem) == null)
+            {
+                return " Error ";
+            }
+
+            var seasonNumberItem = seasonNumberProperty.GetValue(seasonItem);
 
             if (int.TryParse(seasonNumberItem.ToString(), out int seasonNumber))
             {

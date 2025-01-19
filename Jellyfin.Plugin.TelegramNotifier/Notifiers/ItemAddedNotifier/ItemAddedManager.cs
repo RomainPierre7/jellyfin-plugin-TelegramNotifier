@@ -78,17 +78,12 @@ public class ItemAddedManager : IItemAddedManager
                             break;
 
                         case Season season:
-                            string seasonNumber = season.IndexNumber.HasValue ? season.IndexNumber.Value.ToString("00", CultureInfo.InvariantCulture) : "00";
-
                             subtype = "ItemAddedSeasons";
                             eventArgs = season;
                             break;
 
                         case Episode episode:
                             addImage = false;
-                            string eSeasonNumber = episode.Season.IndexNumber.HasValue ? episode.Season.IndexNumber.Value.ToString("00", CultureInfo.InvariantCulture) : "00";
-                            string episodeNumber = episode.IndexNumber.HasValue ? episode.IndexNumber.Value.ToString("00", CultureInfo.InvariantCulture) : "00";
-
                             subtype = "ItemAddedEpisodes";
                             eventArgs = episode;
                             break;

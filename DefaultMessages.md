@@ -12,21 +12,29 @@ This document provides a list of default messages of the plugin. You can use the
   ```
   🎬 {item.Name} ({item.ProductionYear})
         added to library
+
+  📽 {item.Overview}
   ```
 - **Series**
   ```
   📺 [Serie] {serie.Name} ({item.ProductionYear}) added to library
+
+  📽 {item.Overview}
   ```
 - **Seasons**
   ```
   📺 {season.Series.Name} ({item.ProductionYear})
         Season {seasonNumber} added to library
+
+  📽 {item.Overview}
   ```
 - **Episodes**
   ```
   📺 {episode.Series.Name} ({item.ProductionYear})
         S{eSeasonNumber} - E{episodeNumber}
         '{item.Name}' added to library
+
+  📽 {item.Overview}
   ```
 - **Albums**
   ```
