@@ -9,6 +9,14 @@
         "imageUrl": "https://raw.githubusercontent.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/main/assets/banner.png",
         "versions": [
             {
+                "checksum": "91d2dc1bde858c1d1801dd02429626ea",
+                "version": "11.0.0.2",
+                "targetAbi": "10.9.4.0",
+                "sourceUrl": "https://github.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/releases/download/11.0.0.2/TelegramNotifier.zip",
+                "timestamp": "2025-01-19T00:00:00Z",
+                "changelog": "### 🚀 New features: ###\n- Add item overview for added items\n\n### ⚙️ Fixes: ###\n- Fix season number for playback\n- Fix edit template button reload\n - Fix textarea width for subtype notifications"
+            },
+            {
                 "checksum": "a9ef8187e5ea68be66e78c0597dfe27c",
                 "version": "11.0.0.1",
                 "targetAbi": "10.9.4.0",
