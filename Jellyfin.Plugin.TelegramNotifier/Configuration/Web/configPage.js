@@ -166,10 +166,10 @@ export default function (view) {
             document.getElementById('saveButton').addEventListener('click', this.saveConfig);
 
             document.body.addEventListener('click', function (event) {
-                event.preventDefault();
                 const button = event.target.closest('.edit-template-button');
 
                 if (button) {
+                    event.preventDefault();
                     const container = button.closest('div');
                     const resetButton = container.querySelector('.reset-template-button');
                     const textarea = container.querySelector('textarea[data-name="txtTemplate"]');
@@ -182,10 +182,10 @@ export default function (view) {
             });
 
             document.body.addEventListener('click', function (event) {
-                event.preventDefault();
                 const button = event.target.closest('.reset-template-button');
 
                 if (button) {
+                    event.preventDefault();
                     const container = button.closest('div');
                     const textarea = container.querySelector('textarea[data-name="txtTemplate"]');
                     const key = textarea.dataset.value;
