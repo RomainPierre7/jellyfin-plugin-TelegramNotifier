@@ -50,7 +50,7 @@ export default function (view) {
                 "PluginInstalled": "🚧 {eventArgs.Argument.Name} plugin installed (version {eventArgs.Argument.Version})",
                 "PluginInstalling": "🚧 {eventArgs.Argument.Name} plugin is installing (version {eventArgs.Argument.Version})",
                 "PluginUninstalled": "🚧 {eventArgs.Argument.Name} plugin uninstalled",
-                "PluginUpdated": "🚧 {eventArgs.Argument.Name} plugin updated to version {eventArgs.Argument.Version}:🗒️ {eventArgs.Argument.Changelog}",
+                "PluginUpdated": "🚧 {eventArgs.Argument.Name} plugin updated to version {eventArgs.Argument.Version}:🗒️ {eventArgs.Argument.Changelog}\n\nYou may need to restart Jellyfin to apply the changes.",
                 "SessionStart": "👤 {eventArgs.Argument.UserName} has started a session on:\n💻 {eventArgs.Argument.Client} ({eventArgs.Argument.DeviceName})\n",
                 "SubtitleDownloadFailure": "🚫 Subtitle download failed for {eventArgs.Item.Name}",
                 "TaskCompleted": "🧰 Task {eventArgs.Task.Name} completed: {eventArgs.Task.CurrentProgress}%\n🗒️ ({eventArgs.Task.Category}) {eventArgs.Task.Description}",

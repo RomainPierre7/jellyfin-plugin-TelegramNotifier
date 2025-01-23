@@ -147,6 +147,8 @@ This document provides a list of default messages of the plugin. You can use the
   ```
   🚧 {eventArgs.Argument.Name} plugin updated to version {eventArgs.Argument.Version}:
   🗒️ {eventArgs.Argument.Changelog}
+
+  You may need to restart Jellyfin to apply the changes.
   ```
 
 ---

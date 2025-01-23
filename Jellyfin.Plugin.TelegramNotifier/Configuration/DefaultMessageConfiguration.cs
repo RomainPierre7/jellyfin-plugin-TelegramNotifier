@@ -74,7 +74,8 @@ namespace Jellyfin.Plugin.TelegramNotifier.Configuration
             PluginUninstalled = "🚧 {eventArgs.Argument.Name} plugin uninstalled";
 
             PluginUpdated = "🚧 {eventArgs.Argument.Name} plugin updated to version {eventArgs.Argument.Version}:" +
-                "🗒️ {eventArgs.Argument.Changelog}";
+                "🗒️ {eventArgs.Argument.Changelog}\n\n" +
+                "You may need to restart Jellyfin to apply the changes.";
 
             SessionStart = "👤 {eventArgs.Argument.UserName} has started a session on:\n" +
                 "💻 {eventArgs.Argument.Client} ({eventArgs.Argument.DeviceName})\n";
