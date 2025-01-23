@@ -10,7 +10,8 @@
                     </label>
                 </div>
                 <div class="label">
-                    You can find a guide in the "Use the plugin" section of the README file of the project.
+                    You can find a guide in the "Use the plugin" section of the README file of the project. A
+                    troubleshooting guide is also available.
                     <a is="emby-linkbutton" rel="noopener noreferrer"
                         class="raised button-alt headerHelpButton emby-button" target="_blank"
                         href="https://github.com/RomainPierre7/jellyfin-plugin-TelegramNotifier"> README (GitHub) </a>
@@ -32,7 +33,9 @@
                     <input id="ServerUrl" name="ServerUrl" type="text" is="emby-input" />
                     <div class="fieldDescription">Insert the url of the jellyfin server (ex: localhost:8096,
                         192.168.1.2:8096, jellyfin.myDomain.com, ...) </div>
-                    <div class="fieldDescription">Warning, do not include http/https</div>
+                    <div class="fieldDescription">Warning: Do not include http/https. This parameter is common to all
+                        and is only used to find image metadata. If a notification type doesn't work, you can check the
+                        logs to see if the image URL is correct.</div>
                 </div>
                 <div class="inputContainer">
                     <div class="selectContainer">
