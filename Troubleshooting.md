@@ -1,4 +1,4 @@
-# Troubleshooting guide
+# 🧰 Troubleshooting guide
 
 If you're having trouble with the plugin, you can follow these steps to troubleshoot the issue:
 
