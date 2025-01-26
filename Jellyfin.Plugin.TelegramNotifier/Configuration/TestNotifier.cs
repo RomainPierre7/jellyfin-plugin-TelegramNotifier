@@ -27,7 +27,7 @@ public class TestNotifier : ControllerBase
         }
         else
         {
-            return BadRequest("Message could not be sent, please check your configuration");
+            return BadRequest($"Message could not be sent, please check your configuration (botToken: {botToken}, chatId: {chatId}, threadId: {threadId}).");
         }
     }
 }

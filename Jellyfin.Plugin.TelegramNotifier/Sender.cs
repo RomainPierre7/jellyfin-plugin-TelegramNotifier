@@ -63,7 +63,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
             }
             catch (HttpRequestException)
             {
-                _logger.LogError("({NotificationType}): Message could not be sent, please check your configuration.", notificationType);
+                _logger.LogError("({NotificationType}): Message could not be sent, please check your configuration (botToken: {BotToken}, chatId: {ChatId}, threadId: {ThreadId}), your template, your internet connection or the Telegram API.", notificationType, botToken, chatId, threadId);
                 return false;
             }
         }
