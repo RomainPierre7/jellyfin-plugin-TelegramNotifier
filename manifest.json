@@ -11,7 +11,7 @@
             {
                 "checksum": "dcf5e2afff11e42ea163ea43389c0646",
                 "version": "11.0.0.3",
-                "targetAbi": "10.10.4.0",
+                "targetAbi": "10.10.0.0",
                 "sourceUrl": "https://github.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/releases/download/11.0.0.3/TelegramNotifier.zip",
                 "timestamp": "2025-01-21T00:00:00Z",
                 "changelog": "### ⚙️ Fixes: ###\n- Checkboxes didn't work properly"
@@ -19,7 +19,7 @@
             {
                 "checksum": "91d2dc1bde858c1d1801dd02429626ea",
                 "version": "11.0.0.2",
-                "targetAbi": "10.10.4.0",
+                "targetAbi": "10.10.0.0",
                 "sourceUrl": "https://github.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/releases/download/11.0.0.2/TelegramNotifier.zip",
                 "timestamp": "2025-01-19T00:00:00Z",
                 "changelog": "### 🚀 New features: ###\n- Add item overview for added items\n\n### ⚙️ Fixes: ###\n- Fix season number for playback\n- Fix edit template button reload\n - Fix textarea width for subtype notifications"
@@ -27,7 +27,7 @@
             {
                 "checksum": "a9ef8187e5ea68be66e78c0597dfe27c",
                 "version": "11.0.0.1",
-                "targetAbi": "10.10.4.0",
+                "targetAbi": "10.10.0.0",
                 "sourceUrl": "https://github.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/releases/download/11.0.0.1/TelegramNotifier.zip",
                 "timestamp": "2025-01-14T00:00:00Z",
                 "changelog": "### ⚙️ Fixes: ###\n- Fix `{episode.Series.Name}` in the parser."
@@ -35,7 +35,7 @@
             {
                 "checksum": "abbe6d6f1a51210e3d1764bdcb96d6e9",
                 "version": "11.0.0.0",
-                "targetAbi": "10.10.4.0",
+                "targetAbi": "10.10.0.0",
                 "sourceUrl": "https://github.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/releases/download/11.0.0.0/TelegramNotifier.zip",
                 "timestamp": "2025-01-12T00:00:00Z",
                 "changelog": "### 🚀 New features: ###\n- Customizable messages\n- Reset message to default"
