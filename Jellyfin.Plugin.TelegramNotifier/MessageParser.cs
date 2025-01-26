@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Jellyfin.Data.Entities.Libraries;
 
 namespace Jellyfin.Plugin.TelegramNotifier
 {
@@ -177,7 +176,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
             }
         }
 
-        private static string GetDurationSafely(object obj)
+        private static string? GetDurationSafely(object obj)
         {
             var itemProperty = obj.GetType().GetProperty("Item");
 
@@ -199,6 +198,11 @@ namespace Jellyfin.Plugin.TelegramNotifier
 
             if (long.TryParse(ticksValue.ToString(), out long ticks))
             {
+                if (ticks == 0)
+                {
+                    return null;
+                }
+
                 long hours = ticks / (600000000L * 60);
                 long minutes = (ticks / 600000000L) % 60;
 
@@ -220,14 +224,14 @@ namespace Jellyfin.Plugin.TelegramNotifier
             }
         }
 
-        private static string GetSeasonNumberSafely(object obj)
+        private static string? GetSeasonNumberSafely(object obj)
         {
             // string seasonNumber = season.IndexNumber.HasValue ? season.IndexNumber.Value.ToString("00", CultureInfo.InvariantCulture) : "00";
             var itemProperty = obj.GetType().GetProperty("IndexNumber");
 
             if (itemProperty == null || itemProperty.GetValue(obj) == null)
             {
-                return " Error ";
+                return null;
             }
 
             var item = itemProperty.GetValue(obj);
@@ -238,18 +242,18 @@ namespace Jellyfin.Plugin.TelegramNotifier
             }
             else
             {
-                return " Error ";
+                return null;
             }
         }
 
-        private static string GetESeasonNumberSafely(object obj)
+        private static string? GetESeasonNumberSafely(object obj)
         {
             // string eSeasonNumber = episode.Season.IndexNumber.HasValue ? episode.Season.IndexNumber.Value.ToString("00", CultureInfo.InvariantCulture) : "00";
             var itemProperty = obj.GetType().GetProperty("Season");
 
             if (itemProperty == null || itemProperty.GetValue(obj) == null)
             {
-                return " Error ";
+                return null;
             }
 
             var item = itemProperty.GetValue(obj);
@@ -258,7 +262,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
 
             if (seasonNumberProperty == null || seasonNumberProperty.GetValue(item) == null)
             {
-                return " Error ";
+                return null;
             }
 
             var seasonNumberItem = seasonNumberProperty.GetValue(item);
@@ -269,18 +273,18 @@ namespace Jellyfin.Plugin.TelegramNotifier
             }
             else
             {
-                return " Error ";
+                return null;
             }
         }
 
-        private static string GetEpisodeNumberSafely(object obj)
+        private static string? GetEpisodeNumberSafely(object obj)
         {
             // string episodeNumber = episode.IndexNumber.HasValue ? episode.IndexNumber.Value.ToString("00", CultureInfo.InvariantCulture) : "00";
             var itemProperty = obj.GetType().GetProperty("IndexNumber");
 
             if (itemProperty == null || itemProperty.GetValue(obj) == null)
             {
-                return " Error ";
+                return null;
             }
 
             var item = itemProperty.GetValue(obj);
@@ -291,18 +295,18 @@ namespace Jellyfin.Plugin.TelegramNotifier
             }
             else
             {
-                return " Error ";
+                return null;
             }
         }
 
-        private static string GetPlaybackSeasonNumberSafely(object obj)
+        private static string? GetPlaybackSeasonNumberSafely(object obj)
         {
             // string seasonNumber = eventArgs.Item.IndexNumber.HasValue ? eventArgs.Item.IndexNumber.Value.ToString("00", CultureInfo.InvariantCulture) : "00";
             var itemProperty = obj.GetType().GetProperty("Item");
 
             if (itemProperty == null || itemProperty.GetValue(obj) == null)
             {
-                return " Error ";
+                return null;
             }
 
             var item = itemProperty.GetValue(obj);
@@ -311,7 +315,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
 
             if (seasonProperty == null || seasonProperty.GetValue(item) == null)
             {
-                return " Error ";
+                return null;
             }
 
             var seasonItem = seasonProperty.GetValue(item);
@@ -320,7 +324,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
 
             if (seasonNumberProperty == null || seasonNumberProperty.GetValue(seasonItem) == null)
             {
-                return " Error ";
+                return null;
             }
 
             var seasonNumberItem = seasonNumberProperty.GetValue(seasonItem);
@@ -331,18 +335,18 @@ namespace Jellyfin.Plugin.TelegramNotifier
             }
             else
             {
-                return " Error ";
+                return null;
             }
         }
 
-        private static string GetPlaybackEpisodeNumberSafely(object obj)
+        private static string? GetPlaybackEpisodeNumberSafely(object obj)
         {
             // string episodeNumber = eventArgs.Item.IndexNumber.HasValue ? eventArgs.Item.IndexNumber.Value.ToString("00", CultureInfo.InvariantCulture) : "00";
             var itemProperty = obj.GetType().GetProperty("Item");
 
             if (itemProperty == null || itemProperty.GetValue(obj) == null)
             {
-                return " Error ";
+                return null;
             }
 
             var item = itemProperty.GetValue(obj);
@@ -351,7 +355,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
 
             if (episodeNumberProperty == null || episodeNumberProperty.GetValue(item) == null)
             {
-                return " Error ";
+                return null;
             }
 
             var episodeNumberItem = episodeNumberProperty.GetValue(item);
@@ -362,37 +366,40 @@ namespace Jellyfin.Plugin.TelegramNotifier
             }
             else
             {
-                return " Error ";
+                return null;
             }
         }
 
         public static string ParseMessage(string message, dynamic eventArgs)
         {
-            try
+            // try
+            // {
+            var replacements = GetReplacements(eventArgs);
+
+            foreach (var pair in replacements)
             {
-                var replacements = GetReplacements(eventArgs);
-
-                foreach (var pair in replacements)
+                if (message.Contains(pair.Key))
                 {
-                    if (message.Contains(pair.Key))
+                    if (pair.Value == null || pair.Value == string.Empty)
                     {
-                        if (pair.Value == null)
-                        {
-                            throw new Exception($"The value for the key '{pair.Key}' is null, but the key exists in the message.");
-                        }
-
-                        message = Regex.Replace(message, Regex.Escape(pair.Key), pair.Value, RegexOptions.IgnoreCase);
+                        message = Regex.Replace(message, Regex.Escape(pair.Key), "...");
+                        // throw new Exception($"The value for the key '{pair.Key}' is null, but the key exists in the message.");
+                    }
+                    else
+                    {
+                        message = Regex.Replace(message, Regex.Escape(pair.Key), pair.Value);
                     }
                 }
-
-                return message;
             }
+
+            return message;
+            /* }
             catch (Exception ex)
             {
                 return $"Error: Wrong message configuration for event {eventArgs?.GetType()?.Name ?? "Unknown"}.\n" +
                        "One or more keys are invalid or do not exist.\n\n" +
                        $"Message:\n{message}\n\n{ex.Message} Check your configuration or metadata.";
-            }
+            } */
         }
     }
 }
