@@ -11,6 +11,7 @@ This [Jellyfin](https://github.com/jellyfin) plugin provides notification functi
 <p align="center">
 <img src="assets/logo.png" alt="Logo" width="300" height="300"
 
+
 🧰 A troubleshooting guide is available [here](https://github.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/blob/main/Troubleshooting.md).
 
 > [!IMPORTANT]
