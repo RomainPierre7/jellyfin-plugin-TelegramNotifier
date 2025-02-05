@@ -13,6 +13,7 @@ This [Jellyfin](https://github.com/jellyfin) plugin provides notification functi
 
 🧰 A troubleshooting guide is available [here](https://github.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/blob/main/Troubleshooting.md).
 
+> [CONTACT]
 > If you encounter a problem, a bug or have an idea for a new feature, submit an issue [here](https://github.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/issues). Please, submit only one feature or bug per issue.
 
 > If you're finding value in this project and it's been helpful to you, consider giving it a star ⭐️ on GitHub ! Your support means a lot and helps others discover the project too.
