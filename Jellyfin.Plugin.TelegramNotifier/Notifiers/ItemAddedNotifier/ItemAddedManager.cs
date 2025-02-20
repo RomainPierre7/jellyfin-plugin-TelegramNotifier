@@ -97,6 +97,11 @@ public class ItemAddedManager : IItemAddedManager
                             subtype = "ItemAddedAudios";
                             eventArgs = audio;
                             break;
+
+                        case Book book:
+                            subtype = "ItemAddedBooks";
+                            eventArgs = book;
+                            break;
                     }
 
                     if (item.PrimaryImagePath is not null && addImage)

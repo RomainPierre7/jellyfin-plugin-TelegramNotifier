@@ -1,3 +1,4 @@
+using System.Reflection.Metadata.Ecma335;
 using MediaBrowser.Model.Session;
 
 namespace Jellyfin.Plugin.TelegramNotifier.Configuration
@@ -6,6 +7,10 @@ namespace Jellyfin.Plugin.TelegramNotifier.Configuration
     {
         static DefaultMessageConfiguration()
         {
+            ItemAddedBooks = "[Book] {item.Name}\n" +
+                " added to library\n\n" +
+                "{item.Overview}";
+
             ItemAddedMovies = "🎬 {item.Name} ({item.ProductionYear})\n" +
                 "      added to library\n\n" +
                 "📽 {item.Overview}";
@@ -97,6 +102,8 @@ namespace Jellyfin.Plugin.TelegramNotifier.Configuration
 
             UserDataSaved = "👤 User {eventArgs.Argument.Username} data saved.";
         }
+
+        public static string ItemAddedBooks { get; }
 
         public static string ItemAddedMovies { get; }
 
