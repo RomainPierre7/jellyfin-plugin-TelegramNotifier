@@ -5,7 +5,7 @@ export default function (view) {
 
         notificationType: {
             values: {
-                "ItemAdded": ["Item Added", "Books", "Movies", "Series", "Seasons", "Episodes", "Albums", "Songs"],
+                "ItemAdded": ["Item Added", "Movies", "Series", "Seasons", "Episodes", "Albums", "Songs", "Books"],
                 "PlaybackStart": ["Playback Start", "Movies", "Episodes"],
                 "PlaybackProgress": ["Playback Progress (recommended: disabled)", "Movies", "Episodes"],
                 "PlaybackStop": ["Playback Stop", "Movies", "Episodes"],
@@ -30,13 +30,13 @@ export default function (view) {
             },
 
             defaultMessages: {
-                "ItemAddedBooks": "[Book] {item.name}\n      added to library\n\n {item.Overview",
                 "ItemAddedMovies": "🎬 {item.Name} ({item.ProductionYear})\n      added to library\n\n📽 {item.Overview}",
                 "ItemAddedSeries": "📺 [Serie] {serie.Name} ({item.ProductionYear}) added to library\n\n📽 {item.Overview}",
                 "ItemAddedSeasons": "📺 {season.Series.Name} ({item.ProductionYear})\n      Season {seasonNumber} added to library\n\n📽 {item.Overview}",
                 "ItemAddedEpisodes": "📺 {episode.Series.Name} ({item.ProductionYear})\n      S{eSeasonNumber} - E{episodeNumber}\n      '{item.Name}' added to library\n\n📽 {item.Overview}",
                 "ItemAddedAlbums": "🎵 [Album] {album.Name} ({item.ProductionYear}) added to library",
                 "ItemAddedSongs": "🎵 [Audio] {audio.Name} ({item.ProductionYear}) added to library",
+                "ItemAddedBooks": "📖 [Book] {item.name}\n      added to library\n\n🖋️ {item.Overview",
                 "AuthenticationFailure": "🔒 Authentication failure on {eventArgs.Argument.DeviceName} for user {eventArgs.Argument.Username}",
                 "AuthenticationSuccess": "🔓 Authentication success for user {eventArgs.Argument.User.Name} on {eventArgs.Argument.SessionInfo.DeviceName}",
                 "PendingRestart": "🔄 Jellyfin is pending a restart.",

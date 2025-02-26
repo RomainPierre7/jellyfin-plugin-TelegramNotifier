@@ -1,16 +1,9 @@
-using System.Reflection.Metadata.Ecma335;
-using MediaBrowser.Model.Session;
-
 namespace Jellyfin.Plugin.TelegramNotifier.Configuration
 {
     public static class DefaultMessageConfiguration
     {
         static DefaultMessageConfiguration()
         {
-            ItemAddedBooks = "[Book] {item.Name}\n" +
-                " added to library\n\n" +
-                "{item.Overview}";
-
             ItemAddedMovies = "🎬 {item.Name} ({item.ProductionYear})\n" +
                 "      added to library\n\n" +
                 "📽 {item.Overview}";
@@ -30,6 +23,10 @@ namespace Jellyfin.Plugin.TelegramNotifier.Configuration
             ItemAddedAlbums = "🎵 [Album] {album.Name} ({item.ProductionYear}) added to library";
 
             ItemAddedSongs = "🎵 [Audio] {audio.Name} ({item.ProductionYear}) added to library";
+
+            ItemAddedBooks = "📖 [Book] {item.Name}\n" +
+                " added to library\n\n" +
+                "🖋️ {item.Overview}";
 
             AuthenticationFailure = "🔒 Authentication failure on {eventArgs.Argument.DeviceName} for user {eventArgs.Argument.Username}";
 
@@ -103,7 +100,6 @@ namespace Jellyfin.Plugin.TelegramNotifier.Configuration
             UserDataSaved = "👤 User {eventArgs.Argument.Username} data saved.";
         }
 
-        public static string ItemAddedBooks { get; }
 
         public static string ItemAddedMovies { get; }
 
@@ -116,6 +112,8 @@ namespace Jellyfin.Plugin.TelegramNotifier.Configuration
         public static string ItemAddedAlbums { get; }
 
         public static string ItemAddedSongs { get; }
+
+        public static string ItemAddedBooks { get; }
 
         public static string PlaybackStartMovies { get; }
 

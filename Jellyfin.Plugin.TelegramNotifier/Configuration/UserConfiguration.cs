@@ -22,9 +22,6 @@ public class UserConfiguration
 
         ItemAdded = false;
 
-        ItemAddedBooks = true;
-        ItemAddedBooksStringMessage = DefaultMessageConfiguration.ItemAddedBooks;
-
         ItemAddedMovies = true;
         ItemAddedMoviesStringMessage = DefaultMessageConfiguration.ItemAddedMovies;
 
@@ -42,6 +39,9 @@ public class UserConfiguration
 
         ItemAddedSongs = true;
         ItemAddedSongsStringMessage = DefaultMessageConfiguration.ItemAddedSongs;
+
+        ItemAddedBooks = true;
+        ItemAddedBooksStringMessage = DefaultMessageConfiguration.ItemAddedBooks;
 
         PlaybackStart = false;
 
@@ -140,10 +140,6 @@ public class UserConfiguration
 
     public bool ItemAdded { get; set; }
 
-    public bool ItemAddedBooks { get; set; }
-
-    public string ItemAddedBooksStringMessage { get; set; }
-
     public bool ItemAddedMovies { get; set; }
 
     public string ItemAddedMoviesStringMessage { get; set; }
@@ -167,6 +163,10 @@ public class UserConfiguration
     public bool ItemAddedSongs { get; set; }
 
     public string ItemAddedSongsStringMessage { get; set; }
+
+    public bool ItemAddedBooks { get; set; }
+
+    public string ItemAddedBooksStringMessage { get; set; }
 
     public bool PlaybackStart { get; set; }
 
