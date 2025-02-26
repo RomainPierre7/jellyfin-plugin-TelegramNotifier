@@ -22,6 +22,9 @@ public class UserConfiguration
 
         ItemAdded = false;
 
+        ItemAddedBooks = true;
+        ItemAddedBooksStringMessage = DefaultMessageConfiguration.ItemAddedBooks;
+
         ItemAddedMovies = true;
         ItemAddedMoviesStringMessage = DefaultMessageConfiguration.ItemAddedMovies;
 
@@ -136,6 +139,10 @@ public class UserConfiguration
     public bool DoNotMentionOwnActivities { get; set; }
 
     public bool ItemAdded { get; set; }
+
+    public bool ItemAddedBooks { get; set; }
+
+    public string ItemAddedBooksStringMessage { get; set; }
 
     public bool ItemAddedMovies { get; set; }
 
