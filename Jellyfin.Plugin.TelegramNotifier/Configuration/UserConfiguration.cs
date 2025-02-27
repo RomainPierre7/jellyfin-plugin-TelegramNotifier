@@ -43,6 +43,29 @@ public class UserConfiguration
         ItemAddedBooks = true;
         ItemAddedBooksStringMessage = DefaultMessageConfiguration.ItemAddedBooks;
 
+        ItemDeleted = false;
+
+        ItemDeletedMovies = true;
+        ItemDeletedMoviesStringMessage = DefaultMessageConfiguration.ItemDeletedMovies;
+
+        ItemDeletedSeries = true;
+        ItemDeletedSeriesStringMessage = DefaultMessageConfiguration.ItemDeletedSeries;
+
+        ItemDeletedSeasons = true;
+        ItemDeletedSeasonsStringMessage = DefaultMessageConfiguration.ItemDeletedSeasons;
+
+        ItemDeletedEpisodes = true;
+        ItemDeletedEpisodesStringMessage = DefaultMessageConfiguration.ItemDeletedEpisodes;
+
+        ItemDeletedAlbums = true;
+        ItemDeletedAlbumsStringMessage = DefaultMessageConfiguration.ItemDeletedAlbums;
+
+        ItemDeletedSongs = true;
+        ItemDeletedSongsStringMessage = DefaultMessageConfiguration.ItemDeletedSongs;
+
+        ItemDeletedBooks = true;
+        ItemDeletedBooksStringMessage = DefaultMessageConfiguration.ItemDeletedBooks;
+
         PlaybackStart = false;
 
         PlaybackStartMovies = true;
@@ -167,6 +190,36 @@ public class UserConfiguration
     public bool ItemAddedBooks { get; set; }
 
     public string ItemAddedBooksStringMessage { get; set; }
+
+    public bool ItemDeleted { get; set; }
+
+    public bool ItemDeletedMovies { get; set; }
+
+    public string ItemDeletedMoviesStringMessage { get; set; }
+
+    public bool ItemDeletedSeries { get; set; }
+
+    public string ItemDeletedSeriesStringMessage { get; set; }
+
+    public bool ItemDeletedSeasons { get; set; }
+
+    public string ItemDeletedSeasonsStringMessage { get; set; }
+
+    public bool ItemDeletedEpisodes { get; set; }
+
+    public string ItemDeletedEpisodesStringMessage { get; set; }
+
+    public bool ItemDeletedAlbums { get; set; }
+
+    public string ItemDeletedAlbumsStringMessage { get; set; }
+
+    public bool ItemDeletedSongs { get; set; }
+
+    public string ItemDeletedSongsStringMessage { get; set; }
+
+    public bool ItemDeletedBooks { get; set; }
+
+    public string ItemDeletedBooksStringMessage { get; set; }
 
     public bool PlaybackStart { get; set; }
 

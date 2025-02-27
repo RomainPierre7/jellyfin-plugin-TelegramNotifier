@@ -3,6 +3,7 @@ using Jellyfin.Data.Events.System;
 using Jellyfin.Data.Events.Users;
 using Jellyfin.Plugin.TelegramNotifier.Notifiers;
 using Jellyfin.Plugin.TelegramNotifier.Notifiers.ItemAddedNotifier;
+using Jellyfin.Plugin.TelegramNotifier.Notifiers.ItemDeletedNotifier;
 using MediaBrowser.Common.Updates;
 using MediaBrowser.Controller;
 using MediaBrowser.Controller.Authentication;
@@ -32,6 +33,8 @@ public class PluginServiceRegistrator : IPluginServiceRegistrator
         serviceCollection.AddScoped<IEventConsumer<SubtitleDownloadFailureEventArgs>, SubtitleDownloadFailureNotifier>();
         serviceCollection.AddHostedService<ItemAddedNotifierEntryPoint>();
         serviceCollection.AddSingleton<IItemAddedManager, ItemAddedManager>();
+        serviceCollection.AddHostedService<ItemDeletedNotifierEntryPoint>();
+        serviceCollection.AddSingleton<IItemDeletedManager, ItemDeletedManager>();
 
         // Security consumers.
         serviceCollection.AddScoped<IEventConsumer<GenericEventArgs<AuthenticationRequest>>, AuthenticationFailureNotifier>();

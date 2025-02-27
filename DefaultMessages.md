@@ -44,6 +44,58 @@ This document provides a list of default messages of the plugin. You can use the
   ```
   🎵 [Audio] {audio.Name} ({item.ProductionYear}) added to library
   ```
+- **Books**
+  ```
+  📖 [Book] {item.Name} added to library
+
+  🖋️ {item.Overview}";
+  ```
+
+---
+
+## **Library Removals**
+- **Movies**
+  ```
+  🗑️🎬 {item.Name} ({item.ProductionYear})
+        removed from library
+
+  📽 {item.Overview}
+  ```
+- **Series**
+  ```
+  🗑️📺 [Serie] {serie.Name} ({item.ProductionYear}) removed from library
+
+  📽 {item.Overview}
+  ```
+- **Seasons**
+  ```
+  🗑️📺 {season.Series.Name} ({item.ProductionYear})
+        Season {seasonNumber} removed from library
+
+  📽 {item.Overview}
+  ```
+- **Episodes**
+  ```
+  🗑️📺 {episode.Series.Name} ({item.ProductionYear})
+        S{eSeasonNumber} - E{episodeNumber}
+        '{item.Name}' removed from library
+
+  📽 {item.Overview}
+  ```
+- **Albums**
+  ```
+  🗑️🎵 [Album] {album.Name} ({item.ProductionYear}) removed from library
+  ```
+- **Songs**
+  ```
+  🗑️🎵 [Audio] {audio.Name} ({item.ProductionYear}) removed from library
+  ```
+- **Books**
+  ```
+  🗑️📖 [Book] {item.Name} removed from library
+
+  🖋️ {item.Overview}";
+  ```
 
 ---
 

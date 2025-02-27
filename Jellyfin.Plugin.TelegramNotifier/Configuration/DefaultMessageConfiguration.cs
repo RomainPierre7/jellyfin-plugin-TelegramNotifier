@@ -24,8 +24,30 @@ namespace Jellyfin.Plugin.TelegramNotifier.Configuration
 
             ItemAddedSongs = "🎵 [Audio] {audio.Name} ({item.ProductionYear}) added to library";
 
-            ItemAddedBooks = "📖 [Book] {item.Name}\n" +
-                " added to library\n\n" +
+            ItemAddedBooks = "📖 [Book] {item.Name} added to library\n\n" +
+                "🖋️ {item.Overview}";
+
+            ItemDeletedMovies = "🗑️🎬 {item.Name} ({item.ProductionYear})\n" +
+                "      removed from library\n\n" +
+                "📽 {item.Overview}";
+
+            ItemDeletedSeries = "🗑️📺 [Serie] {serie.Name} ({item.ProductionYear}) removed from library\n\n" +
+                "📽 {item.Overview}";
+
+            ItemDeletedSeasons = "🗑️📺 {season.Series.Name} ({item.ProductionYear})\n" +
+                "      Season {seasonNumber} removed from library\n\n" +
+                "📽 {item.Overview}";
+
+            ItemDeletedEpisodes = "🗑️📺 {episode.Series.Name} ({item.ProductionYear})\n" +
+                "      S{eSeasonNumber} - E{episodeNumber}\n" +
+                "      '{item.Name}' removed from library\n\n" +
+                "📽 {item.Overview}";
+
+            ItemDeletedAlbums = "🗑️🎵 [Album] {album.Name} ({item.ProductionYear}) removed from library";
+
+            ItemDeletedSongs = "🗑️🎵 [Audio] {audio.Name} ({item.ProductionYear}) removed from library";
+
+            ItemDeletedBooks = "🗑️📖 [Book] {item.Name} removed from library\n\n" +
                 "🖋️ {item.Overview}";
 
             AuthenticationFailure = "🔒 Authentication failure on {eventArgs.Argument.DeviceName} for user {eventArgs.Argument.Username}";
@@ -114,6 +136,20 @@ namespace Jellyfin.Plugin.TelegramNotifier.Configuration
         public static string ItemAddedSongs { get; }
 
         public static string ItemAddedBooks { get; }
+
+        public static string ItemDeletedMovies { get; }
+
+        public static string ItemDeletedSeries { get; }
+
+        public static string ItemDeletedSeasons { get; }
+
+        public static string ItemDeletedEpisodes { get; }
+
+        public static string ItemDeletedAlbums { get; }
+
+        public static string ItemDeletedSongs { get; }
+
+        public static string ItemDeletedBooks { get; }
 
         public static string PlaybackStartMovies { get; }
 

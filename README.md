@@ -74,6 +74,7 @@ To use the plugin, you need to follow these steps:
 
 Available events:
 - Item added
+- Item deleted
 - Playback start
 - Playback progress
 - Playback stop
