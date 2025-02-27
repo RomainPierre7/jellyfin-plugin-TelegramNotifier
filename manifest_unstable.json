@@ -14,7 +14,7 @@
                 "targetAbi": "10.10.3.0",
                 "sourceUrl": "https://github.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/releases/download/11.0.0.5/TelegramNotifier.zip",
                 "timestamp": "2025-02-27T00:00:00Z",
-                "changelog": "### 📮 New notifiers: ###\n- Deleted items\n\n### ⚙️ Fixes: ###\n- Double session start notification"
+                "changelog": "### 📮 New notifiers: ###\n- Deleted items\n- Added/Deleted books\n\n### ⚙️ Fixes: ###\n- Double session start notification"
             },
             {
                 "checksum": "a588290e9de40d5865e4c6009e67d594",
