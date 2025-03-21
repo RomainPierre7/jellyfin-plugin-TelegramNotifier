@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Globalization;
 using System.Threading.Tasks;
 using MediaBrowser.Controller;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Audio;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
+using MediaBrowser.Model.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -45,6 +45,7 @@ public class ItemAddedManager : IItemAddedManager
                 foreach (var (key, container) in currentItems)
                 {
                     var item = _libraryManager.GetItemById(key);
+
                     if (item is null)
                     {
                         // Remove item from queue.
@@ -121,11 +122,24 @@ public class ItemAddedManager : IItemAddedManager
                 }
             }
         }
+        else
+        {
+            _logger.LogDebug("No items to process in the queue");
+        }
     }
 
     public void AddItem(BaseItem item)
     {
-        _itemProcessQueue.TryAdd(item.Id, new QueuedItemContainer(item.Id));
-        _logger.LogDebug("Queued {ItemName} for notification", item.Name);
+        LibraryOptions options = _libraryManager.GetLibraryOptions(item);
+        if (options.Enabled)
+        {
+            _itemProcessQueue.TryAdd(item.Id, new QueuedItemContainer(item.Id));
+            _logger.LogDebug("Queued {ItemName} for notification", item.Name);
+        }
+        else
+        {
+            _logger.LogDebug("Not queueing {ItemName} for notification because the it is a disabled library", item.Name);
+        }
+
     }
 }
