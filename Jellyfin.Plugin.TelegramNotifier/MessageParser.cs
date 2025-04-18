@@ -8,15 +8,17 @@ namespace Jellyfin.Plugin.TelegramNotifier
 {
     public static class MessageParser
     {
+        // private static readonly string[] TestPath = new[] { "Session", "PlayState", "PlayMethod" };
+
         private static readonly string[] ItemNamePath = new[] { "Name" };
         private static readonly string[] ItemProductionYearPath = new[] { "ProductionYear" };
         private static readonly string[] ItemOverviewPath = new[] { "Overview" };
         private static readonly string[] SerieNamePath = new[] { "Name" };
         private static readonly string[] SeasonSeriesNamePath = new[] { "Series", "Name" };
-
         private static readonly string[] EpisodeSeriesNamePath = new[] { "Series", "Name" };
         private static readonly string[] AlbumNamePath = new[] { "Name" };
         private static readonly string[] AudioNamePath = new[] { "Name" };
+        private static readonly string[] EventArgsSessionPlayStatePlayMethodPath = new[] { "Session", "PlayState", "PlayMethod" };
         private static readonly string[] EventArgsArgumentDeviceNamePath = new[] { "Argument", "DeviceName" };
         private static readonly string[] EventArgsArgumentUsernamePath = new[] { "Argument", "Username" };
         private static readonly string[] EventArgsArgumentUserDotNamePath = new[] { "Argument", "User", "Name" };
@@ -48,6 +50,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
                 object objEventArgs = eventArgs;
                 return new Dictionary<string, string?>
         {
+            // { "{TEST}", GetPropertySafely(objEventArgs, TestPath) },
             { "{item.Name}", GetPropertySafely(objEventArgs, ItemNamePath) },
             { "{item.ProductionYear}", GetPropertySafely(objEventArgs, ItemProductionYearPath) },
             { "{item.Overview}", GetPropertySafely(objEventArgs, ItemOverviewPath) },
@@ -61,6 +64,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
             { "{playbackEpisodeNumber}", GetPlaybackEpisodeNumberSafely(objEventArgs) },
             { "{album.Name}", GetPropertySafely(objEventArgs, AlbumNamePath) },
             { "{audio.Name}", GetPropertySafely(objEventArgs, AudioNamePath) },
+            { "{eventArgs.Session.PlayState.PlayMethod}", GetPropertySafely(objEventArgs, EventArgsSessionPlayStatePlayMethodPath) },
             { "{eventArgs.Argument.DeviceName}", GetPropertySafely(objEventArgs, EventArgsArgumentDeviceNamePath) },
             { "{eventArgs.Argument.Username}", GetPropertySafely(objEventArgs, EventArgsArgumentUsernamePath) },
             { "{eventArgs.Argument.User.Name}", GetPropertySafely(objEventArgs, EventArgsArgumentUserDotNamePath) },

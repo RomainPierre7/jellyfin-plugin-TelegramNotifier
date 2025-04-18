@@ -169,3 +169,11 @@ Plugin
 ```
 
 Finally, you have to restart the Jellyfin server.
+
+## 5. Tips
+
+If you want to easily test the plugin, you can use the following command to download a video file directly on your server:
+
+```bash
+curl https://cdn.pixabay.com/video/2025/03/28/268290_large.mp4 --output titanic.mp4
+```

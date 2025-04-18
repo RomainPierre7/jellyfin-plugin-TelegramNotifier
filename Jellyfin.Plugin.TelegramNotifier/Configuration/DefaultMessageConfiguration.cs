@@ -64,13 +64,13 @@ namespace Jellyfin.Plugin.TelegramNotifier.Configuration
                 "      S{playbackSeasonNumber} - E{playbackEpisodeNumber}\n" +
                 "      '{eventArgs.Item.Name}'";
 
-            PlaybackStartMovies = "👤 {eventArgs.Users[0].Username} is watching on {eventArgs.DeviceName}:\n" +
+            PlaybackStartMovies = "👤 {eventArgs.Users[0].Username} is watching on {eventArgs.DeviceName} ({eventArgs.Session.PlayState.PlayMethod}):\n" +
                 "🎬 {eventArgs.Item.Name} ({eventArgs.Item.ProductionYear})\n" +
                 "📺 [{eventArgs.Item.MediaType}] {eventArgs.Item.Genres}\n" +
                 "🕒 {duration}\n" +
                 "📽 {eventArgs.Item.Overview}";
 
-            PlaybackStartEpisodes = "👤 {eventArgs.Users[0].Username} is watching on {eventArgs.DeviceName}:\n" +
+            PlaybackStartEpisodes = "👤 {eventArgs.Users[0].Username} is watching on {eventArgs.DeviceName} ({eventArgs.Session.PlayState.PlayMethod}):\n" +
                 "🎬 {eventArgs.Item.Series.Name} ({eventArgs.Item.ProductionYear})\n" +
                 "      S{playbackSeasonNumber} - E{playbackEpisodeNumber}\n" +
                 "      '{eventArgs.Item.Name}'\n" +

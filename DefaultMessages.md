@@ -138,7 +138,7 @@ This document provides a list of default messages of the plugin. You can use the
 ## **Playback Start**
 - **Movies**
   ```
-  👤 {eventArgs.Users[0].Username} is watching on {eventArgs.DeviceName}:
+  👤 {eventArgs.Users[0].Username} is watching on {eventArgs.DeviceName} ({eventArgs.Session.PlayState.PlayMethod}):
   🎬 {eventArgs.Item.Name} ({eventArgs.Item.ProductionYear})
   📺 [{eventArgs.Item.MediaType}] {eventArgs.Item.Genres}
   🕒 {duration}
@@ -146,7 +146,7 @@ This document provides a list of default messages of the plugin. You can use the
   ```
 - **Episodes**
   ```
-  👤 {eventArgs.Users[0].Username} is watching on {eventArgs.DeviceName}:
+  👤 {eventArgs.Users[0].Username} is watching on {eventArgs.DeviceName} ({eventArgs.Session.PlayState.PlayMethod}):
   🎬 {eventArgs.Item.Series.Name} ({eventArgs.Item.ProductionYear})
         S{playbackSeasonNumber} - E{playbackEpisodeNumber}
         '{eventArgs.Item.Name}'
