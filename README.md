@@ -170,7 +170,7 @@ Plugin
 
 Finally, you have to restart the Jellyfin server.
 
-## 5. Tips
+### 5. Tips
 
 If you want to easily test the plugin, you can use the following command to download a video file directly on your server:
 
