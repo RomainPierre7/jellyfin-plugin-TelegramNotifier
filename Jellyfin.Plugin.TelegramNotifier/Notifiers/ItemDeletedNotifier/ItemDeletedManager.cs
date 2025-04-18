@@ -84,7 +84,7 @@ public class ItemDeletedManager : IItemDeletedManager
                                 break;
 
                             case Audio audio:
-                                subtype = "ItemDeletedAudios";
+                                subtype = "ItemDeletedSongs";
                                 eventArgs = audio;
                                 break;
 

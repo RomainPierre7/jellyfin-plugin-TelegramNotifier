@@ -95,7 +95,7 @@ public class ItemAddedManager : IItemAddedManager
                             break;
 
                         case Audio audio:
-                            subtype = "ItemAddedAudios";
+                            subtype = "ItemAddedSongs";
                             eventArgs = audio;
                             break;
 
