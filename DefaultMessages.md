@@ -186,6 +186,8 @@ This document provides a list of default messages of the plugin. You can use the
 - **Installed**
   ```
   🚧 {eventArgs.Argument.Name} plugin installed (version {eventArgs.Argument.Version})
+
+  You may need to restart your server.
   ```
 - **Installing**
   ```

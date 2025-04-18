@@ -56,7 +56,7 @@ export default function (view) {
                 "PlaybackStopEpisodes": "👤 {eventArgs.Users[0].Username} stopped watching:\n🎬 {eventArgs.Item.Series.Name} ({eventArgs.Item.ProductionYear})\n      S{playbackSeasonNumber} - E{playbackEpisodeNumber}\n      '{eventArgs.Item.Name}'",
                 "PluginInstallationCancelled": "🔴 {eventArgs.Argument.Name} plugin installation cancelled (version {eventArgs.Argument.Version}):",
                 "PluginInstallationFailed": "🔴 {eventArgs.InstallationInfo} plugin installation failed (version {eventArgs.VersionInfo}):\n{eventArgs.Exception}",
-                "PluginInstalled": "🚧 {eventArgs.Argument.Name} plugin installed (version {eventArgs.Argument.Version})",
+                "PluginInstalled": "🚧 {eventArgs.Argument.Name} plugin installed (version {eventArgs.Argument.Version})\n\nYou may need to restart your server.",
                 "PluginInstalling": "🚧 {eventArgs.Argument.Name} plugin is installing (version {eventArgs.Argument.Version})",
                 "PluginUninstalled": "🚧 {eventArgs.Argument.Name} plugin uninstalled",
                 "PluginUpdated": "🚧 {eventArgs.Argument.Name} plugin updated to version {eventArgs.Argument.Version}:🗒️ {eventArgs.Argument.Changelog}\n\nYou may need to restart Jellyfin to apply the changes.",

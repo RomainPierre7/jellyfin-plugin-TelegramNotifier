@@ -91,7 +91,7 @@ namespace Jellyfin.Plugin.TelegramNotifier.Configuration
             PluginInstallationFailed = "🔴 {eventArgs.InstallationInfo} plugin installation failed (version {eventArgs.VersionInfo}):\n" +
                 "{eventArgs.Exception}";
 
-            PluginInstalled = "🚧 {eventArgs.Argument.Name} plugin installed (version {eventArgs.Argument.Version})";
+            PluginInstalled = "🚧 {eventArgs.Argument.Name} plugin installed (version {eventArgs.Argument.Version})\n\nYou may need to restart your server.";
 
             PluginInstalling = "🚧 {eventArgs.Argument.Name} plugin is installing (version {eventArgs.Argument.Version})";
 
@@ -121,7 +121,6 @@ namespace Jellyfin.Plugin.TelegramNotifier.Configuration
 
             UserDataSaved = "👤 User {eventArgs.Argument.Username} data saved.";
         }
-
 
         public static string ItemAddedMovies { get; }
 
