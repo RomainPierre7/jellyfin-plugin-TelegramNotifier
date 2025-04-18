@@ -12,7 +12,7 @@
                 "checksum": "b1bd6fc286d7f92be2b714eb1e73a7e2",
                 "version": "11.1.0.0",
                 "targetAbi": "10.10.3.0",
-                "sourceUrl": "https://github.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/releases/download/11.1.0/TelegramNotifier.zip",
+                "sourceUrl": "https://github.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/releases/download/11.1.0.0/TelegramNotifier.zip",
                 "timestamp": "2025-04-18T00:00:00Z",
                 "changelog": "### 🚀 New features: ###\n- Add the play method placeholder for playback notifiers\n\n### ⚙️ Fixes: ###\n- Correction of a variable error in the music section"
             },
