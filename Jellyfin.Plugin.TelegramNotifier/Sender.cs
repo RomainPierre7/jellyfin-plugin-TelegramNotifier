@@ -40,7 +40,8 @@ namespace Jellyfin.Plugin.TelegramNotifier
                 var parameters = new Dictionary<string, string>
                 {
                     { "chat_id", chatId },
-                    { "text", message }
+                    { "text", message },
+                    { "parse_mode", "HTML" }
                 };
 
                 if (isSilentNotification)
