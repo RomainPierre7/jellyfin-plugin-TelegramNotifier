@@ -80,6 +80,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
                 formData.Add(new StringContent(chatId), "chat_id");
                 formData.Add(new StringContent(message), "caption");
                 formData.Add(new StringContent(isSilentNotification ? "true" : "false"), "disable_notification");
+                formData.Add(new StringContent("HTML"), "parse_mode");
 
                 if (!string.IsNullOrEmpty(threadId))
                 {
