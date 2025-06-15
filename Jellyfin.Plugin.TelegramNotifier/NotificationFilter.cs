@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Jellyfin.Plugin.TelegramNotifier.Configuration;
+using MediaBrowser.Controller.Entities.TV;
 
 namespace Jellyfin.Plugin.TelegramNotifier
 {
@@ -149,6 +150,12 @@ namespace Jellyfin.Plugin.TelegramNotifier
                     }
                     else
                     {
+                        if (user.KeepSerieImage && eventArgs.Item is Episode)
+                        {
+                            var episode = (Episode)eventArgs.Item;
+                            string serverUrl = Plugin.Instance?.Configuration.ServerUrl ?? "localhost:8096";
+                            imagePath = "http://" + serverUrl + "/Items/" + episode.Series.Id + "/Images/Primary";
+                        }
                         Task task = _sender.SendMessageWithPhoto(type.ToString(), message, imagePath, botToken, chatId, isSilentNotification, threadId);
                         tasks.Add(task);
                     }

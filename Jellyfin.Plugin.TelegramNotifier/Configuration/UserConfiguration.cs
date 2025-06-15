@@ -20,6 +20,8 @@ public class UserConfiguration
 
         DoNotMentionOwnActivities = false;
 
+        KeepSerieImage = false;
+
         ItemAdded = false;
 
         ItemAddedMovies = true;
@@ -160,6 +162,8 @@ public class UserConfiguration
     public bool SilentNotification { get; set; }
 
     public bool DoNotMentionOwnActivities { get; set; }
+
+    public bool KeepSerieImage { get; set; }
 
     public bool ItemAdded { get; set; }
 

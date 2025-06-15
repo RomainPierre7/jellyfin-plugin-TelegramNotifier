@@ -220,6 +220,7 @@ export default function (view) {
                     document.querySelector('#EnableUser').checked = userConfig.EnableUser;
                     document.querySelector('#SilentNotification').checked = userConfig.SilentNotification;
                     document.querySelector('#DoNotMentionOwnActivities').checked = userConfig.DoNotMentionOwnActivities;
+                    document.querySelector('#KeepSerieImage').checked = userConfig.KeepSerieImage;
                     TelegramNotifierConfig.notificationType.loadNotificationTypes(userConfig);
                 } else {
                     document.querySelector('#ServerUrl').value = config.ServerUrl;
@@ -229,6 +230,7 @@ export default function (view) {
                     document.querySelector('#EnableUser').checked = false;
                     document.querySelector('#SilentNotification').checked = false;
                     document.querySelector('#DoNotMentionOwnActivities').checked = false;
+                    document.querySelector('#KeepSerieImage').checked = false;
                     TelegramNotifierConfig.notificationType.loadNotificationTypes(null);
                 }
                 Dashboard.hideLoadingMsg();
@@ -252,6 +254,7 @@ export default function (view) {
                         userConfig.EnableUser = document.querySelector('#EnableUser').checked;
                         userConfig.SilentNotification = document.querySelector('#SilentNotification').checked;
                         userConfig.DoNotMentionOwnActivities = document.querySelector('#DoNotMentionOwnActivities').checked;
+                        userConfig.KeepSerieImage = document.querySelector('#KeepSerieImage').checked;
                         TelegramNotifierConfig.notificationType.saveNotificationTypes(userConfig);
                     } else {
                         config.ServerUrl = document.querySelector('#ServerUrl').value;
@@ -263,7 +266,8 @@ export default function (view) {
                             ThreadId: document.querySelector('#ThreadId').value,
                             EnableUser: document.querySelector('#EnableUser').checked,
                             SilentNotification: document.querySelector('#SilentNotification').checked,
-                            DoNotMentionOwnActivities: document.querySelector('#DoNotMentionOwnActivities').checked
+                            DoNotMentionOwnActivities: document.querySelector('#DoNotMentionOwnActivities').checked,
+                            KeepSerieImage: document.querySelector('#KeepSerieImage').checked
                         });
                         TelegramNotifierConfig.notificationType.saveNotificationTypes(config.UserConfigurations.find(x => x.UserId === TelegramNotifierConfig.user.getSelectedUserId()));
                     }
