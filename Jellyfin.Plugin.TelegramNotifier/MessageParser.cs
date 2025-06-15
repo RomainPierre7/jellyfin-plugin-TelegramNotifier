@@ -71,6 +71,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
             { "{eventArgs.Argument.SessionInfo.DeviceName}", GetPropertySafely(objEventArgs, EventArgsArgumentSessionInfoDeviceNamePath) },
             { "{eventArgs.Users[0].Username}", GetPropertySafely(objEventArgs, EventArgsUsers0UsernamePath) },
             { "{eventArgs.Item.Series.Name}", GetPropertySafely(objEventArgs, EventArgsItemSeriesNamePath) },
+            { "{eventArgs.Item.Series.Genres}", GetSerieGenresSafely(objEventArgs)},
             { "{eventArgs.DeviceName}", GetPropertySafely(objEventArgs, EventArgsDeviceNamePath) },
             { "{eventArgs.Item.Name}", GetPropertySafely(objEventArgs, EventArgsItemNamePath) },
             { "{eventArgs.Item.ProductionYear}", GetPropertySafely(objEventArgs, EventArgsItemProductionYearPath) },
@@ -169,6 +170,45 @@ namespace Jellyfin.Plugin.TelegramNotifier
             }
 
             var genresValue = genresProperty.GetValue(item);
+
+            if (genresValue is IEnumerable<object> genres)
+            {
+                return string.Join(", ", genres);
+            }
+            else
+            {
+                return "Invalid genres";
+            }
+        }
+
+        private static string GetSerieGenresSafely(object obj)
+        {
+            var itemProperty = obj.GetType().GetProperty("Item");
+
+            if (itemProperty == null || itemProperty.GetValue(obj) == null)
+            {
+                return "No genres available";
+            }
+
+            var item = itemProperty.GetValue(obj);
+
+            var seriesProperty = item.GetType().GetProperty("Series");
+
+            if (seriesProperty == null || seriesProperty.GetValue(item) == null)
+            {
+                return "No genres available";
+            }
+
+            var series = seriesProperty.GetValue(item);
+
+            var genresProperty = series.GetType().GetProperty("Genres");
+
+            if (genresProperty == null || genresProperty.GetValue(series) == null)
+            {
+                return "No genres available";
+            }
+
+            var genresValue = genresProperty.GetValue(series);
 
             if (genresValue is IEnumerable<object> genres)
             {

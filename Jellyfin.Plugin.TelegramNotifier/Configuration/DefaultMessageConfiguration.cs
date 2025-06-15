@@ -74,7 +74,7 @@ namespace Jellyfin.Plugin.TelegramNotifier.Configuration
                 "🎬 {eventArgs.Item.Series.Name} ({eventArgs.Item.ProductionYear})\n" +
                 "      S{playbackSeasonNumber} - E{playbackEpisodeNumber}\n" +
                 "      '{eventArgs.Item.Name}'\n" +
-                "📺 [{eventArgs.Item.MediaType}] {eventArgs.Item.Genres}\n" +
+                "📺 [{eventArgs.Item.MediaType}] {eventArgs.Item.Series.Genres}\n" +
                 "🕒 {duration}\n" +
                 "📽 {eventArgs.Item.Overview}";
 

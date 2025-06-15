@@ -150,7 +150,7 @@ This document provides a list of default messages of the plugin. You can use the
   🎬 {eventArgs.Item.Series.Name} ({eventArgs.Item.ProductionYear})
         S{playbackSeasonNumber} - E{playbackEpisodeNumber}
         '{eventArgs.Item.Name}'
-  📺 [{eventArgs.Item.MediaType}] {eventArgs.Item.Genres}
+  📺 [{eventArgs.Item.MediaType}] {eventArgs.Item.Series.Genres}
   🕒 {duration}
   📽 {eventArgs.Item.Overview}
   ```
