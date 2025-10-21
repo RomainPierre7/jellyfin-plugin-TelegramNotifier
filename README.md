@@ -31,8 +31,9 @@ To install the plugin on your Jellyfin server, you need to follow these steps:
 
 1. Go to the Jellyfin dashboard
 2. Go to the **Plugins** section
-3. Go to the **Repository** tab
-4. Add the depot URL: 
+3. Click on the **Manage Repositories** button
+4. Click on **New Repository**
+5. Add the depot URL: 
 
 Repository Name: ```Telegram Notifier```
 
@@ -41,13 +42,15 @@ Repository URL:
 https://raw.githubusercontent.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/main/manifest.json
 ```
 
-5. Go to the **Catalog** tab
-6. Search for the plugin: ```Telegram Notifier```
+6. Go back to the **plugins** page
+7. Search for the plugin: ```Telegram Notifier```
 
-<img src="assets/catalog.png" alt="Logo" width="250" height="200">
+> Make sure to enable the **All** or **Available** filter
 
-7. Click on the **Install** button
-8. Restart the Jellyfin server
+<img src="assets/banner.png" alt="Logo" width="267" height="150">
+
+8. Click on the **Install** button
+9. Restart the Jellyfin server
 
 > **Note:** You can also install the plugin manually by downloading the latest release from the [releases page](https://github.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/releases).
 
@@ -57,8 +60,8 @@ To use the plugin, you need to follow these steps:
 
 1. Go to the Jellyfin dashboard
 2. Go to the **Plugins** section
-3. Go to the **Installed** tab
-4. Click on the **Telegram Notifier** plugin
+3. Click on the **Telegram Notifier** plugin
+4. Click on **settings**
 5. Configure the plugin
 
 ### Configuration
