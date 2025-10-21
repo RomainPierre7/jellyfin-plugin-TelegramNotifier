@@ -11,6 +11,14 @@
             {
                 "checksum": "f377abfd5d5349639ca68034431dd543",
                 "version": "11.2.0.0",
+                "targetAbi": "10.11.0.0",
+                "sourceUrl": "https://github.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/releases/download/11.2.0.0/TelegramNotifier.zip",
+                "timestamp": "2025-06-15T00:00:00Z",
+                "changelog": "### 🚀 New features: ###\n- Allow to keep series image instead of episode image for episode notifications\n\n### ⚙️ Fixes: ###\n- Episode genres are now from the serie metadata"
+            },
+            {
+                "checksum": "f377abfd5d5349639ca68034431dd543",
+                "version": "11.2.0.0",
                 "targetAbi": "10.10.3.0",
                 "sourceUrl": "https://github.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/releases/download/11.2.0.0/TelegramNotifier.zip",
                 "timestamp": "2025-06-15T00:00:00Z",
