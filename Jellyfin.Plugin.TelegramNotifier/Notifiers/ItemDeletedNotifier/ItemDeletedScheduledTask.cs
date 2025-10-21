@@ -46,7 +46,7 @@ public class ItemDeletedScheduledTask : IScheduledTask, IConfigurableScheduledTa
         {
             new TaskTriggerInfo
             {
-                Type = TaskTriggerInfo.TriggerInterval,
+                Type = TaskTriggerInfoType.IntervalTrigger,
                 IntervalTicks = TimeSpan.FromSeconds(RecheckIntervalSec).Ticks
             }
         };
