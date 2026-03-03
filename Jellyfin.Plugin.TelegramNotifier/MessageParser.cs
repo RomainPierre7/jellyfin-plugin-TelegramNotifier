@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using MediaBrowser.Controller.Entities;
+using MediaBrowser.Controller.Library;
 
 namespace Jellyfin.Plugin.TelegramNotifier
 {
@@ -49,6 +51,10 @@ namespace Jellyfin.Plugin.TelegramNotifier
             @"\{item\.Overview:(\d+)\}",
             RegexOptions.Compiled);
 
+        private static readonly Regex ConditionalSectionRegex = new(
+            @"\{\?([^}]+)\}(.*?)\{\/\1\}",
+            RegexOptions.Singleline | RegexOptions.Compiled);
+
         private static object GetEffectiveItem(object obj)
         {
             if (obj == null) return null;
@@ -58,7 +64,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
             return obj;
         }
 
-        private static Dictionary<string, string?> GetReplacements(dynamic eventArgs)
+        private static Dictionary<string, string?> GetReplacements(dynamic eventArgs, ILibraryManager? libraryManager = null, IMediaSourceManager? mediaSourceManager = null)
         {
             try
             {
@@ -79,15 +85,27 @@ namespace Jellyfin.Plugin.TelegramNotifier
                     { "{item.Overview}", GetPropertySafely(objEventArgs, ItemOverviewPath) },
                     { "{item.CommunityRating}", GetItemCommunityRatingSafely(effectiveItem) },
                     { "{item.RunTime}", GetItemRunTimeSafely(effectiveItem) },
+                    { "{item.CumulativeRunTime}", GetItemCumulativeRunTimeSafely(effectiveItem) },
                     { "{item.Genres}", GetItemGenresSafely(effectiveItem) },
                     { "{item.Directors}", GetItemDirectorsSafely(effectiveItem) },
                     { "{item.Studios}", GetItemStudiosSafely(effectiveItem) },
                     { "{item.ProductionLocations}", GetItemProductionLocationsSafely(effectiveItem) },
+                    { "{item.OfficialRating}", GetItemOfficialRatingSafely(effectiveItem) },
+                    { "{item.Tagline}", GetItemTaglineSafely(effectiveItem) },
+                    { "{item.PremiereDate}", GetItemPremiereDateSafely(effectiveItem) },
+                    { "{item.Tags}", GetItemTagsSafely(effectiveItem) },
+                    { "{item.ImdbId}", GetItemProviderIdSafely(effectiveItem, "Imdb") },
+                    { "{item.TmdbId}", GetItemProviderIdSafely(effectiveItem, "Tmdb") },
+                    { "{item.ImdbUrl}", GetItemImdbUrlSafely(effectiveItem) },
+                    { "{item.TmdbUrl}", GetItemTmdbUrlSafely(effectiveItem) },
                     { "{item.Id}", GetPropertySafely(objEventArgs, ItemIdPath) ?? GetPropertySafely(effectiveItem, new[] { "Id" }) },
-                    { "{item.LibraryName}", GetItemLibraryNameSafely(effectiveItem) },
+                    { "{item.ChildCount}", GetItemChildCountSafely(effectiveItem) },
+                    { "{item.SeasonCount}", GetItemSeasonCountSafely(effectiveItem) },
+                    { "{item.Status}", GetItemStatusSafely(effectiveItem) },
+                    { "{item.LibraryName}", GetItemLibraryNameSafely(effectiveItem, libraryManager) },
                     { "{item.VideoResolution}", GetItemVideoResolutionSafely(effectiveItem) },
                     { "{item.VideoCodec}", GetItemVideoCodecSafely(effectiveItem) },
-                    { "{item.AudioCodec}", GetItemAudioCodecSafely(effectiveItem) },
+                    { "{item.AudioCodec}", GetItemAudioCodecSafely(effectiveItem, mediaSourceManager) },
                     { "{server.Url}", serverUrl },
                     { "{serie.Name}", GetPropertySafely(objEventArgs, SerieNamePath) },
                     { "{season.Series.Name}", GetPropertySafely(objEventArgs, SeasonSeriesNamePath) },
@@ -178,20 +196,46 @@ namespace Jellyfin.Plugin.TelegramNotifier
                 if (peopleProp?.GetValue(item) is System.Collections.IEnumerable people)
                 {
                     var directors = new List<string>();
+                    var producers = new List<string>();
+                    var writers = new List<string>();
+                    var creators = new List<string>();
+                    var actors = new List<string>();
                     foreach (var p in people)
                     {
                         if (p == null) continue;
                         var typeProp = p.GetType().GetProperty("Type");
                         var nameProp = p.GetType().GetProperty("Name");
-                        if (typeProp?.GetValue(p)?.ToString()?.Equals("Director", StringComparison.OrdinalIgnoreCase) == true
-                            && nameProp?.GetValue(p) is string name && !string.IsNullOrEmpty(name))
+                        var typeVal = typeProp?.GetValue(p)?.ToString();
+                        var name = nameProp?.GetValue(p) as string;
+                        if (string.IsNullOrEmpty(name)) continue;
+                        name = SanitizeString(name);
+                        if (typeVal == null) continue;
+                        if (typeVal.Equals("Director", StringComparison.OrdinalIgnoreCase) || typeVal.Equals("0", StringComparison.OrdinalIgnoreCase))
                             directors.Add(name);
+                        else if (typeVal.Equals("Producer", StringComparison.OrdinalIgnoreCase))
+                            producers.Add(name);
+                        else if (typeVal.Equals("Writer", StringComparison.OrdinalIgnoreCase))
+                            writers.Add(name);
+                        else if (typeVal.Equals("Creator", StringComparison.OrdinalIgnoreCase))
+                            creators.Add(name);
+                        else if (typeVal.Equals("Actor", StringComparison.OrdinalIgnoreCase))
+                            actors.Add(name);
                     }
-                    return string.Join(", ", directors);
+                    if (directors.Count > 0) return string.Join(", ", directors);
+                    if (producers.Count > 0) return string.Join(", ", producers);
+                    if (writers.Count > 0) return string.Join(", ", writers);
+                    if (creators.Count > 0) return string.Join(", ", creators);
+                    if (actors.Count > 0) return string.Join(", ", actors);
                 }
             }
             catch { }
             return string.Empty;
+        }
+
+        private static string SanitizeString(string s)
+        {
+            if (string.IsNullOrEmpty(s)) return s;
+            return new string(s.Where(c => c != '\uFFFD' && !char.IsControl(c)).ToArray());
         }
 
         private static string GetItemStudiosSafely(object item)
@@ -199,9 +243,9 @@ namespace Jellyfin.Plugin.TelegramNotifier
             if (item == null) return string.Empty;
             var studiosValue = item.GetType().GetProperty("Studios")?.GetValue(item);
             if (studiosValue is IEnumerable<object> studios)
-                return string.Join(", ", studios.Select(s => s?.ToString() ?? string.Empty).Where(s => !string.IsNullOrEmpty(s)));
+                return string.Join(", ", studios.Select(s => SanitizeString(s?.ToString() ?? string.Empty)).Where(s => !string.IsNullOrEmpty(s)));
             if (studiosValue is System.Collections.IEnumerable enumStudios)
-                return string.Join(", ", enumStudios.Cast<object>().Select(s => s?.ToString() ?? string.Empty).Where(s => !string.IsNullOrEmpty(s)));
+                return string.Join(", ", enumStudios.Cast<object>().Select(s => SanitizeString(s?.ToString() ?? string.Empty)).Where(s => !string.IsNullOrEmpty(s)));
             return string.Empty;
         }
 
@@ -216,11 +260,30 @@ namespace Jellyfin.Plugin.TelegramNotifier
             return string.Empty;
         }
 
-        private static string GetItemLibraryNameSafely(object item)
+        private static string GetItemLibraryNameSafely(object? item, ILibraryManager? libraryManager)
         {
             if (item == null) return string.Empty;
             try
             {
+                if (libraryManager != null)
+                {
+                    var idProp = item.GetType().GetProperty("Id");
+                    if (idProp?.GetValue(item) is Guid id)
+                    {
+                        var current = libraryManager.GetItemById(id);
+                        string? lastName = null;
+                        while (current != null)
+                        {
+                            lastName = current.Name;
+                            var parentIdProp = current.GetType().GetProperty("ParentId");
+                            if (parentIdProp?.GetValue(current) is not Guid parentId || parentId == Guid.Empty)
+                                break;
+                            current = libraryManager.GetItemById(parentId);
+                        }
+                        if (!string.IsNullOrEmpty(lastName))
+                            return lastName;
+                    }
+                }
                 var parentProp = item.GetType().GetProperty("Parent");
                 var parent = parentProp?.GetValue(item);
                 while (parent != null)
@@ -233,6 +296,110 @@ namespace Jellyfin.Plugin.TelegramNotifier
             }
             catch { }
             return string.Empty;
+        }
+
+        private static string GetItemChildCountSafely(object? item)
+        {
+            if (item == null) return string.Empty;
+            var val = GetPropertySafely(item, new[] { "ChildCount" });
+            if (!string.IsNullOrEmpty(val) && int.TryParse(val, out int count))
+                return count.ToString(CultureInfo.InvariantCulture);
+            return string.Empty;
+        }
+
+        private static string GetItemStatusSafely(object? item)
+        {
+            if (item == null) return string.Empty;
+            var statusProp = item.GetType().GetProperty("Status");
+            if (statusProp?.GetValue(item) == null) return string.Empty;
+            return SanitizeString(statusProp.GetValue(item)?.ToString() ?? string.Empty);
+        }
+
+        private static string GetItemOfficialRatingSafely(object? item)
+        {
+            if (item == null) return string.Empty;
+            return SanitizeString(GetPropertySafely(item, new[] { "OfficialRating" }) ?? string.Empty);
+        }
+
+        private static string GetItemTaglineSafely(object? item)
+        {
+            if (item == null) return string.Empty;
+            return SanitizeString(GetPropertySafely(item, new[] { "Tagline" }) ?? string.Empty);
+        }
+
+        private static string GetItemPremiereDateSafely(object? item)
+        {
+            if (item == null) return string.Empty;
+            var dateProp = item.GetType().GetProperty("PremiereDate");
+            var dateVal = dateProp?.GetValue(item);
+            if (dateVal == null) return string.Empty;
+            if (dateVal is DateTimeOffset dto)
+                return dto.ToString("d MMM yyyy", CultureInfo.InvariantCulture);
+            if (dateVal is DateTime dt)
+                return dt.ToString("d MMM yyyy", CultureInfo.InvariantCulture);
+            return string.Empty;
+        }
+
+        private static string GetItemTagsSafely(object? item)
+        {
+            if (item == null) return string.Empty;
+            var tagsValue = item.GetType().GetProperty("Tags")?.GetValue(item);
+            if (tagsValue is IEnumerable<object> tags)
+                return string.Join(", ", tags.Select(t => SanitizeString(t?.ToString() ?? string.Empty)).Where(s => !string.IsNullOrEmpty(s)));
+            if (tagsValue is System.Collections.IEnumerable enumTags)
+                return string.Join(", ", enumTags.Cast<object>().Select(t => SanitizeString(t?.ToString() ?? string.Empty)).Where(s => !string.IsNullOrEmpty(s)));
+            return string.Empty;
+        }
+
+        private static string GetItemProviderIdSafely(object? item, string provider)
+        {
+            if (item == null) return string.Empty;
+            try
+            {
+                var providerIdsProp = item.GetType().GetProperty("ProviderIds");
+                if (providerIdsProp?.GetValue(item) is not System.Collections.IDictionary providerIds) return string.Empty;
+                var key = providerIds.Keys.Cast<object>().FirstOrDefault(k => k?.ToString()?.Equals(provider, StringComparison.OrdinalIgnoreCase) == true);
+                return key != null && providerIds[key] is string val ? val : string.Empty;
+            }
+            catch { }
+            return string.Empty;
+        }
+
+        private static string GetItemImdbUrlSafely(object? item)
+        {
+            var id = GetItemProviderIdSafely(item, "Imdb");
+            return string.IsNullOrEmpty(id) ? string.Empty : "https://www.imdb.com/title/" + id;
+        }
+
+        private static string GetItemTmdbUrlSafely(object? item)
+        {
+            var id = GetItemProviderIdSafely(item, "Tmdb");
+            return string.IsNullOrEmpty(id) ? string.Empty : "https://www.themoviedb.org/movie/" + id;
+        }
+
+        private static string GetItemCumulativeRunTimeSafely(object? item)
+        {
+            if (item == null) return string.Empty;
+            var ticksProp = item.GetType().GetProperty("CumulativeRunTimeTicks");
+            if (ticksProp?.GetValue(item) == null) return string.Empty;
+            var ticksValue = ticksProp.GetValue(item);
+            if (!long.TryParse(ticksValue?.ToString(), out long ticks) || ticks == 0) return string.Empty;
+            long hours = ticks / (600000000L * 60);
+            long minutes = (ticks / 600000000L) % 60;
+            return hours > 0
+                ? (minutes < 10 ? $"{hours}h 0{minutes}m" : $"{hours}h {minutes}m")
+                : (minutes > 1 ? $"{minutes} min" : $"{minutes} min");
+        }
+
+        private static string GetItemSeasonCountSafely(object? item)
+        {
+            if (item == null) return string.Empty;
+            var seriesProp = item.GetType().GetProperty("Series");
+            var series = seriesProp?.GetValue(item);
+            if (series == null) return GetItemChildCountSafely(item);
+            var countProp = series.GetType().GetProperty("ChildCount");
+            if (countProp?.GetValue(series) is int count) return count.ToString(CultureInfo.InvariantCulture);
+            return GetItemChildCountSafely(item);
         }
 
         private static string GetItemVideoResolutionSafely(object item)
@@ -267,8 +434,33 @@ namespace Jellyfin.Plugin.TelegramNotifier
             return string.Empty;
         }
 
-        private static string GetItemAudioCodecSafely(object item)
+        private static string GetItemAudioCodecSafely(object? item, IMediaSourceManager? mediaSourceManager)
         {
+            if (item == null || mediaSourceManager == null) return string.Empty;
+            try
+            {
+                if (item is not BaseItem baseItem)
+                {
+                    return string.Empty;
+                }
+
+                var getMediaStreamsMethod = mediaSourceManager.GetType().GetMethod("GetMediaStreams", new[] { typeof(BaseItem) });
+                if (getMediaStreamsMethod?.Invoke(mediaSourceManager, new object[] { baseItem }) is System.Collections.IEnumerable streams)
+                {
+                    foreach (var s in streams)
+                    {
+                        if (s == null) continue;
+                        var typeProp = s.GetType().GetProperty("Type");
+                        if (typeProp?.GetValue(s)?.ToString()?.Contains("Audio", StringComparison.OrdinalIgnoreCase) == true)
+                        {
+                            var codecProp = s.GetType().GetProperty("Codec");
+                            var codec = codecProp?.GetValue(s)?.ToString();
+                            if (!string.IsNullOrEmpty(codec)) return SanitizeString(codec);
+                        }
+                    }
+                }
+            }
+            catch { }
             return string.Empty;
         }
 
@@ -392,9 +584,19 @@ namespace Jellyfin.Plugin.TelegramNotifier
             return int.TryParse(val?.ToString(), out int n) ? n.ToString("00", CultureInfo.InvariantCulture) : null;
         }
 
-        public static string ParseMessage(string message, dynamic eventArgs)
+        public static string ParseMessage(string message, dynamic eventArgs, ILibraryManager? libraryManager = null, IMediaSourceManager? mediaSourceManager = null)
         {
-            var replacements = GetReplacements(eventArgs);
+            var replacements = GetReplacements(eventArgs, libraryManager, mediaSourceManager);
+            var emptyReplacement = Plugin.Instance?.Configuration?.EmptyPlaceholderReplacement ?? string.Empty;
+
+            message = ConditionalSectionRegex.Replace(message, m =>
+            {
+                var placeholderKey = "{" + m.Groups[1].Value + "}";
+                var content = m.Groups[2].Value;
+                if (!replacements.TryGetValue(placeholderKey, out string? value) || string.IsNullOrEmpty(value))
+                    return string.Empty;
+                return content;
+            });
 
             message = OverviewTruncationRegex.Replace(message, m =>
             {
@@ -409,8 +611,8 @@ namespace Jellyfin.Plugin.TelegramNotifier
             {
                 if (message.Contains(pair.Key))
                 {
-                    var value = string.IsNullOrEmpty(pair.Value) ? "..." : pair.Value;
-                    message = Regex.Replace(message, Regex.Escape(pair.Key), value);
+                    var value = string.IsNullOrEmpty(pair.Value) ? emptyReplacement : pair.Value;
+                    message = message.Replace(pair.Key, value);
                 }
             }
 

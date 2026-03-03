@@ -9,12 +9,18 @@ public class PluginConfiguration : BasePluginConfiguration
     {
         ServerUrl = "localhost:8096";
         EnablePlugin = true;
+        EmptyPlaceholderReplacement = string.Empty;
         UserConfigurations = Array.Empty<UserConfiguration>();
     }
 
     public string ServerUrl { get; set; }
 
     public bool EnablePlugin { get; set; }
+
+    /// <summary>
+    /// Gets or sets the replacement for empty placeholders: "" (blank), "...", "N/A", or "—".
+    /// </summary>
+    public string EmptyPlaceholderReplacement { get; set; }
 
     public UserConfiguration[] UserConfigurations { get; set; }
 }
