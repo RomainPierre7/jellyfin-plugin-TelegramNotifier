@@ -14,8 +14,6 @@ namespace Jellyfin.Plugin.TelegramNotifier
         private static readonly string[] ItemProductionYearPath = new[] { "ProductionYear" };
         private static readonly string[] ItemOverviewPath = new[] { "Overview" };
         private static readonly string[] ItemCommunityRatingPath = new[] { "CommunityRating" };
-        private static readonly string[] ItemStudiosPath = new[] { "Studios" };
-        private static readonly string[] ItemProductionLocationsPath = new[] { "ProductionLocations" };
         private static readonly string[] ItemIdPath = new[] { "Id" };
         private static readonly string[] SerieNamePath = new[] { "Name" };
         private static readonly string[] SeasonSeriesNamePath = new[] { "Series", "Name" };
@@ -55,7 +53,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
             @"\{\?([^}]+)\}(.*?)\{\/\1\}",
             RegexOptions.Singleline | RegexOptions.Compiled);
 
-        private static object GetEffectiveItem(object obj)
+        private static object? GetEffectiveItem(object? obj)
         {
             if (obj == null) return null;
             var itemProperty = obj.GetType().GetProperty("Item");
@@ -148,13 +146,13 @@ namespace Jellyfin.Plugin.TelegramNotifier
 
                 return replacements;
             }
-            catch (Exception ex)
+            catch
             {
-                throw new Exception("Error while building replacements: " + ex.Message);
+                return new Dictionary<string, string?>();
             }
         }
 
-        private static string GetItemCommunityRatingSafely(object item)
+        private static string GetItemCommunityRatingSafely(object? item)
         {
             if (item == null) return string.Empty;
             var val = GetPropertySafely(item, ItemCommunityRatingPath);
@@ -162,7 +160,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
             return float.TryParse(val, CultureInfo.InvariantCulture, out float rating) ? rating.ToString("F1", CultureInfo.InvariantCulture) : val;
         }
 
-        private static string GetItemRunTimeSafely(object item)
+        private static string GetItemRunTimeSafely(object? item)
         {
             if (item == null) return string.Empty;
             var ticksProperty = item.GetType().GetProperty("RunTimeTicks");
@@ -173,10 +171,10 @@ namespace Jellyfin.Plugin.TelegramNotifier
             long minutes = (ticks / 600000000L) % 60;
             return hours > 0
                 ? (minutes < 10 ? $"{hours}h 0{minutes}m" : $"{hours}h {minutes}m")
-                : (minutes > 1 ? $"{minutes} min" : $"{minutes} min");
+                : $"{minutes} min";
         }
 
-        private static string GetItemGenresSafely(object item)
+        private static string GetItemGenresSafely(object? item)
         {
             if (item == null) return string.Empty;
             var genresValue = item.GetType().GetProperty("Genres")?.GetValue(item);
@@ -187,7 +185,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
             return string.Empty;
         }
 
-        private static string GetItemDirectorsSafely(object item)
+        private static string GetItemDirectorsSafely(object? item)
         {
             if (item == null) return string.Empty;
             try
@@ -238,7 +236,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
             return new string(s.Where(c => c != '\uFFFD' && !char.IsControl(c)).ToArray());
         }
 
-        private static string GetItemStudiosSafely(object item)
+        private static string GetItemStudiosSafely(object? item)
         {
             if (item == null) return string.Empty;
             var studiosValue = item.GetType().GetProperty("Studios")?.GetValue(item);
@@ -249,7 +247,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
             return string.Empty;
         }
 
-        private static string GetItemProductionLocationsSafely(object item)
+        private static string GetItemProductionLocationsSafely(object? item)
         {
             if (item == null) return string.Empty;
             var locsValue = item.GetType().GetProperty("ProductionLocations")?.GetValue(item);
@@ -388,7 +386,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
             long minutes = (ticks / 600000000L) % 60;
             return hours > 0
                 ? (minutes < 10 ? $"{hours}h 0{minutes}m" : $"{hours}h {minutes}m")
-                : (minutes > 1 ? $"{minutes} min" : $"{minutes} min");
+                : $"{minutes} min";
         }
 
         private static string GetItemSeasonCountSafely(object? item)
@@ -402,7 +400,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
             return GetItemChildCountSafely(item);
         }
 
-        private static string GetItemVideoResolutionSafely(object item)
+        private static string GetItemVideoResolutionSafely(object? item)
         {
             if (item == null) return string.Empty;
             try
@@ -418,7 +416,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
             return string.Empty;
         }
 
-        private static string GetItemVideoCodecSafely(object item)
+        private static string GetItemVideoCodecSafely(object? item)
         {
             if (item == null) return string.Empty;
             try
@@ -587,7 +585,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
         public static string ParseMessage(string message, dynamic eventArgs, ILibraryManager? libraryManager = null, IMediaSourceManager? mediaSourceManager = null)
         {
             var replacements = GetReplacements(eventArgs, libraryManager, mediaSourceManager);
-            var emptyReplacement = Plugin.Instance?.Configuration?.EmptyPlaceholderReplacement ?? string.Empty;
+            var emptyReplacement = Plugin.Instance?.Configuration?.EmptyPlaceholderReplacement ?? "...";
 
             message = ConditionalSectionRegex.Replace(message, m =>
             {
@@ -611,12 +609,12 @@ namespace Jellyfin.Plugin.TelegramNotifier
             {
                 if (message.Contains(pair.Key))
                 {
-                    var value = string.IsNullOrEmpty(pair.Value) ? emptyReplacement : pair.Value;
+                    var value = string.IsNullOrEmpty(pair.Value) ? emptyReplacement : SanitizeString(pair.Value);
                     message = message.Replace(pair.Key, value);
                 }
             }
 
-            return message;
+            return SanitizeString(message);
         }
     }
 }

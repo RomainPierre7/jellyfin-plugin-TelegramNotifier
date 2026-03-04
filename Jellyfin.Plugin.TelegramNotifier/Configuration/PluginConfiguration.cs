@@ -9,7 +9,7 @@ public class PluginConfiguration : BasePluginConfiguration
     {
         ServerUrl = "localhost:8096";
         EnablePlugin = true;
-        EmptyPlaceholderReplacement = string.Empty;
+        EmptyPlaceholderReplacement = "...";
         UserConfigurations = Array.Empty<UserConfiguration>();
     }
 
