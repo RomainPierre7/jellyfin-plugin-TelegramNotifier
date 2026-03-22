@@ -84,7 +84,6 @@ public class ItemAddedManager : IItemAddedManager
                             break;
 
                         case Episode episode:
-                            addImage = false;
                             subtype = "ItemAddedEpisodes";
                             eventArgs = episode;
                             break;
@@ -105,7 +104,7 @@ public class ItemAddedManager : IItemAddedManager
                             break;
                     }
 
-                    if (item.PrimaryImagePath is not null && addImage)
+                    if (addImage)
                     {
                         string serverUrl = Plugin.Instance?.Configuration.ServerUrl ?? "localhost:8096";
                         string path = "http://" + serverUrl + "/Items/" + item.Id + "/Images/Primary";
@@ -124,7 +123,7 @@ public class ItemAddedManager : IItemAddedManager
         }
         else
         {
-            _logger.LogDebug("No items to process in the queue");
+            _logger.LogInformation("No items to process in the queue");
         }
     }
 

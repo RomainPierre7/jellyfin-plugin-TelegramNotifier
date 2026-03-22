@@ -171,19 +171,43 @@ namespace Jellyfin.Plugin.TelegramNotifier
                     }
                     else
                     {
-                        if (user.KeepSerieImage && eventArgs.Item is Episode)
+                        Episode episode = null;
+
+                        // Case 1 : eventArgs is an Episode
+                        if (eventArgs is Episode ep)
                         {
-                            var episode = (Episode)eventArgs.Item;
+                            episode = ep;
+                        }
+                        // Case 2 : eventArgs contains Item
+                        else
+                        {
+                            try
+                            {
+                                if (eventArgs?.Item is Episode ep2)
+                                {
+                                    episode = ep2;
+                                }
+                            }
+                            catch
+                            {
+                                // Ignore if not item property
+                            }
+                        }
+
+                        if (user.KeepSerieImage && episode != null)
+                        {
+
                             string serverUrl = Plugin.Instance?.Configuration.ServerUrl ?? "localhost:8096";
                             imagePath = "http://" + serverUrl + "/Items/" + episode.Series.Id + "/Images/Primary";
                         }
+
                         Task task = _sender.SendMessageWithPhoto(type.ToString(), message, imagePath, botToken, chatId, isSilentNotification, threadId);
                         tasks.Add(task);
                     }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"An error occurred while sending a message: {ex.Message}");
+                    _logger.LogError(ex, "An error occurred while sending a message");
                 }
             }
 
