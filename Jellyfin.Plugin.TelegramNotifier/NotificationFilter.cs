@@ -4,20 +4,26 @@ using System.Threading.Tasks;
 using Jellyfin.Plugin.TelegramNotifier.Configuration;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
+using Microsoft.Extensions.Logging;
 
 namespace Jellyfin.Plugin.TelegramNotifier
 {
     public class NotificationFilter
     {
         private readonly Sender _sender;
+        private readonly ILogger<Plugin> _logger;
         private readonly ILibraryManager _libraryManager;
         private readonly IMediaSourceManager _mediaSourceManager;
 
-        public NotificationFilter(Sender sender, ILibraryManager libraryManager, IMediaSourceManager mediaSourceManager)
+        public NotificationFilter(
+            Sender sender,
+            ILibraryManager libraryManager,
+            IMediaSourceManager mediaSourceManager)
         {
             _sender = sender;
             _libraryManager = libraryManager;
             _mediaSourceManager = mediaSourceManager;
+            _logger = Plugin.Logger;
         }
 
         public enum NotificationType
@@ -145,6 +151,16 @@ namespace Jellyfin.Plugin.TelegramNotifier
                 string chatId = user.ChatId;
                 bool isSilentNotification = user.SilentNotification;
                 string threadId = user.ThreadId;
+
+                /* ---------- Avoid duplicated notifications ---------- */
+                string fingerprint = $"{type}|{chatId}|{message}";
+
+                if (!NotificationDeduplicator.ShouldSend(fingerprint))
+                {
+                    _logger.LogInformation(
+                        "Duplicate notification skipped ({NotificationType}|{ChatId}|{Message})", type, chatId, message);
+                    continue;
+                }
 
                 try
                 {

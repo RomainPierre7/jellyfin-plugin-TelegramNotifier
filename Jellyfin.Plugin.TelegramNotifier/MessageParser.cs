@@ -233,7 +233,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
         private static string SanitizeString(string s)
         {
             if (string.IsNullOrEmpty(s)) return s;
-            return new string(s.Where(c => c != '\uFFFD' && !char.IsControl(c)).ToArray());
+            return new string(s.Where(c => c != '\uFFFD').ToArray());
         }
 
         private static string GetItemStudiosSafely(object? item)
