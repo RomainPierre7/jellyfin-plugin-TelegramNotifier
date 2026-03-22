@@ -3,16 +3,18 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using MediaBrowser.Controller.Entities;
+using MediaBrowser.Controller.Library;
 
 namespace Jellyfin.Plugin.TelegramNotifier
 {
     public static class MessageParser
     {
-        // private static readonly string[] TestPath = new[] { "Session", "PlayState", "PlayMethod" };
-
         private static readonly string[] ItemNamePath = new[] { "Name" };
         private static readonly string[] ItemProductionYearPath = new[] { "ProductionYear" };
         private static readonly string[] ItemOverviewPath = new[] { "Overview" };
+        private static readonly string[] ItemCommunityRatingPath = new[] { "CommunityRating" };
+        private static readonly string[] ItemIdPath = new[] { "Id" };
         private static readonly string[] SerieNamePath = new[] { "Name" };
         private static readonly string[] SeasonSeriesNamePath = new[] { "Series", "Name" };
         private static readonly string[] EpisodeSeriesNamePath = new[] { "Series", "Name" };
@@ -43,60 +45,421 @@ namespace Jellyfin.Plugin.TelegramNotifier
         private static readonly string[] EventArgsTaskCategoryPath = new[] { "Task", "Category" };
         private static readonly string[] EventArgsTaskDescriptionPath = new[] { "Task", "Description" };
 
-        private static Dictionary<string, string?> GetReplacements(dynamic eventArgs)
+        private static readonly Regex OverviewTruncationRegex = new(
+            @"\{item\.Overview:(\d+)\}",
+            RegexOptions.Compiled);
+
+        private static readonly Regex ConditionalSectionRegex = new(
+            @"\{\?([^}]+)\}(.*?)\{\/\1\}",
+            RegexOptions.Singleline | RegexOptions.Compiled);
+
+        private static object? GetEffectiveItem(object? obj)
+        {
+            if (obj == null) return null;
+            var itemProperty = obj.GetType().GetProperty("Item");
+            if (itemProperty != null && itemProperty.GetValue(obj) != null)
+                return itemProperty.GetValue(obj);
+            return obj;
+        }
+
+        private static Dictionary<string, string?> GetReplacements(dynamic eventArgs, ILibraryManager? libraryManager = null, IMediaSourceManager? mediaSourceManager = null)
         {
             try
             {
                 object objEventArgs = eventArgs;
-                return new Dictionary<string, string?>
-        {
-            // { "{TEST}", GetPropertySafely(objEventArgs, TestPath) },
-            { "{item.Name}", GetPropertySafely(objEventArgs, ItemNamePath) },
-            { "{item.ProductionYear}", GetPropertySafely(objEventArgs, ItemProductionYearPath) },
-            { "{item.Overview}", GetPropertySafely(objEventArgs, ItemOverviewPath) },
-            { "{serie.Name}", GetPropertySafely(objEventArgs, SerieNamePath) },
-            { "{season.Series.Name}", GetPropertySafely(objEventArgs, SeasonSeriesNamePath) },
-            { "{episode.Series.Name}", GetPropertySafely(objEventArgs, EpisodeSeriesNamePath) },
-            { "{seasonNumber}", GetSeasonNumberSafely(objEventArgs) },
-            { "{eSeasonNumber}", GetESeasonNumberSafely(objEventArgs) },
-            { "{episodeNumber}", GetEpisodeNumberSafely(objEventArgs) },
-            { "{playbackSeasonNumber}", GetPlaybackSeasonNumberSafely(objEventArgs) },
-            { "{playbackEpisodeNumber}", GetPlaybackEpisodeNumberSafely(objEventArgs) },
-            { "{album.Name}", GetPropertySafely(objEventArgs, AlbumNamePath) },
-            { "{audio.Name}", GetPropertySafely(objEventArgs, AudioNamePath) },
-            { "{eventArgs.Session.PlayState.PlayMethod}", GetPropertySafely(objEventArgs, EventArgsSessionPlayStatePlayMethodPath) },
-            { "{eventArgs.Argument.DeviceName}", GetPropertySafely(objEventArgs, EventArgsArgumentDeviceNamePath) },
-            { "{eventArgs.Argument.Username}", GetPropertySafely(objEventArgs, EventArgsArgumentUsernamePath) },
-            { "{eventArgs.Argument.User.Name}", GetPropertySafely(objEventArgs, EventArgsArgumentUserDotNamePath) },
-            { "{eventArgs.Argument.SessionInfo.DeviceName}", GetPropertySafely(objEventArgs, EventArgsArgumentSessionInfoDeviceNamePath) },
-            { "{eventArgs.Users[0].Username}", GetPropertySafely(objEventArgs, EventArgsUsers0UsernamePath) },
-            { "{eventArgs.Item.Series.Name}", GetPropertySafely(objEventArgs, EventArgsItemSeriesNamePath) },
-            { "{eventArgs.Item.Series.Genres}", GetSerieGenresSafely(objEventArgs)},
-            { "{eventArgs.DeviceName}", GetPropertySafely(objEventArgs, EventArgsDeviceNamePath) },
-            { "{eventArgs.Item.Name}", GetPropertySafely(objEventArgs, EventArgsItemNamePath) },
-            { "{eventArgs.Item.ProductionYear}", GetPropertySafely(objEventArgs, EventArgsItemProductionYearPath) },
-            { "{eventArgs.Item.MediaType}", GetPropertySafely(objEventArgs, EventArgsItemMediaTypePath) },
-            { "{eventArgs.Item.Genres}", GetGenresSafely(objEventArgs) },
-            { "{duration}", GetDurationSafely(objEventArgs) },
-            { "{eventArgs.Item.Overview}", GetPropertySafely(objEventArgs, EventArgsItemOverviewPath) },
-            { "{eventArgs.InstallationInfo}", GetPropertySafely(objEventArgs, EventArgsInstallationInfoPath) },
-            { "{eventArgs.VersionInfo}", GetPropertySafely(objEventArgs, EventArgsVersionInfoPath) },
-            { "{eventArgs.Exception}", GetPropertySafely(objEventArgs, EventArgsExceptionPath) },
-            { "{eventArgs.Argument.Name}", GetPropertySafely(objEventArgs, EventArgsArgumentNamePath) },
-            { "{eventArgs.Argument.Version}", GetPropertySafely(objEventArgs, EventArgsArgumentVersionPath) },
-            { "{eventArgs.Argument.Changelog}", GetPropertySafely(objEventArgs, EventArgsArgumentChangelogPath) },
-            { "{eventArgs.Argument.UserName}", GetPropertySafely(objEventArgs, EventArgsArgumentUserNamePath) },
-            { "{eventArgs.Argument.Client}", GetPropertySafely(objEventArgs, EventArgsArgumentClientPath) },
-            { "{eventArgs.Task.Name}", GetPropertySafely(objEventArgs, EventArgsTaskNamePath) },
-            { "{eventArgs.Task.CurrentProgress}", GetPropertySafely(objEventArgs, EventArgsTaskCurrentProgressPath) },
-            { "{eventArgs.Task.Category}", GetPropertySafely(objEventArgs, EventArgsTaskCategoryPath) },
-            { "{eventArgs.Task.Description}", GetPropertySafely(objEventArgs, EventArgsTaskDescriptionPath) }
-        };
+                object effectiveItem = GetEffectiveItem(objEventArgs);
+
+                string serverUrl = "http://localhost:8096";
+                if (Plugin.Instance?.Configuration != null && !string.IsNullOrEmpty(Plugin.Instance.Configuration.ServerUrl))
+                {
+                    var url = Plugin.Instance.Configuration.ServerUrl.Trim();
+                    serverUrl = url.StartsWith("http", StringComparison.OrdinalIgnoreCase) ? url : "http://" + url;
+                }
+
+                var replacements = new Dictionary<string, string?>
+                {
+                    { "{item.Name}", GetPropertySafely(objEventArgs, ItemNamePath) },
+                    { "{item.ProductionYear}", GetPropertySafely(objEventArgs, ItemProductionYearPath) },
+                    { "{item.Overview}", GetPropertySafely(objEventArgs, ItemOverviewPath) },
+                    { "{item.CommunityRating}", GetItemCommunityRatingSafely(effectiveItem) },
+                    { "{item.RunTime}", GetItemRunTimeSafely(effectiveItem) },
+                    { "{item.CumulativeRunTime}", GetItemCumulativeRunTimeSafely(effectiveItem) },
+                    { "{item.Genres}", GetItemGenresSafely(effectiveItem) },
+                    { "{item.Directors}", GetItemDirectorsSafely(effectiveItem) },
+                    { "{item.Studios}", GetItemStudiosSafely(effectiveItem) },
+                    { "{item.ProductionLocations}", GetItemProductionLocationsSafely(effectiveItem) },
+                    { "{item.OfficialRating}", GetItemOfficialRatingSafely(effectiveItem) },
+                    { "{item.Tagline}", GetItemTaglineSafely(effectiveItem) },
+                    { "{item.PremiereDate}", GetItemPremiereDateSafely(effectiveItem) },
+                    { "{item.Tags}", GetItemTagsSafely(effectiveItem) },
+                    { "{item.ImdbId}", GetItemProviderIdSafely(effectiveItem, "Imdb") },
+                    { "{item.TmdbId}", GetItemProviderIdSafely(effectiveItem, "Tmdb") },
+                    { "{item.ImdbUrl}", GetItemImdbUrlSafely(effectiveItem) },
+                    { "{item.TmdbUrl}", GetItemTmdbUrlSafely(effectiveItem) },
+                    { "{item.Id}", GetPropertySafely(objEventArgs, ItemIdPath) ?? GetPropertySafely(effectiveItem, new[] { "Id" }) },
+                    { "{item.ChildCount}", GetItemChildCountSafely(effectiveItem) },
+                    { "{item.SeasonCount}", GetItemSeasonCountSafely(effectiveItem) },
+                    { "{item.Status}", GetItemStatusSafely(effectiveItem) },
+                    { "{item.LibraryName}", GetItemLibraryNameSafely(effectiveItem, libraryManager) },
+                    { "{item.VideoResolution}", GetItemVideoResolutionSafely(effectiveItem) },
+                    { "{item.VideoCodec}", GetItemVideoCodecSafely(effectiveItem) },
+                    { "{item.AudioCodec}", GetItemAudioCodecSafely(effectiveItem, mediaSourceManager) },
+                    { "{server.Url}", serverUrl },
+                    { "{serie.Name}", GetPropertySafely(objEventArgs, SerieNamePath) },
+                    { "{season.Series.Name}", GetPropertySafely(objEventArgs, SeasonSeriesNamePath) },
+                    { "{episode.Series.Name}", GetPropertySafely(objEventArgs, EpisodeSeriesNamePath) },
+                    { "{seasonNumber}", GetSeasonNumberSafely(objEventArgs) },
+                    { "{eSeasonNumber}", GetESeasonNumberSafely(objEventArgs) },
+                    { "{episodeNumber}", GetEpisodeNumberSafely(objEventArgs) },
+                    { "{playbackSeasonNumber}", GetPlaybackSeasonNumberSafely(objEventArgs) },
+                    { "{playbackEpisodeNumber}", GetPlaybackEpisodeNumberSafely(objEventArgs) },
+                    { "{album.Name}", GetPropertySafely(objEventArgs, AlbumNamePath) },
+                    { "{audio.Name}", GetPropertySafely(objEventArgs, AudioNamePath) },
+                    { "{eventArgs.Session.PlayState.PlayMethod}", GetPropertySafely(objEventArgs, EventArgsSessionPlayStatePlayMethodPath) },
+                    { "{eventArgs.Argument.DeviceName}", GetPropertySafely(objEventArgs, EventArgsArgumentDeviceNamePath) },
+                    { "{eventArgs.Argument.Username}", GetPropertySafely(objEventArgs, EventArgsArgumentUsernamePath) },
+                    { "{eventArgs.Argument.User.Name}", GetPropertySafely(objEventArgs, EventArgsArgumentUserDotNamePath) },
+                    { "{eventArgs.Argument.SessionInfo.DeviceName}", GetPropertySafely(objEventArgs, EventArgsArgumentSessionInfoDeviceNamePath) },
+                    { "{eventArgs.Users[0].Username}", GetPropertySafely(objEventArgs, EventArgsUsers0UsernamePath) },
+                    { "{eventArgs.Item.Series.Name}", GetPropertySafely(objEventArgs, EventArgsItemSeriesNamePath) },
+                    { "{eventArgs.Item.Series.Genres}", GetSerieGenresSafely(objEventArgs) },
+                    { "{eventArgs.DeviceName}", GetPropertySafely(objEventArgs, EventArgsDeviceNamePath) },
+                    { "{eventArgs.Item.Name}", GetPropertySafely(objEventArgs, EventArgsItemNamePath) },
+                    { "{eventArgs.Item.ProductionYear}", GetPropertySafely(objEventArgs, EventArgsItemProductionYearPath) },
+                    { "{eventArgs.Item.MediaType}", GetPropertySafely(objEventArgs, EventArgsItemMediaTypePath) },
+                    { "{eventArgs.Item.Genres}", GetGenresSafely(objEventArgs) },
+                    { "{duration}", GetDurationSafely(objEventArgs) },
+                    { "{eventArgs.Item.Overview}", GetPropertySafely(objEventArgs, EventArgsItemOverviewPath) },
+                    { "{eventArgs.InstallationInfo}", GetPropertySafely(objEventArgs, EventArgsInstallationInfoPath) },
+                    { "{eventArgs.VersionInfo}", GetPropertySafely(objEventArgs, EventArgsVersionInfoPath) },
+                    { "{eventArgs.Exception}", GetPropertySafely(objEventArgs, EventArgsExceptionPath) },
+                    { "{eventArgs.Argument.Name}", GetPropertySafely(objEventArgs, EventArgsArgumentNamePath) },
+                    { "{eventArgs.Argument.Version}", GetPropertySafely(objEventArgs, EventArgsArgumentVersionPath) },
+                    { "{eventArgs.Argument.Changelog}", GetPropertySafely(objEventArgs, EventArgsArgumentChangelogPath) },
+                    { "{eventArgs.Argument.UserName}", GetPropertySafely(objEventArgs, EventArgsArgumentUserNamePath) },
+                    { "{eventArgs.Argument.Client}", GetPropertySafely(objEventArgs, EventArgsArgumentClientPath) },
+                    { "{eventArgs.Task.Name}", GetPropertySafely(objEventArgs, EventArgsTaskNamePath) },
+                    { "{eventArgs.Task.CurrentProgress}", GetPropertySafely(objEventArgs, EventArgsTaskCurrentProgressPath) },
+                    { "{eventArgs.Task.Category}", GetPropertySafely(objEventArgs, EventArgsTaskCategoryPath) },
+                    { "{eventArgs.Task.Description}", GetPropertySafely(objEventArgs, EventArgsTaskDescriptionPath) }
+                };
+
+                return replacements;
             }
-            catch (Exception ex)
+            catch
             {
-                throw new Exception("Error while building replacements: " + ex.Message);
+                return new Dictionary<string, string?>();
             }
+        }
+
+        private static string GetItemCommunityRatingSafely(object? item)
+        {
+            if (item == null) return string.Empty;
+            var val = GetPropertySafely(item, ItemCommunityRatingPath);
+            if (string.IsNullOrEmpty(val)) return string.Empty;
+            return float.TryParse(val, CultureInfo.InvariantCulture, out float rating) ? rating.ToString("F1", CultureInfo.InvariantCulture) : val;
+        }
+
+        private static string GetItemRunTimeSafely(object? item)
+        {
+            if (item == null) return string.Empty;
+            var ticksProperty = item.GetType().GetProperty("RunTimeTicks");
+            if (ticksProperty?.GetValue(item) == null) return string.Empty;
+            var ticksValue = ticksProperty.GetValue(item);
+            if (!long.TryParse(ticksValue?.ToString(), out long ticks) || ticks == 0) return string.Empty;
+            long hours = ticks / (600000000L * 60);
+            long minutes = (ticks / 600000000L) % 60;
+            return hours > 0
+                ? (minutes < 10 ? $"{hours}h 0{minutes}m" : $"{hours}h {minutes}m")
+                : $"{minutes} min";
+        }
+
+        private static string GetItemGenresSafely(object? item)
+        {
+            if (item == null) return string.Empty;
+            var genresValue = item.GetType().GetProperty("Genres")?.GetValue(item);
+            if (genresValue is IEnumerable<object> genres)
+                return string.Join(", ", genres.Select(g => g?.ToString() ?? string.Empty).Where(s => !string.IsNullOrEmpty(s)));
+            if (genresValue is System.Collections.IEnumerable enumGenres)
+                return string.Join(", ", enumGenres.Cast<object>().Select(g => g?.ToString() ?? string.Empty).Where(s => !string.IsNullOrEmpty(s)));
+            return string.Empty;
+        }
+
+        private static string GetItemDirectorsSafely(object? item)
+        {
+            if (item == null) return string.Empty;
+            try
+            {
+                var peopleProp = item.GetType().GetProperty("People");
+                if (peopleProp?.GetValue(item) is System.Collections.IEnumerable people)
+                {
+                    var directors = new List<string>();
+                    var producers = new List<string>();
+                    var writers = new List<string>();
+                    var creators = new List<string>();
+                    var actors = new List<string>();
+                    foreach (var p in people)
+                    {
+                        if (p == null) continue;
+                        var typeProp = p.GetType().GetProperty("Type");
+                        var nameProp = p.GetType().GetProperty("Name");
+                        var typeVal = typeProp?.GetValue(p)?.ToString();
+                        var name = nameProp?.GetValue(p) as string;
+                        if (string.IsNullOrEmpty(name)) continue;
+                        name = SanitizeString(name);
+                        if (typeVal == null) continue;
+                        if (typeVal.Equals("Director", StringComparison.OrdinalIgnoreCase) || typeVal.Equals("0", StringComparison.OrdinalIgnoreCase))
+                            directors.Add(name);
+                        else if (typeVal.Equals("Producer", StringComparison.OrdinalIgnoreCase))
+                            producers.Add(name);
+                        else if (typeVal.Equals("Writer", StringComparison.OrdinalIgnoreCase))
+                            writers.Add(name);
+                        else if (typeVal.Equals("Creator", StringComparison.OrdinalIgnoreCase))
+                            creators.Add(name);
+                        else if (typeVal.Equals("Actor", StringComparison.OrdinalIgnoreCase))
+                            actors.Add(name);
+                    }
+                    if (directors.Count > 0) return string.Join(", ", directors);
+                    if (producers.Count > 0) return string.Join(", ", producers);
+                    if (writers.Count > 0) return string.Join(", ", writers);
+                    if (creators.Count > 0) return string.Join(", ", creators);
+                    if (actors.Count > 0) return string.Join(", ", actors);
+                }
+            }
+            catch { }
+            return string.Empty;
+        }
+
+        private static string SanitizeString(string s)
+        {
+            if (string.IsNullOrEmpty(s)) return s;
+            return new string(s.Where(c => c != '\uFFFD' && !char.IsControl(c)).ToArray());
+        }
+
+        private static string GetItemStudiosSafely(object? item)
+        {
+            if (item == null) return string.Empty;
+            var studiosValue = item.GetType().GetProperty("Studios")?.GetValue(item);
+            if (studiosValue is IEnumerable<object> studios)
+                return string.Join(", ", studios.Select(s => SanitizeString(s?.ToString() ?? string.Empty)).Where(s => !string.IsNullOrEmpty(s)));
+            if (studiosValue is System.Collections.IEnumerable enumStudios)
+                return string.Join(", ", enumStudios.Cast<object>().Select(s => SanitizeString(s?.ToString() ?? string.Empty)).Where(s => !string.IsNullOrEmpty(s)));
+            return string.Empty;
+        }
+
+        private static string GetItemProductionLocationsSafely(object? item)
+        {
+            if (item == null) return string.Empty;
+            var locsValue = item.GetType().GetProperty("ProductionLocations")?.GetValue(item);
+            if (locsValue is IEnumerable<object> locs)
+                return string.Join(", ", locs.Select(l => l?.ToString() ?? string.Empty).Where(s => !string.IsNullOrEmpty(s)));
+            if (locsValue is System.Collections.IEnumerable enumLocs)
+                return string.Join(", ", enumLocs.Cast<object>().Select(l => l?.ToString() ?? string.Empty).Where(s => !string.IsNullOrEmpty(s)));
+            return string.Empty;
+        }
+
+        private static string GetItemLibraryNameSafely(object? item, ILibraryManager? libraryManager)
+        {
+            if (item == null) return string.Empty;
+            try
+            {
+                if (libraryManager != null)
+                {
+                    var idProp = item.GetType().GetProperty("Id");
+                    if (idProp?.GetValue(item) is Guid id)
+                    {
+                        var current = libraryManager.GetItemById(id);
+                        string? lastName = null;
+                        while (current != null)
+                        {
+                            lastName = current.Name;
+                            var parentIdProp = current.GetType().GetProperty("ParentId");
+                            if (parentIdProp?.GetValue(current) is not Guid parentId || parentId == Guid.Empty)
+                                break;
+                            current = libraryManager.GetItemById(parentId);
+                        }
+                        if (!string.IsNullOrEmpty(lastName))
+                            return lastName;
+                    }
+                }
+                var parentProp = item.GetType().GetProperty("Parent");
+                var parent = parentProp?.GetValue(item);
+                while (parent != null)
+                {
+                    var nameProp = parent.GetType().GetProperty("Name");
+                    var name = nameProp?.GetValue(parent)?.ToString();
+                    if (!string.IsNullOrEmpty(name)) return name;
+                    parent = parent.GetType().GetProperty("Parent")?.GetValue(parent);
+                }
+            }
+            catch { }
+            return string.Empty;
+        }
+
+        private static string GetItemChildCountSafely(object? item)
+        {
+            if (item == null) return string.Empty;
+            var val = GetPropertySafely(item, new[] { "ChildCount" });
+            if (!string.IsNullOrEmpty(val) && int.TryParse(val, out int count))
+                return count.ToString(CultureInfo.InvariantCulture);
+            return string.Empty;
+        }
+
+        private static string GetItemStatusSafely(object? item)
+        {
+            if (item == null) return string.Empty;
+            var statusProp = item.GetType().GetProperty("Status");
+            if (statusProp?.GetValue(item) == null) return string.Empty;
+            return SanitizeString(statusProp.GetValue(item)?.ToString() ?? string.Empty);
+        }
+
+        private static string GetItemOfficialRatingSafely(object? item)
+        {
+            if (item == null) return string.Empty;
+            return SanitizeString(GetPropertySafely(item, new[] { "OfficialRating" }) ?? string.Empty);
+        }
+
+        private static string GetItemTaglineSafely(object? item)
+        {
+            if (item == null) return string.Empty;
+            return SanitizeString(GetPropertySafely(item, new[] { "Tagline" }) ?? string.Empty);
+        }
+
+        private static string GetItemPremiereDateSafely(object? item)
+        {
+            if (item == null) return string.Empty;
+            var dateProp = item.GetType().GetProperty("PremiereDate");
+            var dateVal = dateProp?.GetValue(item);
+            if (dateVal == null) return string.Empty;
+            if (dateVal is DateTimeOffset dto)
+                return dto.ToString("d MMM yyyy", CultureInfo.InvariantCulture);
+            if (dateVal is DateTime dt)
+                return dt.ToString("d MMM yyyy", CultureInfo.InvariantCulture);
+            return string.Empty;
+        }
+
+        private static string GetItemTagsSafely(object? item)
+        {
+            if (item == null) return string.Empty;
+            var tagsValue = item.GetType().GetProperty("Tags")?.GetValue(item);
+            if (tagsValue is IEnumerable<object> tags)
+                return string.Join(", ", tags.Select(t => SanitizeString(t?.ToString() ?? string.Empty)).Where(s => !string.IsNullOrEmpty(s)));
+            if (tagsValue is System.Collections.IEnumerable enumTags)
+                return string.Join(", ", enumTags.Cast<object>().Select(t => SanitizeString(t?.ToString() ?? string.Empty)).Where(s => !string.IsNullOrEmpty(s)));
+            return string.Empty;
+        }
+
+        private static string GetItemProviderIdSafely(object? item, string provider)
+        {
+            if (item == null) return string.Empty;
+            try
+            {
+                var providerIdsProp = item.GetType().GetProperty("ProviderIds");
+                if (providerIdsProp?.GetValue(item) is not System.Collections.IDictionary providerIds) return string.Empty;
+                var key = providerIds.Keys.Cast<object>().FirstOrDefault(k => k?.ToString()?.Equals(provider, StringComparison.OrdinalIgnoreCase) == true);
+                return key != null && providerIds[key] is string val ? val : string.Empty;
+            }
+            catch { }
+            return string.Empty;
+        }
+
+        private static string GetItemImdbUrlSafely(object? item)
+        {
+            var id = GetItemProviderIdSafely(item, "Imdb");
+            return string.IsNullOrEmpty(id) ? string.Empty : "https://www.imdb.com/title/" + id;
+        }
+
+        private static string GetItemTmdbUrlSafely(object? item)
+        {
+            var id = GetItemProviderIdSafely(item, "Tmdb");
+            return string.IsNullOrEmpty(id) ? string.Empty : "https://www.themoviedb.org/movie/" + id;
+        }
+
+        private static string GetItemCumulativeRunTimeSafely(object? item)
+        {
+            if (item == null) return string.Empty;
+            var ticksProp = item.GetType().GetProperty("CumulativeRunTimeTicks");
+            if (ticksProp?.GetValue(item) == null) return string.Empty;
+            var ticksValue = ticksProp.GetValue(item);
+            if (!long.TryParse(ticksValue?.ToString(), out long ticks) || ticks == 0) return string.Empty;
+            long hours = ticks / (600000000L * 60);
+            long minutes = (ticks / 600000000L) % 60;
+            return hours > 0
+                ? (minutes < 10 ? $"{hours}h 0{minutes}m" : $"{hours}h {minutes}m")
+                : $"{minutes} min";
+        }
+
+        private static string GetItemSeasonCountSafely(object? item)
+        {
+            if (item == null) return string.Empty;
+            var seriesProp = item.GetType().GetProperty("Series");
+            var series = seriesProp?.GetValue(item);
+            if (series == null) return GetItemChildCountSafely(item);
+            var countProp = series.GetType().GetProperty("ChildCount");
+            if (countProp?.GetValue(series) is int count) return count.ToString(CultureInfo.InvariantCulture);
+            return GetItemChildCountSafely(item);
+        }
+
+        private static string GetItemVideoResolutionSafely(object? item)
+        {
+            if (item == null) return string.Empty;
+            try
+            {
+                var widthProp = item.GetType().GetProperty("Width");
+                var heightProp = item.GetType().GetProperty("Height");
+                var w = widthProp?.GetValue(item);
+                var h = heightProp?.GetValue(item);
+                if (w != null && h != null && int.TryParse(w.ToString(), out int width) && int.TryParse(h.ToString(), out int height) && width > 0 && height > 0)
+                    return $"{height}p";
+            }
+            catch { }
+            return string.Empty;
+        }
+
+        private static string GetItemVideoCodecSafely(object? item)
+        {
+            if (item == null) return string.Empty;
+            try
+            {
+                var videoType = item.GetType();
+                if (videoType.GetMethod("GetDefaultVideoStream")?.Invoke(item, null) is { } stream)
+                {
+                    var codecProp = stream.GetType().GetProperty("Codec");
+                    return codecProp?.GetValue(stream)?.ToString() ?? string.Empty;
+                }
+            }
+            catch { }
+            return string.Empty;
+        }
+
+        private static string GetItemAudioCodecSafely(object? item, IMediaSourceManager? mediaSourceManager)
+        {
+            if (item == null || mediaSourceManager == null) return string.Empty;
+            try
+            {
+                if (item is not BaseItem baseItem)
+                {
+                    return string.Empty;
+                }
+
+                var getMediaStreamsMethod = mediaSourceManager.GetType().GetMethod("GetMediaStreams", new[] { typeof(BaseItem) });
+                if (getMediaStreamsMethod?.Invoke(mediaSourceManager, new object[] { baseItem }) is System.Collections.IEnumerable streams)
+                {
+                    foreach (var s in streams)
+                    {
+                        if (s == null) continue;
+                        var typeProp = s.GetType().GetProperty("Type");
+                        if (typeProp?.GetValue(s)?.ToString()?.Contains("Audio", StringComparison.OrdinalIgnoreCase) == true)
+                        {
+                            var codecProp = s.GetType().GetProperty("Codec");
+                            var codec = codecProp?.GetValue(s)?.ToString();
+                            if (!string.IsNullOrEmpty(codec)) return SanitizeString(codec);
+                        }
+                    }
+                }
+            }
+            catch { }
+            return string.Empty;
         }
 
         private static string? GetPropertySafely(object obj, string[] propertyPath)
@@ -105,345 +468,153 @@ namespace Jellyfin.Plugin.TelegramNotifier
             {
                 foreach (var property in propertyPath)
                 {
-                    if (obj == null)
-                    {
-                        return null;
-                    }
-
-                    var match = System.Text.RegularExpressions.Regex.Match(property, @"(.*)\[(\d+)\]");
+                    if (obj == null) return null;
+                    var match = Regex.Match(property, @"(.*)\[(\d+)\]");
                     if (match.Success)
                     {
                         var propertyName = match.Groups[1].Value;
                         var index = int.Parse(match.Groups[2].Value, CultureInfo.InvariantCulture);
                         var propertyInfo = obj.GetType().GetProperty(propertyName);
-                        if (propertyInfo == null)
-                        {
-                            return null;
-                        }
-
+                        if (propertyInfo == null) return null;
                         obj = propertyInfo.GetValue(obj);
-                        if (obj is IEnumerable<object> collection && collection.Count() > index)
+                        if (obj is System.Collections.IEnumerable collection)
                         {
-                            obj = collection.ElementAt(index);
+                            var list = collection.Cast<object>().ToList();
+                            obj = list.Count > index ? list[index] : null;
                         }
-                        else
-                        {
-                            return null;
-                        }
+                        else return null;
                     }
                     else
                     {
                         var propertyInfo = obj.GetType().GetProperty(property);
-                        if (propertyInfo == null)
-                        {
-                            return null;
-                        }
-
+                        if (propertyInfo == null) return null;
                         obj = propertyInfo.GetValue(obj);
                     }
                 }
-
                 return obj?.ToString();
             }
-            catch
-            {
-                return null;
-            }
+            catch { return null; }
         }
 
         private static string GetGenresSafely(object obj)
         {
-            var itemProperty = obj.GetType().GetProperty("Item");
-
-            if (itemProperty == null || itemProperty.GetValue(obj) == null)
-            {
-                return "No genres available";
-            }
-
-            var item = itemProperty.GetValue(obj);
-
-            var genresProperty = item.GetType().GetProperty("Genres");
-
-            if (genresProperty == null || genresProperty.GetValue(item) == null)
-            {
-                return "No genres available";
-            }
-
-            var genresValue = genresProperty.GetValue(item);
-
-            if (genresValue is IEnumerable<object> genres)
-            {
-                return string.Join(", ", genres);
-            }
-            else
-            {
-                return "Invalid genres";
-            }
+            var item = GetEffectiveItem(obj);
+            if (item == null) return "No genres available";
+            var result = GetItemGenresSafely(item);
+            return string.IsNullOrEmpty(result) ? "No genres available" : result;
         }
 
         private static string GetSerieGenresSafely(object obj)
         {
-            var itemProperty = obj.GetType().GetProperty("Item");
-
-            if (itemProperty == null || itemProperty.GetValue(obj) == null)
-            {
-                return "No genres available";
-            }
-
+            var itemProperty = obj?.GetType().GetProperty("Item");
+            if (itemProperty == null || itemProperty.GetValue(obj) == null) return "No genres available";
             var item = itemProperty.GetValue(obj);
-
-            var seriesProperty = item.GetType().GetProperty("Series");
-
-            if (seriesProperty == null || seriesProperty.GetValue(item) == null)
-            {
-                return "No genres available";
-            }
-
+            var seriesProperty = item?.GetType().GetProperty("Series");
+            if (seriesProperty == null || seriesProperty.GetValue(item) == null) return "No genres available";
             var series = seriesProperty.GetValue(item);
-
-            var genresProperty = series.GetType().GetProperty("Genres");
-
-            if (genresProperty == null || genresProperty.GetValue(series) == null)
-            {
-                return "No genres available";
-            }
-
+            var genresProperty = series?.GetType().GetProperty("Genres");
+            if (genresProperty == null || genresProperty.GetValue(series) == null) return "No genres available";
             var genresValue = genresProperty.GetValue(series);
-
             if (genresValue is IEnumerable<object> genres)
-            {
-                return string.Join(", ", genres);
-            }
-            else
-            {
-                return "Invalid genres";
-            }
+                return string.Join(", ", genres.Select(g => g?.ToString() ?? string.Empty).Where(s => !string.IsNullOrEmpty(s)));
+            if (genresValue is System.Collections.IEnumerable enumGenres)
+                return string.Join(", ", enumGenres.Cast<object>().Select(g => g?.ToString() ?? string.Empty).Where(s => !string.IsNullOrEmpty(s)));
+            return "No genres available";
         }
 
-        private static string? GetDurationSafely(object obj)
+        private static string GetDurationSafely(object obj)
         {
-            var itemProperty = obj.GetType().GetProperty("Item");
-
-            if (itemProperty == null || itemProperty.GetValue(obj) == null)
-            {
-                return "No duration available";
-            }
-
-            var item = itemProperty.GetValue(obj);
-
-            var ticksProperty = item.GetType().GetProperty("RunTimeTicks");
-
-            if (ticksProperty == null || ticksProperty.GetValue(item) == null)
-            {
-                return "No duration available";
-            }
-
-            var ticksValue = ticksProperty.GetValue(item);
-
-            if (long.TryParse(ticksValue.ToString(), out long ticks))
-            {
-                if (ticks == 0)
-                {
-                    return null;
-                }
-
-                long hours = ticks / (600000000L * 60);
-                long minutes = (ticks / 600000000L) % 60;
-
-                string duration;
-                if (hours > 0)
-                {
-                    duration = minutes < 10 ? $"{hours}h 0{minutes}m" : $"{hours}h {minutes}m";
-                }
-                else
-                {
-                    duration = minutes > 1 ? $"{minutes} minutes" : $"{minutes} minute";
-                }
-
-                return duration;
-            }
-            else
-            {
-                return "Invalid duration";
-            }
+            var item = GetEffectiveItem(obj);
+            if (item == null) return "No duration available";
+            var runTime = GetItemRunTimeSafely(item);
+            return string.IsNullOrEmpty(runTime) ? "No duration available" : runTime;
         }
 
         private static string? GetSeasonNumberSafely(object obj)
         {
-            // string seasonNumber = season.IndexNumber.HasValue ? season.IndexNumber.Value.ToString("00", CultureInfo.InvariantCulture) : "00";
-            var itemProperty = obj.GetType().GetProperty("IndexNumber");
-
-            if (itemProperty == null || itemProperty.GetValue(obj) == null)
-            {
-                return null;
-            }
-
+            var itemProperty = obj?.GetType().GetProperty("IndexNumber");
+            if (itemProperty == null || itemProperty.GetValue(obj) == null) return null;
             var item = itemProperty.GetValue(obj);
-
-            if (int.TryParse(item.ToString(), out int seasonNumber))
-            {
-                return seasonNumber.ToString("00", CultureInfo.InvariantCulture);
-            }
-            else
-            {
-                return null;
-            }
+            return int.TryParse(item?.ToString(), out int n) ? n.ToString("00", CultureInfo.InvariantCulture) : null;
         }
 
         private static string? GetESeasonNumberSafely(object obj)
         {
-            // string eSeasonNumber = episode.Season.IndexNumber.HasValue ? episode.Season.IndexNumber.Value.ToString("00", CultureInfo.InvariantCulture) : "00";
-            var itemProperty = obj.GetType().GetProperty("Season");
-
-            if (itemProperty == null || itemProperty.GetValue(obj) == null)
-            {
-                return null;
-            }
-
-            var item = itemProperty.GetValue(obj);
-
-            var seasonNumberProperty = item.GetType().GetProperty("IndexNumber");
-
-            if (seasonNumberProperty == null || seasonNumberProperty.GetValue(item) == null)
-            {
-                return null;
-            }
-
-            var seasonNumberItem = seasonNumberProperty.GetValue(item);
-
-            if (int.TryParse(seasonNumberItem.ToString(), out int seasonNumber))
-            {
-                return seasonNumber.ToString("00", CultureInfo.InvariantCulture);
-            }
-            else
-            {
-                return null;
-            }
+            var seasonProperty = obj?.GetType().GetProperty("Season");
+            if (seasonProperty == null || seasonProperty.GetValue(obj) == null) return null;
+            var season = seasonProperty.GetValue(obj);
+            var idxProp = season?.GetType().GetProperty("IndexNumber");
+            if (idxProp == null || idxProp.GetValue(season) == null) return null;
+            var val = idxProp.GetValue(season);
+            return int.TryParse(val?.ToString(), out int n) ? n.ToString("00", CultureInfo.InvariantCulture) : null;
         }
 
         private static string? GetEpisodeNumberSafely(object obj)
         {
-            // string episodeNumber = episode.IndexNumber.HasValue ? episode.IndexNumber.Value.ToString("00", CultureInfo.InvariantCulture) : "00";
-            var itemProperty = obj.GetType().GetProperty("IndexNumber");
-
-            if (itemProperty == null || itemProperty.GetValue(obj) == null)
-            {
-                return null;
-            }
-
+            var itemProperty = obj?.GetType().GetProperty("IndexNumber");
+            if (itemProperty == null || itemProperty.GetValue(obj) == null) return null;
             var item = itemProperty.GetValue(obj);
-
-            if (int.TryParse(item.ToString(), out int episodeNumber))
-            {
-                return episodeNumber.ToString("00", CultureInfo.InvariantCulture);
-            }
-            else
-            {
-                return null;
-            }
+            return int.TryParse(item?.ToString(), out int n) ? n.ToString("00", CultureInfo.InvariantCulture) : null;
         }
 
         private static string? GetPlaybackSeasonNumberSafely(object obj)
         {
-            // string seasonNumber = eventArgs.Item.IndexNumber.HasValue ? eventArgs.Item.IndexNumber.Value.ToString("00", CultureInfo.InvariantCulture) : "00";
-            var itemProperty = obj.GetType().GetProperty("Item");
-
-            if (itemProperty == null || itemProperty.GetValue(obj) == null)
-            {
-                return null;
-            }
-
+            var itemProperty = obj?.GetType().GetProperty("Item");
+            if (itemProperty == null || itemProperty.GetValue(obj) == null) return null;
             var item = itemProperty.GetValue(obj);
-
-            var seasonProperty = item.GetType().GetProperty("Season");
-
-            if (seasonProperty == null || seasonProperty.GetValue(item) == null)
-            {
-                return null;
-            }
-
-            var seasonItem = seasonProperty.GetValue(item);
-
-            var seasonNumberProperty = seasonItem.GetType().GetProperty("IndexNumber");
-
-            if (seasonNumberProperty == null || seasonNumberProperty.GetValue(seasonItem) == null)
-            {
-                return null;
-            }
-
-            var seasonNumberItem = seasonNumberProperty.GetValue(seasonItem);
-
-            if (int.TryParse(seasonNumberItem.ToString(), out int seasonNumber))
-            {
-                return seasonNumber.ToString("00", CultureInfo.InvariantCulture);
-            }
-            else
-            {
-                return null;
-            }
+            var seasonProperty = item?.GetType().GetProperty("Season");
+            if (seasonProperty == null || seasonProperty.GetValue(item) == null) return null;
+            var season = seasonProperty.GetValue(item);
+            var idxProp = season?.GetType().GetProperty("IndexNumber");
+            if (idxProp == null || idxProp.GetValue(season) == null) return null;
+            var val = idxProp.GetValue(season);
+            return int.TryParse(val?.ToString(), out int n) ? n.ToString("00", CultureInfo.InvariantCulture) : null;
         }
 
         private static string? GetPlaybackEpisodeNumberSafely(object obj)
         {
-            // string episodeNumber = eventArgs.Item.IndexNumber.HasValue ? eventArgs.Item.IndexNumber.Value.ToString("00", CultureInfo.InvariantCulture) : "00";
-            var itemProperty = obj.GetType().GetProperty("Item");
-
-            if (itemProperty == null || itemProperty.GetValue(obj) == null)
-            {
-                return null;
-            }
-
+            var itemProperty = obj?.GetType().GetProperty("Item");
+            if (itemProperty == null || itemProperty.GetValue(obj) == null) return null;
             var item = itemProperty.GetValue(obj);
-
-            var episodeNumberProperty = item.GetType().GetProperty("IndexNumber");
-
-            if (episodeNumberProperty == null || episodeNumberProperty.GetValue(item) == null)
-            {
-                return null;
-            }
-
-            var episodeNumberItem = episodeNumberProperty.GetValue(item);
-
-            if (int.TryParse(episodeNumberItem.ToString(), out int episodeNumber))
-            {
-                return episodeNumber.ToString("00", CultureInfo.InvariantCulture);
-            }
-            else
-            {
-                return null;
-            }
+            var idxProp = item?.GetType().GetProperty("IndexNumber");
+            if (idxProp == null || idxProp.GetValue(item) == null) return null;
+            var val = idxProp.GetValue(item);
+            return int.TryParse(val?.ToString(), out int n) ? n.ToString("00", CultureInfo.InvariantCulture) : null;
         }
 
-        public static string ParseMessage(string message, dynamic eventArgs)
+        public static string ParseMessage(string message, dynamic eventArgs, ILibraryManager? libraryManager = null, IMediaSourceManager? mediaSourceManager = null)
         {
-            // try
-            // {
-            var replacements = GetReplacements(eventArgs);
+            var replacements = GetReplacements(eventArgs, libraryManager, mediaSourceManager);
+            var emptyReplacement = Plugin.Instance?.Configuration?.EmptyPlaceholderReplacement ?? "...";
+
+            message = ConditionalSectionRegex.Replace(message, m =>
+            {
+                var placeholderKey = "{" + m.Groups[1].Value + "}";
+                var content = m.Groups[2].Value;
+                if (!replacements.TryGetValue(placeholderKey, out string? value) || string.IsNullOrEmpty(value))
+                    return string.Empty;
+                return content;
+            });
+
+            message = OverviewTruncationRegex.Replace(message, m =>
+            {
+                if (!int.TryParse(m.Groups[1].Value, out int maxLen) || maxLen <= 0) return m.Value;
+                var overview = GetPropertySafely(GetEffectiveItem(eventArgs), ItemOverviewPath) ?? string.Empty;
+                if (string.IsNullOrEmpty(overview)) return string.Empty;
+                if (overview.Length <= maxLen) return overview;
+                return overview.Substring(0, maxLen).TrimEnd() + "...";
+            });
 
             foreach (var pair in replacements)
             {
                 if (message.Contains(pair.Key))
                 {
-                    if (pair.Value == null || pair.Value == string.Empty)
-                    {
-                        message = Regex.Replace(message, Regex.Escape(pair.Key), "...");
-                        // throw new Exception($"The value for the key '{pair.Key}' is null, but the key exists in the message.");
-                    }
-                    else
-                    {
-                        message = Regex.Replace(message, Regex.Escape(pair.Key), pair.Value);
-                    }
+                    var value = string.IsNullOrEmpty(pair.Value) ? emptyReplacement : SanitizeString(pair.Value);
+                    message = message.Replace(pair.Key, value);
                 }
             }
 
-            return message;
-            /* }
-            catch (Exception ex)
-            {
-                return $"Error: Wrong message configuration for event {eventArgs?.GetType()?.Name ?? "Unknown"}.\n" +
-                       "One or more keys are invalid or do not exist.\n\n" +
-                       $"Message:\n{message}\n\n{ex.Message} Check your configuration or metadata.";
-            } */
+            return SanitizeString(message);
         }
     }
 }

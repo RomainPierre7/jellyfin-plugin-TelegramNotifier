@@ -3,16 +3,21 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Jellyfin.Plugin.TelegramNotifier.Configuration;
 using MediaBrowser.Controller.Entities.TV;
+using MediaBrowser.Controller.Library;
 
 namespace Jellyfin.Plugin.TelegramNotifier
 {
     public class NotificationFilter
     {
         private readonly Sender _sender;
+        private readonly ILibraryManager _libraryManager;
+        private readonly IMediaSourceManager _mediaSourceManager;
 
-        public NotificationFilter(Sender sender)
+        public NotificationFilter(Sender sender, ILibraryManager libraryManager, IMediaSourceManager mediaSourceManager)
         {
             _sender = sender;
+            _libraryManager = libraryManager;
+            _mediaSourceManager = mediaSourceManager;
         }
 
         public enum NotificationType
@@ -134,7 +139,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
                     message = GetPropertyMessage(user, type.ToString());
                 }
 
-                message = MessageParser.ParseMessage(message, eventArgs);
+                message = MessageParser.ParseMessage(message, eventArgs, _libraryManager, _mediaSourceManager);
 
                 string botToken = user.BotToken;
                 string chatId = user.ChatId;

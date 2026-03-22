@@ -7,6 +7,27 @@ This document provides a list of default messages of the plugin. You can use the
 
 ---
 
+## **Extended Item Placeholders** (Item Added, Item Deleted)
+
+| Placeholder | Description |
+|-------------|-------------|
+| `{item.OfficialRating}` | Content rating (PG-13, R, TV-MA) |
+| `{item.Tagline}` | Item tagline |
+| `{item.PremiereDate}` | Formatted release date |
+| `{item.CumulativeRunTime}` | Total runtime (for series) |
+| `{item.SeasonCount}` | Number of seasons (for series) |
+| `{item.Tags}` | Comma-separated tags |
+| `{item.ImdbId}` | IMDb ID |
+| `{item.TmdbId}` | TMDB ID |
+| `{item.ImdbUrl}` | Full IMDb URL |
+| `{item.TmdbUrl}` | Full TMDB URL |
+
+**Directors fallback:** `{item.Directors}` shows Directors → Producers → Writers → Creators → Actors (first non-empty).
+
+**Conditional sections:** Use `{?placeholder}content{/placeholder}` to hide blocks when placeholder is empty. Example: `{?item.Directors}🎥 Director: {item.Directors}{/item.Directors}`
+
+---
+
 ## **Library Additions**
 - **Movies**
   ```
