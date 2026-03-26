@@ -15,6 +15,8 @@ public class PluginConfiguration : BasePluginConfiguration
 
     public string ServerUrl { get; set; }
 
+    public string ServerDisplayUrl { get; set; }
+
     public bool EnablePlugin { get; set; }
 
     /// <summary>
