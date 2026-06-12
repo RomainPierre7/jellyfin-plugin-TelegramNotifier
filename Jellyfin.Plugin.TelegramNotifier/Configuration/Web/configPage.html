@@ -6,7 +6,7 @@
                 <div class="checkboxContainer checkboxContainer-withDescription">
                     <label class="emby-checkbox-label">
                         <input id="EnablePlugin" name="EnablePluginCheckBox" type="checkbox" is="emby-checkbox" />
-                        <span>Enable Plugin</span>
+                        <span>Enable Plugin / 启用插件</span>
                     </label>
                 </div>
                 <div class="label">
@@ -27,10 +27,10 @@
                         href="https://ko-fi.com/B0B8112Y0Y"> Support me </a>
                 </div>
                 <div class="sectionTitleContainer flex align-items-center">
-                    <h2>Configuration</h2>
+                    <h2>Configuration / 基础配置</h2>
                 </div>
                 <div class="inputContainer">
-                    <label class="inputLabel inputLabelUnfocused" for="ServerUrl">Server URL</label>
+                    <label class="inputLabel inputLabelUnfocused" for="ServerUrl">Server URL / Jellyfin 服务器地址</label>
                     <input id="ServerUrl" name="ServerUrl" type="text" is="emby-input" />
                     <div class="fieldDescription">Insert the url of the jellyfin server (ex: localhost:8096,
                         192.168.1.2:8096, jellyfin.myDomain.com, ...) </div>
@@ -40,63 +40,63 @@
                 </div>
                 <div class="inputContainer">
                     <div class="selectContainer">
-                        <label class="selectLabel" for="userToConfigure">User to configure</label>
+                        <label class="selectLabel" for="userToConfigure">User to configure / 要配置的用户</label>
                         <select id="userToConfigure" name="userToConfigure" class="emby-select-withcolor emby-select">
                         </select>
                         <div class="fieldDescription">Select the user you want to configure.</div>
                     </div>
                 </div>
                 <div class="sectionTitleContainer flex align-items-center">
-                    <h3>---------- Telegram Bot Configuration ----------</h3>
+                    <h3>---------- Telegram Bot Configuration / Telegram 机器人配置 ----------</h3>
                 </div>
                 <div class="inputContainer">
-                    <label class="inputLabel inputLabelUnfocused" for="BotToken">Bot token</label>
+                    <label class="inputLabel inputLabelUnfocused" for="BotToken">Bot token / 机器人 Token</label>
                     <input id="BotToken" name="BotToken" type="text" is="emby-input" />
                     <div class="fieldDescription">Insert the telegram bot token here. </div>
                 </div>
                 <div class="inputContainer">
-                    <label class="inputLabel inputLabelUnfocused" for="ChatId">Chat ID</label>
+                    <label class="inputLabel inputLabelUnfocused" for="ChatId">Chat ID / 聊天 ID</label>
                     <input id="ChatId" name="ChatId" type="text" is="emby-input" />
                     <div class="fieldDescription"> Insert the telegram chat id here. </div>
                 </div>
                 <div class="inputContainer">
-                    <label class="inputLabel inputLabelUnfocused" for="ThreadId">Thread ID</label>
+                    <label class="inputLabel inputLabelUnfocused" for="ThreadId">Thread ID / 话题 ID</label>
                     <input id="ThreadId" name="ThreadId" type="text" is="emby-input" />
                     <div class="fieldDescription"> Insert the thread id if you use a group using topics/threads.
                         Otherwise let it blank. </div>
                 </div>
                 <div>
                     <button id="testButton" is="emby-button" class="raised button block emby-button">
-                        <span>Test bot configuration</span>
+                        <span>Test bot configuration / 测试机器人配置</span>
                     </button>
                 </div>
                 <div class="sectionTitleContainer flex align-items-center">
-                    <h3>---------- Notification Configuration ---------- |Save at the end ↓|</h3>
+                    <h3>---------- Notification Configuration / 通知配置 ---------- |Save at the end / 最后保存 ↓|</h3>
                 </div>
                 <div class="checkboxContainer checkboxContainer-withDescription">
                     <label class="emby-checkbox-label">
                         <input id="EnableUser" name="EnableUserCheckBox" type="checkbox" is="emby-checkbox" />
-                        <span>Enable notifications for this user</span>
+                        <span>Enable notifications for this user / 启用此用户通知</span>
                     </label>
                 </div>
                 <div class="checkboxContainer checkboxContainer-withDescription">
                     <label class="emby-checkbox-label">
                         <input id="SilentNotification" name="SilentNotificationCheckBox" type="checkbox"
                             is="emby-checkbox" />
-                        <span>Silent notifications for this user</span>
+                        <span>Silent notifications for this user / 此用户静默通知</span>
                     </label>
                 </div>
                 <div class="checkboxContainer checkboxContainer-withDescription">
                     <label class="emby-checkbox-label">
                         <input id="DoNotMentionOwnActivities" name="DoNotMentionOwnActivitiesCheckBox" type="checkbox"
                             is="emby-checkbox" />
-                        <span>Do not notify user's own activities</span>
+                        <span>Do not notify user's own activities / 不通知该用户自己的活动</span>
                     </label>
                 </div>
                 <div class="checkboxContainer checkboxContainer-withDescription">
                     <label class="emby-checkbox-label">
                         <input id="KeepSerieImage" name="KeepSerieImageCheckBox" type="checkbox" is="emby-checkbox" />
-                        <span>Keep series image instead of episode image for episode notifications</span>
+                        <span>Keep series image instead of episode image for episode notifications / 剧集通知使用剧集海报而不是单集图片</span>
                     </label>
                 </div>
                 <template id="template-notification-type">
@@ -107,10 +107,10 @@
                     <div>
                         <button class="edit-template-button raised" is="emby-button"
                             style="top: 0; margin-bottom: 2em; cursor: pointer;">
-                            <span>Edit template</span>
+                            <span>Edit template / 编辑模板</span>
                         </button>
                         <button class="reset-template-button raised" style="display: none;" is="emby-button">
-                            <span>Reset template</span>
+                            <span>Reset template / 重置模板</span>
                         </button>
                         <textarea data-name="txtTemplate"
                             style="width: 100%; height: 150px; display: none; margin-bottom: 2em;"></textarea>
@@ -130,11 +130,11 @@
                     <div>
                         <button class="edit-template-button raised" is="emby-button"
                             style="top: 0; margin-left: 4em; margin-bottom: 2em; cursor: pointer;">
-                            <span>Edit template</span>
+                            <span>Edit template / 编辑模板</span>
                         </button>
                         <button class="reset-template-button raised" style="display: none; margin-left: 4em;"
                             is="emby-button">
-                            <span>Reset template</span>
+                            <span>Reset template / 重置模板</span>
                         </button>
                         <textarea data-name="txtTemplate"
                             style="width: calc(100% - 4em); height: 150px; display: none; margin-left: 4em; margin-bottom: 2em;"></textarea>
@@ -142,23 +142,28 @@
                 </template>
                 <div>
                     <div class="sectionTitleContainer flex align-items-center">
-                        <h4>Notification Types</h4>
+                        <h4>Notification Types / 通知类型</h4>
                         <a is="emby-linkbutton" rel="noopener noreferrer"
                             class="raised button-alt headerHelpButton emby-button" target="_blank"
                             href="https://github.com/RomainPierre7/jellyfin-plugin-TelegramNotifier/blob/main/docs/DefaultMessages.md">
-                            Default message guide </a>
+                            Default message guide / 默认消息指南 </a>
                     </div>
                     <div class="label" style="margin-bottom: 2em; margin-top: 1em;">
                         You can edit messages (personalization, translation, etc.). The important thing is that if you
                         want to use dynamic data, you must respect the {} placeholders in your personalized message.
                         To help you, you'll find some examples in the guide above ("Default message guide"):
                     </div>
+                    <div>
+                        <button id="toggleHiddenNotificationTypes" is="emby-button" class="raised button-alt emby-button">
+                            <span>Show hidden/disabled notification types / 显示隐藏或未启用的通知类型</span>
+                        </button>
+                    </div>
                     <div data-name="notificationTypeContainer">
                     </div>
                 </div>
                 <div>
                     <button id="saveButton" is="emby-button" type="submit" class="raised block emby-button">
-                        <span>Save</span>
+                        <span>Save / 保存</span>
                     </button>
                 </div>
         </div>

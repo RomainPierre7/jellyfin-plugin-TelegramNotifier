@@ -4,31 +4,44 @@ export default function (view) {
         pluginUniqueId: 'fd76211d-17e0-4a72-a23f-c6eeb1e48b3a',
 
         notificationType: {
+            primaryTypes: ["ItemAdded", "ItemUpdated", "ItemDeleted"],
+            showHiddenTypes: false,
+
+            subtypeDisplayNames: {
+                "Movies": "Movies / 电影",
+                "Series": "Series / 剧集",
+                "Seasons": "Seasons / 季",
+                "Episodes": "Episodes / 单集",
+                "Albums": "Albums / 专辑",
+                "Songs": "Songs / 歌曲",
+                "Books": "Books / 书籍"
+            },
+
             values: {
-                "ItemAdded": ["Item Added", "Movies", "Series", "Seasons", "Episodes", "Albums", "Songs", "Books"],
-                "ItemUpdated": ["Item Updated", "Movies", "Series", "Seasons", "Episodes", "Albums", "Songs", "Books"],
-                "ItemDeleted": ["Item Deleted", "Movies", "Series", "Seasons", "Episodes", "Albums", "Songs", "Books"],
-                "PlaybackStart": ["Playback Start", "Movies", "Episodes"],
-                "PlaybackProgress": ["Playback Progress (recommended: disabled)", "Movies", "Episodes"],
-                "PlaybackStop": ["Playback Stop", "Movies", "Episodes"],
-                "SubtitleDownloadFailure": "Subtitle Download Failure",
-                "AuthenticationFailure": "Authentication Failure",
-                "AuthenticationSuccess": "Authentication Success",
-                "SessionStart": "Session Start",
-                "PendingRestart": "Pending Restart",
-                "TaskCompleted": "Task Completed",
-                "PluginInstallationCancelled": "Plugin Installation Cancelled",
-                "PluginInstallationFailed": "Plugin Installation Failed",
-                "PluginInstalled": "Plugin Installed",
-                "PluginInstalling": "Plugin Installing",
-                "PluginUninstalled": "Plugin Uninstalled",
-                "PluginUpdated": "Plugin Updated",
-                "UserCreated": "User Created",
-                "UserDeleted": "User Deleted",
-                "UserLockedOut": "User Locked Out",
-                "UserPasswordChanged": "User Password Changed",
-                "UserUpdated": "User Updated",
-                "UserDataSaved": "User Data Saved"
+                "ItemAdded": ["Item Added / 新增媒体", "Movies", "Series", "Seasons", "Episodes", "Albums", "Songs", "Books"],
+                "ItemUpdated": ["Item Updated / 媒体刷新（更新）", "Movies", "Series", "Seasons", "Episodes", "Albums", "Songs", "Books"],
+                "ItemDeleted": ["Item Deleted / 删除媒体", "Movies", "Series", "Seasons", "Episodes", "Albums", "Songs", "Books"],
+                "PlaybackStart": ["Playback Start / 开始播放", "Movies", "Episodes"],
+                "PlaybackProgress": ["Playback Progress / 播放进度（建议关闭）", "Movies", "Episodes"],
+                "PlaybackStop": ["Playback Stop / 停止播放", "Movies", "Episodes"],
+                "SubtitleDownloadFailure": "Subtitle Download Failure / 字幕下载失败",
+                "AuthenticationFailure": "Authentication Failure / 登录失败",
+                "AuthenticationSuccess": "Authentication Success / 登录成功",
+                "SessionStart": "Session Start / 会话开始",
+                "PendingRestart": "Pending Restart / 等待重启",
+                "TaskCompleted": "Task Completed / 任务完成",
+                "PluginInstallationCancelled": "Plugin Installation Cancelled / 插件安装已取消",
+                "PluginInstallationFailed": "Plugin Installation Failed / 插件安装失败",
+                "PluginInstalled": "Plugin Installed / 插件已安装",
+                "PluginInstalling": "Plugin Installing / 插件安装中",
+                "PluginUninstalled": "Plugin Uninstalled / 插件已卸载",
+                "PluginUpdated": "Plugin Updated / 插件已更新",
+                "UserCreated": "User Created / 用户已创建",
+                "UserDeleted": "User Deleted / 用户已删除",
+                "UserLockedOut": "User Locked Out / 用户已锁定",
+                "UserPasswordChanged": "User Password Changed / 用户密码已更改",
+                "UserUpdated": "User Updated / 用户已更新",
+                "UserDataSaved": "User Data Saved / 用户数据已保存"
             },
 
             defaultMessages: {
@@ -85,9 +98,19 @@ export default function (view) {
                 const subtemp = document.querySelector("#template-notification-subtype");
                 const container = document.querySelector("[data-name=notificationTypeContainer]");
                 container.innerHTML = '';
+                this.showHiddenTypes = false;
 
                 const notificationTypeKeys = Object.keys(TelegramNotifierConfig.notificationType.values).sort();
                 for (const key of notificationTypeKeys) {
+                    const typeWrapper = document.createElement('div');
+                    typeWrapper.dataset.name = 'notificationTypeGroup';
+                    typeWrapper.dataset.value = key;
+                    const isPrimaryType = this.primaryTypes.includes(key);
+                    const typeEnabled = userConfig !== null && userConfig[key] === true;
+                    if (!isPrimaryType && !typeEnabled) {
+                        typeWrapper.dataset.hiddenType = 'true';
+                    }
+
                     let template = temp.cloneNode(true).content;
                     if (typeof TelegramNotifierConfig.notificationType.values[key] !== 'string') {
                         template = temp_without_textarea.cloneNode(true).content;
@@ -109,17 +132,18 @@ export default function (view) {
                     } else {
                         value.checked = userConfig[key] === true;
                     }
-                    container.appendChild(template);
+                    typeWrapper.appendChild(template);
 
                     // Notification subtypes
                     if (typeof TelegramNotifierConfig.notificationType.values[key] !== 'string') {
                         for (const subtype of TelegramNotifierConfig.notificationType.values[key].slice(1)) {
+                            const subtypeWrapper = document.createElement('div');
                             template = subtemp.cloneNode(true).content;
                             const name = template.querySelector("[data-name=notificationSubtypeName]");
                             const value = template.querySelector("[data-name=notificationSubtypeValue]");
                             const textarea = template.querySelector('[data-name="txtTemplate"]');
 
-                            name.innerText = subtype;
+                            name.innerText = this.subtypeDisplayNames[subtype] || subtype;
                             const subkey = key + subtype.replace(/\s/g, '');
                             value.dataset.value = subkey;
                             textarea.dataset.value = subkey;
@@ -130,8 +154,38 @@ export default function (view) {
                                 value.checked = userConfig[subkey] === true;
                                 textarea.value = userConfig[subkey + 'StringMessage'];
                             }
-                            container.appendChild(template);
+                            subtypeWrapper.dataset.name = 'notificationSubtypeGroup';
+                            subtypeWrapper.dataset.value = subkey;
+                            if (!value.checked) {
+                                subtypeWrapper.dataset.hiddenType = 'true';
+                            }
+
+                            subtypeWrapper.appendChild(template);
+                            typeWrapper.appendChild(subtypeWrapper);
                         }
+                    }
+
+                    container.appendChild(typeWrapper);
+                }
+
+                this.updateHiddenTypeVisibility();
+            },
+
+            updateHiddenTypeVisibility: function () {
+                const hiddenRows = document.querySelectorAll('[data-name=notificationTypeContainer] [data-hidden-type="true"]');
+                for (const row of hiddenRows) {
+                    const checkbox = row.querySelector('input[type="checkbox"]');
+                    const isChecked = checkbox !== null && checkbox.checked === true;
+                    row.style.display = this.showHiddenTypes || isChecked ? '' : 'none';
+                }
+
+                const button = document.getElementById('toggleHiddenNotificationTypes');
+                if (button !== null) {
+                    const text = button.querySelector('span');
+                    if (text !== null) {
+                        text.innerText = this.showHiddenTypes ?
+                            'Hide hidden/disabled notification types / 隐藏未启用的通知类型' :
+                            'Show hidden/disabled notification types / 显示隐藏或未启用的通知类型';
                     }
                 }
             },
@@ -181,6 +235,11 @@ export default function (view) {
             document.getElementById('userToConfigure').addEventListener('change', this.loadConfig);
             document.getElementById('testButton').addEventListener('click', this.testBotConfig);
             document.getElementById('saveButton').addEventListener('click', this.saveConfig);
+            document.getElementById('toggleHiddenNotificationTypes').addEventListener('click', function (event) {
+                event.preventDefault();
+                TelegramNotifierConfig.notificationType.showHiddenTypes = !TelegramNotifierConfig.notificationType.showHiddenTypes;
+                TelegramNotifierConfig.notificationType.updateHiddenTypeVisibility();
+            });
 
             document.body.addEventListener('click', function (event) {
                 const button = event.target.closest('.edit-template-button');
@@ -316,19 +375,19 @@ export default function (view) {
                     }
                     button.style.backgroundColor = 'green';
                     button.style.color = 'white';
-                    button.textContent = 'Test passed';
+                    button.textContent = 'Test passed / 测试通过';
                 })
                 .catch(function () {
                     button.style.backgroundColor = 'red';
                     button.style.color = 'white';
-                    button.textContent = 'Test failed';
+                    button.textContent = 'Test failed / 测试失败';
                 })
                 .finally(function () {
                     setTimeout(function () {
                         button.disabled = false;
                         button.style.color = '';
                         button.style.backgroundColor = '';
-                        button.textContent = 'Test bot configuration';
+                        button.textContent = 'Test bot configuration / 测试机器人配置';
                     }, 2000);
                 });
         }
