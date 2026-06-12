@@ -27,6 +27,28 @@ namespace Jellyfin.Plugin.TelegramNotifier.Configuration
             ItemAddedBooks = "📖 [Book] {item.Name} added to library\n\n" +
                 "🖋️ {item.Overview}";
 
+            ItemUpdatedMovies = "🎬 {item.Name} ({item.ProductionYear}) 已刷（更）新\n\n" +
+                "📽 {item.Overview}";
+
+            ItemUpdatedSeries = "📺 [Serie] {serie.Name} ({item.ProductionYear}) 已刷（更）新\n\n" +
+                "📽 {item.Overview}";
+
+            ItemUpdatedSeasons = "📺 {season.Series.Name} ({item.ProductionYear})\n" +
+                "      Season {seasonNumber} 已刷（更）新\n\n" +
+                "📽 {item.Overview}";
+
+            ItemUpdatedEpisodes = "📺 {episode.Series.Name} ({item.ProductionYear})\n" +
+                "      S{eSeasonNumber} - E{episodeNumber}\n" +
+                "      '{item.Name}' 已刷（更）新\n\n" +
+                "📽 {item.Overview}";
+
+            ItemUpdatedAlbums = "🎵 [Album] {album.Name} ({item.ProductionYear}) 已刷（更）新";
+
+            ItemUpdatedSongs = "🎵 [Audio] {audio.Name} ({item.ProductionYear}) 已刷（更）新";
+
+            ItemUpdatedBooks = "📖 [Book] {item.Name} 已刷（更）新\n\n" +
+                "🖋️ {item.Overview}";
+
             ItemDeletedMovies = "🗑️🎬 {item.Name} ({item.ProductionYear})\n" +
                 "      removed from library\n\n" +
                 "📽 {item.Overview}";
@@ -135,6 +157,20 @@ namespace Jellyfin.Plugin.TelegramNotifier.Configuration
         public static string ItemAddedSongs { get; }
 
         public static string ItemAddedBooks { get; }
+
+        public static string ItemUpdatedMovies { get; }
+
+        public static string ItemUpdatedSeries { get; }
+
+        public static string ItemUpdatedSeasons { get; }
+
+        public static string ItemUpdatedEpisodes { get; }
+
+        public static string ItemUpdatedAlbums { get; }
+
+        public static string ItemUpdatedSongs { get; }
+
+        public static string ItemUpdatedBooks { get; }
 
         public static string ItemDeletedMovies { get; }
 

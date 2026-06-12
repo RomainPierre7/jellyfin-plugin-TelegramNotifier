@@ -18,7 +18,7 @@ public class ItemAddedManager : IItemAddedManager
     private readonly ILogger<ItemAddedManager> _logger;
     private readonly ILibraryManager _libraryManager;
     private readonly IServerApplicationHost _applicationHost;
-    private readonly ConcurrentDictionary<Guid, QueuedItemContainer> _itemProcessQueue;
+    private readonly ConcurrentDictionary<string, QueuedItemContainer> _itemProcessQueue;
 
     public ItemAddedManager(
         ILogger<ItemAddedManager> logger,
@@ -28,7 +28,7 @@ public class ItemAddedManager : IItemAddedManager
         _logger = logger;
         _libraryManager = libraryManager;
         _applicationHost = applicationHost;
-        _itemProcessQueue = new ConcurrentDictionary<Guid, QueuedItemContainer>();
+        _itemProcessQueue = new ConcurrentDictionary<string, QueuedItemContainer>();
     }
 
     public async Task ProcessItemsAsync()
@@ -44,7 +44,7 @@ public class ItemAddedManager : IItemAddedManager
             {
                 foreach (var (key, container) in currentItems)
                 {
-                    var item = _libraryManager.GetItemById(key);
+                    var item = _libraryManager.GetItemById(container.ItemId);
 
                     if (item is null)
                     {
@@ -66,7 +66,8 @@ public class ItemAddedManager : IItemAddedManager
 
                     _logger.LogDebug("Notifying for {ItemName}", item.Name);
 
-                    string subtype = "ItemAddedMovies";
+                    string notificationTypeName = container.NotificationType.ToString();
+                    string subtype = notificationTypeName + "Movies";
                     bool addImage = true;
 
                     dynamic eventArgs = item;
@@ -74,32 +75,32 @@ public class ItemAddedManager : IItemAddedManager
                     switch (item)
                     {
                         case Series serie:
-                            subtype = "ItemAddedSeries";
+                            subtype = notificationTypeName + "Series";
                             eventArgs = serie;
                             break;
 
                         case Season season:
-                            subtype = "ItemAddedSeasons";
+                            subtype = notificationTypeName + "Seasons";
                             eventArgs = season;
                             break;
 
                         case Episode episode:
-                            subtype = "ItemAddedEpisodes";
+                            subtype = notificationTypeName + "Episodes";
                             eventArgs = episode;
                             break;
 
                         case MusicAlbum album:
-                            subtype = "ItemAddedAlbums";
+                            subtype = notificationTypeName + "Albums";
                             eventArgs = album;
                             break;
 
                         case Audio audio:
-                            subtype = "ItemAddedSongs";
+                            subtype = notificationTypeName + "Songs";
                             eventArgs = audio;
                             break;
 
                         case Book book:
-                            subtype = "ItemAddedBooks";
+                            subtype = notificationTypeName + "Books";
                             eventArgs = book;
                             break;
                     }
@@ -111,11 +112,11 @@ public class ItemAddedManager : IItemAddedManager
                         serverUrl = serverUrl.StartsWith("http", StringComparison.OrdinalIgnoreCase) ? serverUrl : "http://" + serverUrl;
                         string path = serverUrl + "/Items/" + item.Id + "/Images/Primary";
 
-                        await notificationFilter.Filter(NotificationFilter.NotificationType.ItemAdded, eventArgs, imagePath: path, subtype: subtype).ConfigureAwait(false);
+                        await notificationFilter.Filter(container.NotificationType, eventArgs, imagePath: path, subtype: subtype).ConfigureAwait(false);
                     }
                     else
                     {
-                        await notificationFilter.Filter(NotificationFilter.NotificationType.ItemAdded, eventArgs, subtype: subtype).ConfigureAwait(false);
+                        await notificationFilter.Filter(container.NotificationType, eventArgs, subtype: subtype).ConfigureAwait(false);
                     }
 
                     // Remove item from queue.
@@ -129,18 +130,18 @@ public class ItemAddedManager : IItemAddedManager
         }
     }
 
-    public void AddItem(BaseItem item)
+    public void AddItem(BaseItem item, NotificationFilter.NotificationType notificationType)
     {
         LibraryOptions options = _libraryManager.GetLibraryOptions(item);
         if (options.Enabled)
         {
-            _itemProcessQueue.TryAdd(item.Id, new QueuedItemContainer(item.Id));
-            _logger.LogDebug("Queued {ItemName} for notification", item.Name);
+            string key = item.Id + ":" + notificationType;
+            _itemProcessQueue.TryAdd(key, new QueuedItemContainer(item.Id, notificationType));
+            _logger.LogDebug("Queued {ItemName} for {NotificationType} notification", item.Name, notificationType);
         }
         else
         {
             _logger.LogDebug("Not queueing {ItemName} for notification because the it is a disabled library", item.Name);
         }
-
     }
 }

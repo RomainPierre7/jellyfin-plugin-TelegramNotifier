@@ -6,6 +6,7 @@ export default function (view) {
         notificationType: {
             values: {
                 "ItemAdded": ["Item Added", "Movies", "Series", "Seasons", "Episodes", "Albums", "Songs", "Books"],
+                "ItemUpdated": ["Item Updated", "Movies", "Series", "Seasons", "Episodes", "Albums", "Songs", "Books"],
                 "ItemDeleted": ["Item Deleted", "Movies", "Series", "Seasons", "Episodes", "Albums", "Songs", "Books"],
                 "PlaybackStart": ["Playback Start", "Movies", "Episodes"],
                 "PlaybackProgress": ["Playback Progress (recommended: disabled)", "Movies", "Episodes"],
@@ -38,6 +39,13 @@ export default function (view) {
                 "ItemAddedAlbums": "🎵 [Album] {album.Name} ({item.ProductionYear}) added to library",
                 "ItemAddedSongs": "🎵 [Audio] {audio.Name} ({item.ProductionYear}) added to library",
                 "ItemAddedBooks": "📖 [Book] {item.name} added to library\n\n🖋️ {item.Overview}",
+                "ItemUpdatedMovies": "🎬 {item.Name} ({item.ProductionYear}) 已刷（更）新\n\n📽 {item.Overview}",
+                "ItemUpdatedSeries": "📺 [Serie] {serie.Name} ({item.ProductionYear}) 已刷（更）新\n\n📽 {item.Overview}",
+                "ItemUpdatedSeasons": "📺 {season.Series.Name} ({item.ProductionYear})\n      Season {seasonNumber} 已刷（更）新\n\n📽 {item.Overview}",
+                "ItemUpdatedEpisodes": "📺 {episode.Series.Name} ({item.ProductionYear})\n      S{eSeasonNumber} - E{episodeNumber}\n      '{item.Name}' 已刷（更）新\n\n📽 {item.Overview}",
+                "ItemUpdatedAlbums": "🎵 [Album] {album.Name} ({item.ProductionYear}) 已刷（更）新",
+                "ItemUpdatedSongs": "🎵 [Audio] {audio.Name} ({item.ProductionYear}) 已刷（更）新",
+                "ItemUpdatedBooks": "📖 [Book] {item.Name} 已刷（更）新\n\n🖋️ {item.Overview}",
                 "ItemDeletedMovies": "🗑️🎬 {item.Name} ({item.ProductionYear})\n      removed from library\n\n📽 {item.Overview}",
                 "ItemDeletedSeries": "🗑️📺 [Serie] {serie.Name} ({item.ProductionYear}) removed from library\n\n📽 {item.Overview}",
                 "ItemDeletedSeasons": "🗑️📺 {season.Series.Name} ({item.ProductionYear})\n      Season {seasonNumber} removed from library\n\n📽 {item.Overview}",

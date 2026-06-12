@@ -45,6 +45,29 @@ public class UserConfiguration
         ItemAddedBooks = true;
         ItemAddedBooksStringMessage = DefaultMessageConfiguration.ItemAddedBooks;
 
+        ItemUpdated = false;
+
+        ItemUpdatedMovies = true;
+        ItemUpdatedMoviesStringMessage = DefaultMessageConfiguration.ItemUpdatedMovies;
+
+        ItemUpdatedSeries = true;
+        ItemUpdatedSeriesStringMessage = DefaultMessageConfiguration.ItemUpdatedSeries;
+
+        ItemUpdatedSeasons = true;
+        ItemUpdatedSeasonsStringMessage = DefaultMessageConfiguration.ItemUpdatedSeasons;
+
+        ItemUpdatedEpisodes = true;
+        ItemUpdatedEpisodesStringMessage = DefaultMessageConfiguration.ItemUpdatedEpisodes;
+
+        ItemUpdatedAlbums = true;
+        ItemUpdatedAlbumsStringMessage = DefaultMessageConfiguration.ItemUpdatedAlbums;
+
+        ItemUpdatedSongs = true;
+        ItemUpdatedSongsStringMessage = DefaultMessageConfiguration.ItemUpdatedSongs;
+
+        ItemUpdatedBooks = true;
+        ItemUpdatedBooksStringMessage = DefaultMessageConfiguration.ItemUpdatedBooks;
+
         ItemDeleted = false;
 
         ItemDeletedMovies = true;
@@ -194,6 +217,36 @@ public class UserConfiguration
     public bool ItemAddedBooks { get; set; }
 
     public string ItemAddedBooksStringMessage { get; set; }
+
+    public bool ItemUpdated { get; set; }
+
+    public bool ItemUpdatedMovies { get; set; }
+
+    public string ItemUpdatedMoviesStringMessage { get; set; }
+
+    public bool ItemUpdatedSeries { get; set; }
+
+    public string ItemUpdatedSeriesStringMessage { get; set; }
+
+    public bool ItemUpdatedSeasons { get; set; }
+
+    public string ItemUpdatedSeasonsStringMessage { get; set; }
+
+    public bool ItemUpdatedEpisodes { get; set; }
+
+    public string ItemUpdatedEpisodesStringMessage { get; set; }
+
+    public bool ItemUpdatedAlbums { get; set; }
+
+    public string ItemUpdatedAlbumsStringMessage { get; set; }
+
+    public bool ItemUpdatedSongs { get; set; }
+
+    public string ItemUpdatedSongsStringMessage { get; set; }
+
+    public bool ItemUpdatedBooks { get; set; }
+
+    public string ItemUpdatedBooksStringMessage { get; set; }
 
     public bool ItemDeleted { get; set; }
 

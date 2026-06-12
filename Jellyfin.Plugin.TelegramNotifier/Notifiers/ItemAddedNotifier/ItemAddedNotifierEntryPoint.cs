@@ -18,7 +18,7 @@ public class ItemAddedNotifierEntryPoint : IHostedService
         _libraryManager = libraryManager;
     }
 
-    private void ItemAddedHandler(object? sender, ItemChangeEventArgs itemChangeEventArgs)
+    private void QueueItem(ItemChangeEventArgs itemChangeEventArgs, NotificationFilter.NotificationType notificationType)
     {
         // Never notify on virtual items.
         if (itemChangeEventArgs.Item.IsVirtualItem)
@@ -36,21 +36,31 @@ public class ItemAddedNotifierEntryPoint : IHostedService
         itemChangeEventArgs.Item.GetType() == typeof(MediaBrowser.Controller.Entities.Book) ||
         itemChangeEventArgs.Item.GetType() == typeof(MediaBrowser.Controller.Entities.AudioBook))
         {
-            _itemAddedManager.AddItem(itemChangeEventArgs.Item);
+            _itemAddedManager.AddItem(itemChangeEventArgs.Item, notificationType);
         }
+    }
+
+    private void ItemAddedHandler(object? sender, ItemChangeEventArgs itemChangeEventArgs)
+    {
+        QueueItem(itemChangeEventArgs, NotificationFilter.NotificationType.ItemAdded);
+    }
+
+    private void ItemUpdatedHandler(object? sender, ItemChangeEventArgs itemChangeEventArgs)
+    {
+        QueueItem(itemChangeEventArgs, NotificationFilter.NotificationType.ItemUpdated);
     }
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
         _libraryManager.ItemAdded += ItemAddedHandler;
-        _libraryManager.ItemUpdated += ItemAddedHandler;
+        _libraryManager.ItemUpdated += ItemUpdatedHandler;
         return Task.CompletedTask;
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
         _libraryManager.ItemAdded -= ItemAddedHandler;
-        _libraryManager.ItemUpdated -= ItemAddedHandler;
+        _libraryManager.ItemUpdated -= ItemUpdatedHandler;
         return Task.CompletedTask;
     }
 }

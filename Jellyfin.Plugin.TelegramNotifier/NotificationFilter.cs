@@ -29,6 +29,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
         public enum NotificationType
         {
             ItemAdded,
+            ItemUpdated,
             ItemDeleted,
             PlaybackStart,
             PlaybackProgress,

@@ -7,5 +7,5 @@ public interface IItemAddedManager
 {
     public Task ProcessItemsAsync();
 
-    public void AddItem(BaseItem item);
+    public void AddItem(BaseItem item, NotificationFilter.NotificationType notificationType);
 }
