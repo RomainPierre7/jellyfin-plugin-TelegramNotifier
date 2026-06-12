@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Linq;
 using System.Threading.Tasks;
 using MediaBrowser.Controller;
 using MediaBrowser.Controller.Entities;
@@ -15,10 +16,12 @@ namespace Jellyfin.Plugin.TelegramNotifier.Notifiers.ItemAddedNotifier;
 public class ItemAddedManager : IItemAddedManager
 {
     private const int MaxRetries = 10;
+    private static readonly TimeSpan AddedUpdateSuppressionWindow = TimeSpan.FromMinutes(5);
     private readonly ILogger<ItemAddedManager> _logger;
     private readonly ILibraryManager _libraryManager;
     private readonly IServerApplicationHost _applicationHost;
     private readonly ConcurrentDictionary<string, QueuedItemContainer> _itemProcessQueue;
+    private readonly ConcurrentDictionary<Guid, DateTime> _recentSuccessfulAdds;
 
     public ItemAddedManager(
         ILogger<ItemAddedManager> logger,
@@ -29,13 +32,44 @@ public class ItemAddedManager : IItemAddedManager
         _libraryManager = libraryManager;
         _applicationHost = applicationHost;
         _itemProcessQueue = new ConcurrentDictionary<string, QueuedItemContainer>();
+        _recentSuccessfulAdds = new ConcurrentDictionary<Guid, DateTime>();
+    }
+
+    private static bool IsItemUpdated(QueuedItemContainer container)
+    {
+        return container.NotificationType == NotificationFilter.NotificationType.ItemUpdated;
+    }
+
+    private void RemoveExpiredSuccessfulAdds(DateTime now)
+    {
+        foreach (var (id, sentAt) in _recentSuccessfulAdds)
+        {
+            if (now - sentAt > AddedUpdateSuppressionWindow)
+            {
+                _recentSuccessfulAdds.TryRemove(id, out _);
+            }
+        }
+    }
+
+    private bool HasRecentSuccessfulAdd(Guid itemId, DateTime now)
+    {
+        return _recentSuccessfulAdds.TryGetValue(itemId, out DateTime sentAt) &&
+            now - sentAt <= AddedUpdateSuppressionWindow;
+    }
+
+    private void RecordSuccessfulAdd(Guid itemId)
+    {
+        DateTime now = DateTime.UtcNow;
+        _recentSuccessfulAdds.AddOrUpdate(itemId, now, (_, _) => now);
     }
 
     public async Task ProcessItemsAsync()
     {
         _logger.LogDebug("ProcessItemsAsync");
         // Attempt to process all items in queue.
-        var currentItems = _itemProcessQueue.ToArray();
+        var currentItems = _itemProcessQueue.ToArray()
+            .OrderBy(item => IsItemUpdated(item.Value))
+            .ToArray();
         if (currentItems.Length != 0)
         {
             var scope = _applicationHost.ServiceProvider!.CreateAsyncScope();
@@ -65,6 +99,15 @@ public class ItemAddedManager : IItemAddedManager
                     }
 
                     _logger.LogDebug("Notifying for {ItemName}", item.Name);
+
+                    DateTime now = DateTime.UtcNow;
+                    RemoveExpiredSuccessfulAdds(now);
+                    if (container.NotificationType == NotificationFilter.NotificationType.ItemUpdated && HasRecentSuccessfulAdd(item.Id, now))
+                    {
+                        _logger.LogInformation("Skipping ItemUpdated for {ItemName} because ItemAdded was sent successfully less than five minutes ago", item.Name);
+                        _itemProcessQueue.TryRemove(key, out _);
+                        continue;
+                    }
 
                     string notificationTypeName = container.NotificationType.ToString();
                     string subtype = notificationTypeName + "Movies";
@@ -112,11 +155,19 @@ public class ItemAddedManager : IItemAddedManager
                         serverUrl = serverUrl.StartsWith("http", StringComparison.OrdinalIgnoreCase) ? serverUrl : "http://" + serverUrl;
                         string path = serverUrl + "/Items/" + item.Id + "/Images/Primary";
 
-                        await notificationFilter.Filter(container.NotificationType, eventArgs, imagePath: path, subtype: subtype).ConfigureAwait(false);
+                        bool sent = await notificationFilter.Filter(container.NotificationType, eventArgs, imagePath: path, subtype: subtype).ConfigureAwait(false);
+                        if (sent && container.NotificationType == NotificationFilter.NotificationType.ItemAdded)
+                        {
+                            RecordSuccessfulAdd(item.Id);
+                        }
                     }
                     else
                     {
-                        await notificationFilter.Filter(container.NotificationType, eventArgs, subtype: subtype).ConfigureAwait(false);
+                        bool sent = await notificationFilter.Filter(container.NotificationType, eventArgs, subtype: subtype).ConfigureAwait(false);
+                        if (sent && container.NotificationType == NotificationFilter.NotificationType.ItemAdded)
+                        {
+                            RecordSuccessfulAdd(item.Id);
+                        }
                     }
 
                     // Remove item from queue.

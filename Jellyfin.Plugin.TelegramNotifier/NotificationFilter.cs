@@ -103,7 +103,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
             return serverUrl.StartsWith("http", StringComparison.OrdinalIgnoreCase) ? serverUrl : "http://" + serverUrl;
         }
 
-        private async Task SendMessageWithPhotoOrFallback(
+        private async Task<bool> SendMessageWithPhotoOrFallback(
             string notificationType,
             string message,
             string imagePath,
@@ -116,19 +116,21 @@ namespace Jellyfin.Plugin.TelegramNotifier
             if (!sent)
             {
                 _logger.LogInformation("({NotificationType}): Photo send failed, falling back to text message.", notificationType);
-                await _sender.SendMessage(notificationType, message, botToken, chatId, isSilentNotification, threadId).ConfigureAwait(false);
+                return await _sender.SendMessage(notificationType, message, botToken, chatId, isSilentNotification, threadId).ConfigureAwait(false);
             }
+
+            return true;
         }
 
-        public async Task Filter(NotificationType type, dynamic eventArgs, string userId = "", string imagePath = "", string subtype = "")
+        public async Task<bool> Filter(NotificationType type, dynamic eventArgs, string userId = "", string imagePath = "", string subtype = "")
         {
             if (!Plugin.Config.EnablePlugin)
             {
-                return;
+                return false;
             }
 
             UserConfiguration[] users = Plugin.Config.UserConfigurations;
-            var tasks = new List<Task>();
+            var tasks = new List<Task<bool>>();
 
             foreach (UserConfiguration user in users)
             {
@@ -191,7 +193,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
                 {
                     if (string.IsNullOrEmpty(imagePath))
                     {
-                        Task task = _sender.SendMessage(type.ToString(), message, botToken, chatId, isSilentNotification, threadId);
+                        Task<bool> task = _sender.SendMessage(type.ToString(), message, botToken, chatId, isSilentNotification, threadId);
                         tasks.Add(task);
                     }
                     else
@@ -225,7 +227,7 @@ namespace Jellyfin.Plugin.TelegramNotifier
                             imagePath = GetServerUrl() + "/Items/" + episode.Series.Id + "/Images/Primary";
                         }
 
-                        Task task = SendMessageWithPhotoOrFallback(type.ToString(), message, imagePath, botToken, chatId, isSilentNotification, threadId);
+                        Task<bool> task = SendMessageWithPhotoOrFallback(type.ToString(), message, imagePath, botToken, chatId, isSilentNotification, threadId);
                         tasks.Add(task);
                     }
                 }
@@ -235,7 +237,8 @@ namespace Jellyfin.Plugin.TelegramNotifier
                 }
             }
 
-            await Task.WhenAll(tasks).ConfigureAwait(false);
+            bool[] results = await Task.WhenAll(tasks).ConfigureAwait(false);
+            return Array.Exists(results, sent => sent);
         }
     }
 }
