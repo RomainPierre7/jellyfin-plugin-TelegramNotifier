@@ -107,7 +107,9 @@ public class ItemAddedManager : IItemAddedManager
                     if (addImage)
                     {
                         string serverUrl = Plugin.Instance?.Configuration.ServerUrl ?? "localhost:8096";
-                        string path = "http://" + serverUrl + "/Items/" + item.Id + "/Images/Primary";
+                        serverUrl = serverUrl.Trim().TrimEnd('/');
+                        serverUrl = serverUrl.StartsWith("http", StringComparison.OrdinalIgnoreCase) ? serverUrl : "http://" + serverUrl;
+                        string path = serverUrl + "/Items/" + item.Id + "/Images/Primary";
 
                         await notificationFilter.Filter(NotificationFilter.NotificationType.ItemAdded, eventArgs, imagePath: path, subtype: subtype).ConfigureAwait(false);
                     }

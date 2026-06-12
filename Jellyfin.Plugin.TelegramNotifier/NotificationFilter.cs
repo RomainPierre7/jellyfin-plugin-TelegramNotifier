@@ -95,6 +95,30 @@ namespace Jellyfin.Plugin.TelegramNotifier
             }
         }
 
+        private static string GetServerUrl()
+        {
+            string serverUrl = Plugin.Instance?.Configuration.ServerUrl ?? "localhost:8096";
+            serverUrl = serverUrl.Trim().TrimEnd('/');
+            return serverUrl.StartsWith("http", StringComparison.OrdinalIgnoreCase) ? serverUrl : "http://" + serverUrl;
+        }
+
+        private async Task SendMessageWithPhotoOrFallback(
+            string notificationType,
+            string message,
+            string imagePath,
+            string botToken,
+            string chatId,
+            bool isSilentNotification,
+            string threadId)
+        {
+            bool sent = await _sender.SendMessageWithPhoto(notificationType, message, imagePath, botToken, chatId, isSilentNotification, threadId).ConfigureAwait(false);
+            if (!sent)
+            {
+                _logger.LogInformation("({NotificationType}): Photo send failed, falling back to text message.", notificationType);
+                await _sender.SendMessage(notificationType, message, botToken, chatId, isSilentNotification, threadId).ConfigureAwait(false);
+            }
+        }
+
         public async Task Filter(NotificationType type, dynamic eventArgs, string userId = "", string imagePath = "", string subtype = "")
         {
             if (!Plugin.Config.EnablePlugin)
@@ -197,11 +221,10 @@ namespace Jellyfin.Plugin.TelegramNotifier
                         if (user.KeepSerieImage && episode != null)
                         {
 
-                            string serverUrl = Plugin.Instance?.Configuration.ServerUrl ?? "localhost:8096";
-                            imagePath = "http://" + serverUrl + "/Items/" + episode.Series.Id + "/Images/Primary";
+                            imagePath = GetServerUrl() + "/Items/" + episode.Series.Id + "/Images/Primary";
                         }
 
-                        Task task = _sender.SendMessageWithPhoto(type.ToString(), message, imagePath, botToken, chatId, isSilentNotification, threadId);
+                        Task task = SendMessageWithPhotoOrFallback(type.ToString(), message, imagePath, botToken, chatId, isSilentNotification, threadId);
                         tasks.Add(task);
                     }
                 }

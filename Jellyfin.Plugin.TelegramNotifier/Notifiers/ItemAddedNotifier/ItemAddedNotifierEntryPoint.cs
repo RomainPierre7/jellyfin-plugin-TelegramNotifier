@@ -43,12 +43,14 @@ public class ItemAddedNotifierEntryPoint : IHostedService
     public Task StartAsync(CancellationToken cancellationToken)
     {
         _libraryManager.ItemAdded += ItemAddedHandler;
+        _libraryManager.ItemUpdated += ItemAddedHandler;
         return Task.CompletedTask;
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
         _libraryManager.ItemAdded -= ItemAddedHandler;
+        _libraryManager.ItemUpdated -= ItemAddedHandler;
         return Task.CompletedTask;
     }
 }
