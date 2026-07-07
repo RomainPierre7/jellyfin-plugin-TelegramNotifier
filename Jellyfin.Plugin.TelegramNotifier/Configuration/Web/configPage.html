@@ -41,9 +41,9 @@
                 <div class="inputContainer">
                     <label class="inputLabel inputLabelUnfocused" for="ServerDisplayUrl">Server Display URL (Optional)</label>
                     <input id="ServerDisplayUrl" name="ServerDisplayUrl" type="text" is="emby-input" />
-                    <div class="fieldDescription">Insert an alternative server URL to display in notifications (ex: jellyfin.myDomain.com,
-                        my-jellyfin.local:8096, ...). If set, this will be used in {server.Url} placeholders instead of the Server URL above.
-                        The url must include the http/https protocol. This is useful if your server is behind a reverse proxy.
+                    <div class="fieldDescription">Insert an alternative server URL to display in notifications (ex: https://jellyfin.myDomain.com,
+                        https://my-jellyfin.local:8096, ...). If set, this will be used in {server.Url} placeholders instead of the Server URL above.
+                        You may include the http/https protocol; if omitted, http:// will be automatically added. This is useful if your server is behind a reverse proxy.
                     </div>
                 </div>
                 <div class="inputContainer">
