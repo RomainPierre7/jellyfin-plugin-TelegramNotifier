@@ -13,6 +13,16 @@ public class PluginConfiguration : BasePluginConfiguration
         UserConfigurations = Array.Empty<UserConfiguration>();
     }
 
+    public bool ProxyEnabled { get; set; }
+
+    public string ProxyHost { get; set; }
+
+    public int ProxyPort { get; set; }
+
+    public string ProxyUsername { get; set; }
+
+    public string ProxyPassword { get; set; }
+
     public string ServerUrl { get; set; }
 
     public string ServerDisplayUrl { get; set; }

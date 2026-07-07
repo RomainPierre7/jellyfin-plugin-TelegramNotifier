@@ -215,6 +215,11 @@ export default function (view) {
                 if (userConfig) {
                     document.querySelector('#ServerUrl').value = config.ServerUrl;
                     document.querySelector('#ServerDisplayUrl').value = config.ServerDisplayUrl || '';
+                    document.querySelector('#ProxyEnabled').checked = config.ProxyEnabled;
+                    document.querySelector('#ProxyHost').value = config.ProxyHost || '';
+                    document.querySelector('#ProxyPort').value = config.ProxyPort || '';
+                    document.querySelector('#ProxyUsername').value = config.ProxyUsername || '';
+                    document.querySelector('#ProxyPassword').value = config.ProxyPassword || '';
                     document.querySelector('#BotToken').value = userConfig.BotToken;
                     document.querySelector('#ChatId').value = userConfig.ChatId;
                     document.querySelector('#ThreadId').value = userConfig.ThreadId;
@@ -226,6 +231,11 @@ export default function (view) {
                 } else {
                     document.querySelector('#ServerUrl').value = config.ServerUrl;
                     document.querySelector('#ServerDisplayUrl').value = config.ServerDisplayUrl || '';
+                    document.querySelector('#ProxyEnabled').checked = false;
+                    document.querySelector('#ProxyHost').value = '';
+                    document.querySelector('#ProxyPort').value = '';
+                    document.querySelector('#ProxyUsername').value = '';
+                    document.querySelector('#ProxyPassword').value = '';
                     document.querySelector('#BotToken').value = '';
                     document.querySelector('#ChatId').value = '';
                     document.querySelector('#ThreadId').value = '';
@@ -249,6 +259,11 @@ export default function (view) {
                     config.EnablePlugin = document.querySelector('#EnablePlugin').checked;
                     config.ServerUrl = document.querySelector('#ServerUrl').value;
                     config.ServerDisplayUrl = document.querySelector('#ServerDisplayUrl').value;
+                    config.ProxyEnabled = document.querySelector('#ProxyEnabled').checked;
+                    config.ProxyHost = document.querySelector('#ProxyHost').value;
+                    config.ProxyPort = parseInt(document.querySelector('#ProxyPort').value) || 0;
+                    config.ProxyUsername = document.querySelector('#ProxyUsername').value;
+                    config.ProxyPassword = document.querySelector('#ProxyPassword').value;
                     const userConfig = config.UserConfigurations.find(x => x.UserId === TelegramNotifierConfig.user.getSelectedUserId());
                     if (userConfig) {
                         userConfig.BotToken = document.querySelector('#BotToken').value;

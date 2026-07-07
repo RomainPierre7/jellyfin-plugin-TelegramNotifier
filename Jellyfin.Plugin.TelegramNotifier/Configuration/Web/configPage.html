@@ -39,11 +39,15 @@
                         logs to see if the image URL is correct.</div>
                 </div>
                 <div class="inputContainer">
-                    <label class="inputLabel inputLabelUnfocused" for="ServerDisplayUrl">Server Display URL (Optional)</label>
+                    <label class="inputLabel inputLabelUnfocused" for="ServerDisplayUrl">Server Display URL
+                        (Optional)</label>
                     <input id="ServerDisplayUrl" name="ServerDisplayUrl" type="text" is="emby-input" />
-                    <div class="fieldDescription">Insert an alternative server URL to display in notifications (ex: https://jellyfin.myDomain.com,
-                        https://my-jellyfin.local:8096, ...). If set, this will be used in {server.Url} placeholders instead of the Server URL above.
-                        You may include the http/https protocol; if omitted, http:// will be automatically added. This is useful if your server is behind a reverse proxy.
+                    <div class="fieldDescription">Insert an alternative server URL to display in notifications (ex:
+                        https://jellyfin.myDomain.com,
+                        https://my-jellyfin.local:8096, ...). If set, this will be used in {server.Url} placeholders
+                        instead of the Server URL above.
+                        You may include the http/https protocol; if omitted, http:// will be automatically added. This
+                        is useful if your server is behind a reverse proxy.
                     </div>
                 </div>
                 <div class="inputContainer">
@@ -53,6 +57,58 @@
                         </select>
                         <div class="fieldDescription">Select the user you want to configure.</div>
                     </div>
+                </div>
+                <div class="sectionTitleContainer flex align-items-center">
+                    <h3>---------- Proxy ----------</h3>
+                </div>
+                <div class="checkboxContainer checkboxContainer-withDescription">
+                    <label class="emby-checkbox-label">
+                        <input id="ProxyEnabled" name="ProxyEnabled" type="checkbox" is="emby-checkbox" />
+                        <span>Enable Proxy</span>
+                    </label>
+                    <div class="fieldDescription">
+                        Enable HTTP proxy support for Telegram API requests and image downloads.
+                    </div>
+                </div>
+
+                <div class="inputContainer">
+                    <label class="inputLabel inputLabelUnfocused" for="ProxyHost">Proxy Host</label>
+                    <input id="ProxyHost" name="ProxyHost" type="text" is="emby-input" />
+                    <div class="fieldDescription">
+                        The hostname or IP address of the HTTP proxy server (for example: proxy.example.com or
+                        127.0.0.1).
+                    </div>
+                </div>
+
+                <div class="inputContainer">
+                    <label class="inputLabel inputLabelUnfocused" for="ProxyPort">Proxy Port</label>
+                    <input id="ProxyPort" name="ProxyPort" type="number" is="emby-input" />
+                    <div class="fieldDescription">
+                        The port number of the proxy server (for example: 8080).
+                    </div>
+                </div>
+
+                <div class="inputContainer">
+                    <label class="inputLabel inputLabelUnfocused" for="ProxyUsername">Proxy Username</label>
+                    <input id="ProxyUsername" name="ProxyUsername" type="text" is="emby-input" />
+                    <div class="fieldDescription">
+                        Optional username if your proxy requires authentication.
+                    </div>
+                </div>
+
+                <div class="inputContainer">
+                    <label class="inputLabel inputLabelUnfocused" for="ProxyPassword">Proxy Password</label>
+                    <input id="ProxyPassword" name="ProxyPassword" type="password" is="emby-input" />
+                    <div class="fieldDescription">
+                        Optional password if your proxy requires authentication.
+                    </div>
+                </div>
+
+                <div class="fieldDescription">
+                    This proxy configuration supports HTTP/HTTPS proxies only.
+                    If you need to use a SOCKS5 proxy (for example: socks5://127.0.0.1:9050),
+                    you must use a SOCKS5 to HTTP proxy converter such as Privoxy and configure the HTTP proxy address
+                    here.
                 </div>
                 <div class="sectionTitleContainer flex align-items-center">
                     <h3>---------- Telegram Bot Configuration ----------</h3>
