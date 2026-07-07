@@ -70,10 +70,18 @@ namespace Jellyfin.Plugin.TelegramNotifier
                 object effectiveItem = GetEffectiveItem(objEventArgs);
 
                 string serverUrl = "http://localhost:8096";
-                if (Plugin.Instance?.Configuration != null && !string.IsNullOrEmpty(Plugin.Instance.Configuration.ServerUrl))
+                if (Plugin.Instance?.Configuration != null)
                 {
-                    var url = Plugin.Instance.Configuration.ServerUrl.Trim();
-                    serverUrl = url.StartsWith("http", StringComparison.OrdinalIgnoreCase) ? url : "http://" + url;
+                    // Use ServerDisplayUrl if set, otherwise fall back to ServerUrl
+                    string urlToUse = !string.IsNullOrEmpty(Plugin.Instance.Configuration.ServerDisplayUrl)
+                        ? Plugin.Instance.Configuration.ServerDisplayUrl
+                        : Plugin.Instance.Configuration.ServerUrl;
+
+                    if (!string.IsNullOrEmpty(urlToUse))
+                    {
+                        var url = urlToUse.Trim();
+                        serverUrl = url.StartsWith("http", StringComparison.OrdinalIgnoreCase) ? url : "http://" + url;
+                    }
                 }
 
                 var replacements = new Dictionary<string, string?>
