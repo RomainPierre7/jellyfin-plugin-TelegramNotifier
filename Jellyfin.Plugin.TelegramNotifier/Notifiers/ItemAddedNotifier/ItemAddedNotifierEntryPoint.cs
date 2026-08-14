@@ -27,28 +27,47 @@ public class ItemAddedNotifierEntryPoint : IHostedService
         }
 
         // Only notify on books, movies, series, seasons, episodes, albums and audio.
-        if (itemChangeEventArgs.Item.GetType() == typeof(MediaBrowser.Controller.Entities.Movies.Movie) ||
-        itemChangeEventArgs.Item.GetType() == typeof(MediaBrowser.Controller.Entities.TV.Series) ||
-        itemChangeEventArgs.Item.GetType() == typeof(MediaBrowser.Controller.Entities.TV.Season) ||
-        itemChangeEventArgs.Item.GetType() == typeof(MediaBrowser.Controller.Entities.TV.Episode) ||
-        itemChangeEventArgs.Item.GetType() == typeof(MediaBrowser.Controller.Entities.Audio.MusicAlbum) ||
-        itemChangeEventArgs.Item.GetType() == typeof(MediaBrowser.Controller.Entities.Audio.Audio) ||
-        itemChangeEventArgs.Item.GetType() == typeof(MediaBrowser.Controller.Entities.Book) ||
-        itemChangeEventArgs.Item.GetType() == typeof(MediaBrowser.Controller.Entities.AudioBook))
+        if (IsSupportedItem(itemChangeEventArgs))
         {
             _itemAddedManager.AddItem(itemChangeEventArgs.Item);
         }
     }
 
+    private void ItemUpdatedHandler(object? sender, ItemChangeEventArgs itemChangeEventArgs)
+    {
+        const ItemUpdateType MetadataUpdates = ItemUpdateType.MetadataImport |
+            ItemUpdateType.MetadataDownload |
+            ItemUpdateType.MetadataEdit;
+
+        if ((itemChangeEventArgs.UpdateReason & MetadataUpdates) != 0 && IsSupportedItem(itemChangeEventArgs))
+        {
+            _itemAddedManager.UpdateItem(itemChangeEventArgs.Item);
+        }
+    }
+
+    private static bool IsSupportedItem(ItemChangeEventArgs itemChangeEventArgs)
+    {
+        return itemChangeEventArgs.Item.GetType() == typeof(MediaBrowser.Controller.Entities.Movies.Movie) ||
+            itemChangeEventArgs.Item.GetType() == typeof(MediaBrowser.Controller.Entities.TV.Series) ||
+            itemChangeEventArgs.Item.GetType() == typeof(MediaBrowser.Controller.Entities.TV.Season) ||
+            itemChangeEventArgs.Item.GetType() == typeof(MediaBrowser.Controller.Entities.TV.Episode) ||
+            itemChangeEventArgs.Item.GetType() == typeof(MediaBrowser.Controller.Entities.Audio.MusicAlbum) ||
+            itemChangeEventArgs.Item.GetType() == typeof(MediaBrowser.Controller.Entities.Audio.Audio) ||
+            itemChangeEventArgs.Item.GetType() == typeof(MediaBrowser.Controller.Entities.Book) ||
+            itemChangeEventArgs.Item.GetType() == typeof(MediaBrowser.Controller.Entities.AudioBook);
+    }
+
     public Task StartAsync(CancellationToken cancellationToken)
     {
         _libraryManager.ItemAdded += ItemAddedHandler;
+        _libraryManager.ItemUpdated += ItemUpdatedHandler;
         return Task.CompletedTask;
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
         _libraryManager.ItemAdded -= ItemAddedHandler;
+        _libraryManager.ItemUpdated -= ItemUpdatedHandler;
         return Task.CompletedTask;
     }
 }

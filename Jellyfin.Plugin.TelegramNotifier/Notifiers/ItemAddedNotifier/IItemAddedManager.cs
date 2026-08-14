@@ -8,4 +8,6 @@ public interface IItemAddedManager
     public Task ProcessItemsAsync();
 
     public void AddItem(BaseItem item);
+
+    public void UpdateItem(BaseItem item);
 }

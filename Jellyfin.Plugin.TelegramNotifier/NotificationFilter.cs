@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Jellyfin.Plugin.TelegramNotifier.Configuration;
+using Jellyfin.Plugin.TelegramNotifier.Notifiers.ItemAddedNotifier;
+using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
 using Microsoft.Extensions.Logging;
@@ -14,15 +17,18 @@ namespace Jellyfin.Plugin.TelegramNotifier
         private readonly ILogger<Plugin> _logger;
         private readonly ILibraryManager _libraryManager;
         private readonly IMediaSourceManager _mediaSourceManager;
+        private readonly ItemNotificationStore _itemNotificationStore;
 
         public NotificationFilter(
             Sender sender,
             ILibraryManager libraryManager,
-            IMediaSourceManager mediaSourceManager)
+            IMediaSourceManager mediaSourceManager,
+            ItemNotificationStore itemNotificationStore)
         {
             _sender = sender;
             _libraryManager = libraryManager;
             _mediaSourceManager = mediaSourceManager;
+            _itemNotificationStore = itemNotificationStore;
             _logger = Plugin.Logger;
         }
 
@@ -95,15 +101,15 @@ namespace Jellyfin.Plugin.TelegramNotifier
             }
         }
 
-        public async Task Filter(NotificationType type, dynamic eventArgs, string userId = "", string imagePath = "", string subtype = "")
+        public async Task<IReadOnlyList<ItemNotificationRecord>> Filter(NotificationType type, dynamic eventArgs, string userId = "", string imagePath = "", string subtype = "", Guid? trackedItemId = null)
         {
             if (!Plugin.Config.EnablePlugin)
             {
-                return;
+                return Array.Empty<ItemNotificationRecord>();
             }
 
             UserConfiguration[] users = Plugin.Config.UserConfigurations;
-            var tasks = new List<Task>();
+            var tasks = new List<Task<ItemNotificationRecord?>>();
 
             foreach (UserConfiguration user in users)
             {
@@ -166,11 +172,21 @@ namespace Jellyfin.Plugin.TelegramNotifier
                 {
                     if (string.IsNullOrEmpty(imagePath))
                     {
-                        Task task = _sender.SendMessage(type.ToString(), message, botToken, chatId, isSilentNotification, threadId);
+                        Task<ItemNotificationRecord?> task = SendAndTrackAsync(
+                            type.ToString(),
+                            message,
+                            botToken,
+                            chatId,
+                            threadId,
+                            user.UserId ?? string.Empty,
+                            isSilentNotification,
+                            string.Empty,
+                            trackedItemId);
                         tasks.Add(task);
                     }
                     else
                     {
+                        string notificationImagePath = imagePath;
                         Episode episode = null;
 
                         // Case 1 : eventArgs is an Episode
@@ -196,12 +212,20 @@ namespace Jellyfin.Plugin.TelegramNotifier
 
                         if (user.KeepSerieImage && episode != null)
                         {
-
                             string serverUrl = Plugin.Instance?.Configuration.ServerUrl ?? "localhost:8096";
-                            imagePath = "http://" + serverUrl + "/Items/" + episode.Series.Id + "/Images/Primary";
+                            notificationImagePath = "http://" + serverUrl + "/Items/" + episode.Series.Id + "/Images/Primary";
                         }
 
-                        Task task = _sender.SendMessageWithPhoto(type.ToString(), message, imagePath, botToken, chatId, isSilentNotification, threadId);
+                        Task<ItemNotificationRecord?> task = SendAndTrackAsync(
+                            type.ToString(),
+                            message,
+                            botToken,
+                            chatId,
+                            threadId,
+                            user.UserId ?? string.Empty,
+                            isSilentNotification,
+                            notificationImagePath,
+                            trackedItemId);
                         tasks.Add(task);
                     }
                 }
@@ -211,7 +235,76 @@ namespace Jellyfin.Plugin.TelegramNotifier
                 }
             }
 
-            await Task.WhenAll(tasks).ConfigureAwait(false);
+            ItemNotificationRecord?[] results = await Task.WhenAll(tasks).ConfigureAwait(false);
+            return results.Where(result => result is not null).Cast<ItemNotificationRecord>().ToArray();
+        }
+
+        public async Task UpdateItemAddedNotifications(BaseItem item, string subtype, IReadOnlyList<ItemNotificationRecord> records)
+        {
+            foreach (ItemNotificationRecord record in records)
+            {
+                UserConfiguration? user = Plugin.Config.UserConfigurations.FirstOrDefault(candidate =>
+                    candidate.EnableUser &&
+                    candidate.ItemAdded &&
+                    candidate.ChatId == record.ChatId &&
+                    candidate.ThreadId == record.ThreadId &&
+                    (string.IsNullOrEmpty(record.UserId) || candidate.UserId == record.UserId));
+
+                if (user is null || !GetPropertyValue(user, subtype))
+                {
+                    continue;
+                }
+
+                string template = GetPropertyMessage(user, subtype);
+                string message = MessageParser.ParseMessage(template, item, _libraryManager, _mediaSourceManager);
+                if (message == record.RenderedMessage)
+                {
+                    continue;
+                }
+
+                bool updated = record.HasPhoto
+                    ? await _sender.EditMessageCaption(NotificationType.ItemAdded.ToString(), message, user.BotToken, record.ChatId, record.MessageId).ConfigureAwait(false)
+                    : await _sender.EditMessageText(NotificationType.ItemAdded.ToString(), message, user.BotToken, record.ChatId, record.MessageId).ConfigureAwait(false);
+
+                if (updated)
+                {
+                    record.RenderedMessage = message;
+                    await _itemNotificationStore.UpdateAsync(record).ConfigureAwait(false);
+                }
+            }
+        }
+
+        private async Task<ItemNotificationRecord?> SendAndTrackAsync(
+            string notificationType,
+            string message,
+            string botToken,
+            string chatId,
+            string threadId,
+            string userId,
+            bool isSilentNotification,
+            string imagePath,
+            Guid? trackedItemId)
+        {
+            TelegramMessageResult? result = string.IsNullOrEmpty(imagePath)
+                ? await _sender.SendMessage(notificationType, message, botToken, chatId, isSilentNotification, threadId).ConfigureAwait(false)
+                : await _sender.SendMessageWithPhoto(notificationType, message, imagePath, botToken, chatId, isSilentNotification, threadId).ConfigureAwait(false);
+
+            if (result is null || trackedItemId is null)
+            {
+                return null;
+            }
+
+            return new ItemNotificationRecord
+            {
+                ItemId = trackedItemId.Value,
+                UserId = userId,
+                ChatId = chatId,
+                ThreadId = threadId,
+                MessageId = result.MessageId,
+                HasPhoto = !string.IsNullOrEmpty(imagePath),
+                RenderedMessage = message,
+                SentAtUtc = DateTime.UtcNow
+            };
         }
     }
 }

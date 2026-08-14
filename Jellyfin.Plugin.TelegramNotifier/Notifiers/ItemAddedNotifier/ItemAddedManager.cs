@@ -18,17 +18,22 @@ public class ItemAddedManager : IItemAddedManager
     private readonly ILogger<ItemAddedManager> _logger;
     private readonly ILibraryManager _libraryManager;
     private readonly IServerApplicationHost _applicationHost;
+    private readonly ItemNotificationStore _itemNotificationStore;
     private readonly ConcurrentDictionary<Guid, QueuedItemContainer> _itemProcessQueue;
+    private readonly ConcurrentDictionary<Guid, byte> _itemUpdateQueue;
 
     public ItemAddedManager(
         ILogger<ItemAddedManager> logger,
         ILibraryManager libraryManager,
-        IServerApplicationHost applicationHost)
+        IServerApplicationHost applicationHost,
+        ItemNotificationStore itemNotificationStore)
     {
         _logger = logger;
         _libraryManager = libraryManager;
         _applicationHost = applicationHost;
+        _itemNotificationStore = itemNotificationStore;
         _itemProcessQueue = new ConcurrentDictionary<Guid, QueuedItemContainer>();
+        _itemUpdateQueue = new ConcurrentDictionary<Guid, byte>();
     }
 
     public async Task ProcessItemsAsync()
@@ -36,7 +41,8 @@ public class ItemAddedManager : IItemAddedManager
         _logger.LogDebug("ProcessItemsAsync");
         // Attempt to process all items in queue.
         var currentItems = _itemProcessQueue.ToArray();
-        if (currentItems.Length != 0)
+        var updatedItems = _itemUpdateQueue.ToArray();
+        if (currentItems.Length != 0 || updatedItems.Length != 0)
         {
             var scope = _applicationHost.ServiceProvider!.CreateAsyncScope();
             var notificationFilter = scope.ServiceProvider.GetRequiredService<NotificationFilter>();
@@ -50,7 +56,7 @@ public class ItemAddedManager : IItemAddedManager
                     {
                         // Remove item from queue.
                         _itemProcessQueue.TryRemove(key, out _);
-                        return;
+                        continue;
                     }
 
                     _logger.LogDebug("Item {ItemName}", item.Name);
@@ -66,59 +72,47 @@ public class ItemAddedManager : IItemAddedManager
 
                     _logger.LogDebug("Notifying for {ItemName}", item.Name);
 
-                    string subtype = "ItemAddedMovies";
-                    bool addImage = true;
+                    string subtype = GetSubtype(item);
+                    string serverUrl = Plugin.Instance?.Configuration.ServerUrl ?? "localhost:8096";
+                    string path = "http://" + serverUrl + "/Items/" + item.Id + "/Images/Primary";
 
-                    dynamic eventArgs = item;
-
-                    switch (item)
-                    {
-                        case Series serie:
-                            subtype = "ItemAddedSeries";
-                            eventArgs = serie;
-                            break;
-
-                        case Season season:
-                            subtype = "ItemAddedSeasons";
-                            eventArgs = season;
-                            break;
-
-                        case Episode episode:
-                            subtype = "ItemAddedEpisodes";
-                            eventArgs = episode;
-                            break;
-
-                        case MusicAlbum album:
-                            subtype = "ItemAddedAlbums";
-                            eventArgs = album;
-                            break;
-
-                        case Audio audio:
-                            subtype = "ItemAddedSongs";
-                            eventArgs = audio;
-                            break;
-
-                        case Book book:
-                            subtype = "ItemAddedBooks";
-                            eventArgs = book;
-                            break;
-                    }
-
-                    if (addImage)
-                    {
-                        string serverUrl = Plugin.Instance?.Configuration.ServerUrl ?? "localhost:8096";
-                        string path = "http://" + serverUrl + "/Items/" + item.Id + "/Images/Primary";
-
-                        await notificationFilter.Filter(NotificationFilter.NotificationType.ItemAdded, eventArgs, imagePath: path, subtype: subtype).ConfigureAwait(false);
-                    }
-                    else
-                    {
-                        await notificationFilter.Filter(NotificationFilter.NotificationType.ItemAdded, eventArgs, subtype: subtype).ConfigureAwait(false);
-                    }
+                    var records = await notificationFilter.Filter(
+                        NotificationFilter.NotificationType.ItemAdded,
+                        item,
+                        imagePath: path,
+                        subtype: subtype,
+                        trackedItemId: item.Id).ConfigureAwait(false);
+                    await _itemNotificationStore.AddAsync(records).ConfigureAwait(false);
 
                     // Remove item from queue.
                     _itemProcessQueue.TryRemove(key, out _);
                 }
+
+                foreach (var updatedItem in updatedItems)
+                {
+                    Guid key = updatedItem.Key;
+                    _itemUpdateQueue.TryRemove(key, out _);
+                    try
+                    {
+                        var records = await _itemNotificationStore.GetAsync(key).ConfigureAwait(false);
+                        if (records.Count == 0)
+                        {
+                            continue;
+                        }
+
+                        BaseItem? item = _libraryManager.GetItemById(key);
+                        if (item is not null)
+                        {
+                            await notificationFilter.UpdateItemAddedNotifications(item, GetSubtype(item), records).ConfigureAwait(false);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "Could not update Telegram notifications for item {ItemId}", key);
+                    }
+                }
+
+                await _itemNotificationStore.PurgeExpiredAsync().ConfigureAwait(false);
             }
         }
         else
@@ -140,5 +134,24 @@ public class ItemAddedManager : IItemAddedManager
             _logger.LogDebug("Not queueing {ItemName} for notification because the it is a disabled library", item.Name);
         }
 
+    }
+
+    public void UpdateItem(BaseItem item)
+    {
+        _itemUpdateQueue.TryAdd(item.Id, 0);
+    }
+
+    private static string GetSubtype(BaseItem item)
+    {
+        return item switch
+        {
+            Series => "ItemAddedSeries",
+            Season => "ItemAddedSeasons",
+            Episode => "ItemAddedEpisodes",
+            MusicAlbum => "ItemAddedAlbums",
+            Audio => "ItemAddedSongs",
+            Book => "ItemAddedBooks",
+            _ => "ItemAddedMovies"
+        };
     }
 }

@@ -19,9 +19,9 @@ public class TestNotifier : ControllerBase
     {
         string message = "[Jellyfin] Test message: \n 🎉 Your configuration is correct ! 🥳";
 
-        bool result = await _sender.SendMessage("Test", message, botToken, chatId, false, threadId).ConfigureAwait(false);
+        TelegramMessageResult? result = await _sender.SendMessage("Test", message, botToken, chatId, false, threadId).ConfigureAwait(false);
 
-        if (result)
+        if (result is not null)
         {
             return Ok("Message sent successfully");
         }
