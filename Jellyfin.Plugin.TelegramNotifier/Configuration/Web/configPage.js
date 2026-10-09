@@ -151,6 +151,32 @@ export default function (view) {
         user: {
             loadUsers: async function () {
                 const users = await window.ApiClient.getUsers();
+                const configuredUserIds = await window.ApiClient.getPluginConfiguration(TelegramNotifierConfig.pluginUniqueId).UserConfigurations.map(x => x.UserId);
+
+                // Sort user based on:
+                // First select user with configuration
+                // Then sort by date created oldest first.
+                users.sort(function (a, b) {
+                    const aConfiguredIndex = configuredUserIds.indexOf(a.Id);
+                    const bConfiguredIndex = configuredUserIds.indexOf(b.Id);
+                    const aHasConfiguration = aConfiguredIndex !== -1;
+                    const bHasConfiguration = bConfiguredIndex !== -1;
+
+                    if (aHasConfiguration && bHasConfiguration) {
+                        return aConfiguredIndex - bConfiguredIndex;
+                    }
+
+                    if (aHasConfiguration) {
+                        return -1;
+                    }
+
+                    if (bHasConfiguration) {
+                        return 1;
+                    }
+
+                    return new Date(a.DateCreated || 0) - new Date(b.DateCreated || 0);
+                });
+
                 const selectElement = document.getElementById("userToConfigure");
                 selectElement.innerHTML = '';
                 for (const user of users) {
