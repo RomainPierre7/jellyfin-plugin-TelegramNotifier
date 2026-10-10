@@ -279,3 +279,18 @@ This document provides a list of default messages of the plugin. You can use the
   ```
   👤 User {eventArgs.Argument.Username} data saved.
   ```
+
+## Activity Log
+
+Default message:
+
+```
+📣 {activity.Name}
+{?activity.ShortOverview}{activity.ShortOverview}
+{/activity.ShortOverview}{?activity.Overview}
+{activity.Overview}{/activity.Overview}
+```
+
+Available placeholders: `{activity.Name}`, `{activity.ShortOverview}`, `{activity.Overview}`, `{activity.Type}`, `{activity.Severity}`, `{activity.Date}`, `{activity.UserName}`, `{activity.ItemId}`. Values are HTML-escaped.
+
+The **Only these activity types** and **Never these activity types** fields accept comma separated activity types (case-insensitive, `*` wildcard, e.g. `JellyAskRequest, Search*`). Exclusions win. Leave the first one blank to forward every type.

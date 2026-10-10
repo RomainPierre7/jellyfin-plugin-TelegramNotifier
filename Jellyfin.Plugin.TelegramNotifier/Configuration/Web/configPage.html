@@ -217,6 +217,23 @@
                         want to use dynamic data, you must respect the {} placeholders in your personalized message.
                         To help you, you'll find some examples in the guide above ("Default message guide"):
                     </div>
+                    <div class="sectionTitleContainer flex align-items-center">
+                        <h4>Activity Log filter (used by the "Activity Log" notification type below)</h4>
+                    </div>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="ActivityLogIncludeTypes">Only these activity types (optional)</label>
+                        <input id="ActivityLogIncludeTypes" name="ActivityLogIncludeTypes" type="text" is="emby-input" />
+                        <div class="fieldDescription">Comma separated, case-insensitive, "*" wildcard allowed (ex:
+                            JellyAskRequest, Search*). Leave blank to forward every activity type.</div>
+                    </div>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="ActivityLogExcludeTypes">Never these activity types (optional)</label>
+                        <input id="ActivityLogExcludeTypes" name="ActivityLogExcludeTypes" type="text" is="emby-input" />
+                        <div class="fieldDescription">Same format. Exclusions win over the list above. Handy to skip noisy
+                            types like VideoPlayback or SessionStarted. Placeholders for the template: {activity.Name},
+                            {activity.ShortOverview}, {activity.Overview}, {activity.Type}, {activity.Severity},
+                            {activity.Date}, {activity.UserName}, {activity.ItemId}.</div>
+                    </div>
                     <div data-name="notificationTypeContainer">
                     </div>
                 </div>

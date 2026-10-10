@@ -152,6 +152,14 @@ namespace Jellyfin.Plugin.TelegramNotifier
                     { "{eventArgs.Task.Description}", GetPropertySafely(objEventArgs, EventArgsTaskDescriptionPath) }
                 };
 
+                if (objEventArgs is Notifiers.ActivityNotificationArgs activityArgs)
+                {
+                    foreach (var pair in activityArgs.GetReplacements())
+                    {
+                        replacements[pair.Key] = pair.Value;
+                    }
+                }
+
                 return replacements;
             }
             catch

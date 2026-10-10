@@ -27,7 +27,8 @@ export default function (view) {
                 "UserLockedOut": "User Locked Out",
                 "UserPasswordChanged": "User Password Changed",
                 "UserUpdated": "User Updated",
-                "UserDataSaved": "User Data Saved"
+                "UserDataSaved": "User Data Saved",
+                "ActivityLog": "Activity Log (any entry written by Jellyfin or other plugins)"
             },
 
             defaultMessages: {
@@ -68,10 +69,17 @@ export default function (view) {
                 "UserLockedOut": "👤🔒 User {eventArgs.Argument.Username} locked out",
                 "UserPasswordChanged": "👤 User {eventArgs.Argument.Username} changed his password.",
                 "UserUpdated": "👤 User {eventArgs.Argument.Username} has been updated",
-                "UserDataSaved": "👤 User {eventArgs.Argument.Username} data saved."
+                "UserDataSaved": "👤 User {eventArgs.Argument.Username} data saved.",
+                "ActivityLog": "📣 {activity.Name}\n{?activity.ShortOverview}{activity.ShortOverview}\n{/activity.ShortOverview}{?activity.Overview}\n{activity.Overview}{/activity.Overview}"
+            },
+
+            loadActivityLogFilters: function (userConfig) {
+                document.querySelector('#ActivityLogIncludeTypes').value = (userConfig && userConfig.ActivityLogIncludeTypes) || '';
+                document.querySelector('#ActivityLogExcludeTypes').value = (userConfig && userConfig.ActivityLogExcludeTypes) || '';
             },
 
             loadNotificationTypes: function (userConfig) {
+                this.loadActivityLogFilters(userConfig);
                 const temp = document.querySelector("#template-notification-type");
                 const temp_without_textarea = document.querySelector("#template-notification-type-without-textarea");
                 const subtemp = document.querySelector("#template-notification-subtype");
@@ -92,7 +100,7 @@ export default function (view) {
                     } else {
                         name.innerText = TelegramNotifierConfig.notificationType.values[key];
                         const textarea = template.querySelector('[data-name="txtTemplate"]');
-                        textarea.value = userConfig === null ? this.defaultMessages[key] : userConfig[key + 'StringMessage'];
+                        textarea.value = (userConfig === null || !userConfig[key + 'StringMessage']) ? this.defaultMessages[key] : userConfig[key + 'StringMessage'];
                         textarea.dataset.value = key;
                     }
                     value.dataset.value = key;
@@ -129,6 +137,8 @@ export default function (view) {
             },
 
             saveNotificationTypes: function (userConfig) {
+                userConfig.ActivityLogIncludeTypes = document.querySelector('#ActivityLogIncludeTypes').value;
+                userConfig.ActivityLogExcludeTypes = document.querySelector('#ActivityLogExcludeTypes').value;
                 const notificationTypeKeys = Object.keys(TelegramNotifierConfig.notificationType.values).sort();
                 for (const key of notificationTypeKeys) {
                     userConfig[key] = document.querySelector(`[data-name=notificationTypeValue][data-value=${key}]`).checked;

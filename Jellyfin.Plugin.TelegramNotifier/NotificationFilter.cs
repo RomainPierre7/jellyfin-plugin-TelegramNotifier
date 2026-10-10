@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Jellyfin.Plugin.TelegramNotifier.Configuration;
+using Jellyfin.Plugin.TelegramNotifier.Notifiers;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
 using Microsoft.Extensions.Logging;
@@ -50,7 +51,8 @@ namespace Jellyfin.Plugin.TelegramNotifier
             UserLockedOut,
             UserPasswordChanged,
             UserUpdated,
-            UserDataSaved
+            UserDataSaved,
+            ActivityLog
         }
 
         private bool GetPropertyValue(UserConfiguration user, string propertyName)
@@ -116,6 +118,16 @@ namespace Jellyfin.Plugin.TelegramNotifier
                 if (!isNotificationTypeEnabled)
                 {
                     continue;
+                }
+
+                if (type == NotificationType.ActivityLog)
+                {
+                    object activityArgs = eventArgs;
+                    if (activityArgs is not ActivityNotificationArgs activity
+                        || !ActivityLogNotifier.IsTypeAllowed(user.ActivityLogIncludeTypes, user.ActivityLogExcludeTypes, activity.Type))
+                    {
+                        continue;
+                    }
                 }
 
                 if (user.DoNotMentionOwnActivities == true && user.UserId is not null)

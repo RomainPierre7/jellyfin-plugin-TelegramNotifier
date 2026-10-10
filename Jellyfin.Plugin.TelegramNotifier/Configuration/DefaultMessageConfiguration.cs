@@ -120,6 +120,10 @@ namespace Jellyfin.Plugin.TelegramNotifier.Configuration
             UserUpdated = "👤 User {eventArgs.Argument.Username} has been updated";
 
             UserDataSaved = "👤 User {eventArgs.Argument.Username} data saved.";
+
+            ActivityLog = "📣 {activity.Name}\n" +
+                "{?activity.ShortOverview}{activity.ShortOverview}\n{/activity.ShortOverview}" +
+                "{?activity.Overview}\n{activity.Overview}{/activity.Overview}";
         }
 
         public static string ItemAddedMovies { get; }
@@ -197,5 +201,7 @@ namespace Jellyfin.Plugin.TelegramNotifier.Configuration
         public static string UserUpdated { get; }
 
         public static string UserDataSaved { get; }
+
+        public static string ActivityLog { get; }
     }
 }

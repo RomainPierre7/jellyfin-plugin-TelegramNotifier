@@ -36,6 +36,9 @@ public class PluginServiceRegistrator : IPluginServiceRegistrator
         serviceCollection.AddHostedService<ItemDeletedNotifierEntryPoint>();
         serviceCollection.AddSingleton<IItemDeletedManager, ItemDeletedManager>();
 
+        // Activity Log (generic: any entry written by Jellyfin or by other plugins).
+        serviceCollection.AddHostedService<ActivityLogNotifier>();
+
         // Security consumers.
         serviceCollection.AddScoped<IEventConsumer<GenericEventArgs<AuthenticationRequest>>, AuthenticationFailureNotifier>();
         serviceCollection.AddScoped<IEventConsumer<GenericEventArgs<AuthenticationResult>>, AuthenticationSuccessNotifier>();

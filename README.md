@@ -99,6 +99,7 @@ Available events:
 - User password changed
 - User updated *(soon...)*
 - User data saved *(soon...)*
+- Activity log: forwards any entry of Jellyfin's native Activity Log (with optional include/exclude filter by activity type and a message template using `{activity.Name}`, `{activity.ShortOverview}`, `{activity.Overview}`, `{activity.Type}`, `{activity.Severity}`, `{activity.Date}`, `{activity.UserName}`, `{activity.ItemId}`). Other plugins only need to write an activity entry to notify through Telegram, without their own bot settings.
 
 7. Click on the **Save** button
 

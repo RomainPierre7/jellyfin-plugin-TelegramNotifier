@@ -145,6 +145,11 @@ public class UserConfiguration
 
         UserDataSaved = false;
         UserDataSavedStringMessage = DefaultMessageConfiguration.UserDataSaved;
+
+        ActivityLog = false;
+        ActivityLogStringMessage = DefaultMessageConfiguration.ActivityLog;
+        ActivityLogIncludeTypes = string.Empty;
+        ActivityLogExcludeTypes = string.Empty;
     }
 
     public string UserId { get; set; }
@@ -326,4 +331,24 @@ public class UserConfiguration
     public bool UserDataSaved { get; set; }
 
     public string UserDataSavedStringMessage { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether entries written to Jellyfin's native Activity Log
+    /// (by Jellyfin itself or by any other plugin) are forwarded to Telegram.
+    /// </summary>
+    public bool ActivityLog { get; set; }
+
+    public string ActivityLogStringMessage { get; set; }
+
+    /// <summary>
+    /// Gets or sets a comma/semicolon/newline separated list of activity types to forward
+    /// (case-insensitive, "*" wildcard allowed, e.g. "JellyAskRequest, Search*"). Empty means every type.
+    /// </summary>
+    public string ActivityLogIncludeTypes { get; set; }
+
+    /// <summary>
+    /// Gets or sets a list (same format as <see cref="ActivityLogIncludeTypes"/>) of activity types never forwarded.
+    /// Exclusions win over inclusions.
+    /// </summary>
+    public string ActivityLogExcludeTypes { get; set; }
 }
