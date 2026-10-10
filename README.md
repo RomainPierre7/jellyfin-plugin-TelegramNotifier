@@ -81,12 +81,12 @@ Available events:
 - Playback start
 - Playback progress
 - Playback stop
-- Subtitle download failure *(soon...)*
-- Authentication failure *(soon...)*
-- Authentication success *(soon...)*
+- Subtitle download failure
+- Authentication failure
+- Authentication success
 - Session start
-- Pending restart *(soon...)*
-- Task completed *(soon...)*
+- Pending restart
+- Task completed
 - Plugin installation cancelled
 - Plugin installation failed
 - Plugin installed
@@ -97,7 +97,7 @@ Available events:
 - User deleted
 - User locked out
 - User password changed
-- User updated *(soon...)*
+- User updated
 - User data saved *(soon...)*
 
 7. Click on the **Save** button
